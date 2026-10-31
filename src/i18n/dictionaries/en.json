@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "title": "Shanti Sangha Sporting Club",
+    "description": "Football, cricket, badminton and more. Join our club."
+  },
+  "brand": "Shanti Sangha",
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "sports": "Sports",
+    "events": "Events",
+    "contact": "Contact",
+    "dashboard": "My dashboard",
+    "admin": "Admin dashboard"
+  },
+  "hero": {
+    "slides": [
+      { "title": "Play together. Grow together.", "text": "A community club for every age and every game.", "cta": "Join the club" },
+      { "title": "Training every weekend", "text": "Coached sessions in football, cricket and badminton.", "cta": "See sports" },
+      { "title": "Season matches are open", "text": "Register your team and get the fixture list.", "cta": "View events" }
+    ],
+    "prev": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide"
+  },
+  "sections": {
+    "sportsTitle": "What we play",
+    "sports": [
+      { "name": "Football", "text": "Weekend league and youth academy." },
+      { "name": "Cricket", "text": "Tournament matches and net practice." },
+      { "name": "Badminton", "text": "Indoor courts open all week." },
+      { "name": "Kabaddi", "text": "Traditional team matches." }
+    ]
+  },
+  "role": {
+    "label": "Viewing as",
+    "user": "Member",
+    "admin": "Admin"
+  },
+  "dashboard": {
+    "userTitle": "Member dashboard",
+    "adminTitle": "Admin dashboard",
+    "userStats": ["My events", "Payments due", "Teams joined"],
+    "adminStats": ["Total members", "Pending approvals", "Upcoming events"]
+  },
+  "footer": { "rights": "All rights reserved." }
+}
