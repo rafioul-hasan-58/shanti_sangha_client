@@ -114,7 +114,7 @@ export default function Navbar({
 
           {/* Login Button (Full height white block matching BCB style) */}
           <Link
-            href={`/${locale}/dashboard`}
+            href={`/${locale}/login`}
             className="self-stretch flex items-center justify-center px-5 sm:px-8 bg-white text-[#006a4e] font-extrabold text-xs sm:text-sm uppercase tracking-wider hover:bg-neutral-100 transition-colors shadow-inner"
           >
             {dict.nav.login || (locale === "bn" ? "লগইন" : "LOGIN")}
@@ -164,6 +164,23 @@ export default function Navbar({
           <div className="pt-2 flex items-center justify-between">
             <span className="text-xs uppercase tracking-wider text-white/80 font-semibold">Language</span>
             <LanguageSwitcher locale={locale} />
+          </div>
+          {/* Mobile Login & Register Actions */}
+          <div className="pt-2 grid grid-cols-2 gap-2 border-t border-white/10">
+            <Link
+              href={`/${locale}/login`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center py-2 px-3 bg-white text-[#006a4e] font-extrabold text-xs uppercase tracking-wider rounded text-center shadow-xs"
+            >
+              {dict.nav.login || (locale === "bn" ? "লগইন" : "Login")}
+            </Link>
+            <Link
+              href={`/${locale}/register`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center py-2 px-3 bg-white/20 text-white font-extrabold text-xs uppercase tracking-wider rounded text-center border border-white/30 hover:bg-white/30"
+            >
+              {locale === "bn" ? "নিবন্ধন" : "Register"}
+            </Link>
           </div>
         </div>
       )}

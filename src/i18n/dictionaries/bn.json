@@ -78,5 +78,29 @@
   },
   "footer": {
     "rights": "সর্বস্বত্ব সংরক্ষিত।"
+  },
+  "auth": {
+    "loginTitle": "স্বাগতম",
+    "loginSubtitle": "সাভারচালা শান্তি সংঘের একাউন্টে প্রবেশ করুন",
+    "registerTitle": "নতুন একাউন্ট খুলুন",
+    "registerSubtitle": "সাভারচালা শান্তি সংঘ পরিবারের অংশ হন",
+    "continueWithGoogle": "গুগল দিয়ে চালিয়ে যান",
+    "orEmail": "অথবা ইমেইল দিয়ে চালিয়ে যান",
+    "fullName": "পুরো নাম",
+    "fullNamePlaceholder": "যেমন: মোঃ রফিকুল ইসলাম",
+    "email": "ইমেইল ঠিকানা",
+    "emailPlaceholder": "example@mail.com",
+    "password": "পাসওয়ার্ড",
+    "passwordPlaceholder": "আপনার পাসওয়ার্ড লিখুন",
+    "rememberMe": "তথ্য মনে রাখুন",
+    "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "signInBtn": "লগইন করুন",
+    "signUpBtn": "নিবন্ধন সম্পন্ন করুন",
+    "noAccount": "একাউন্ট নেই?",
+    "haveAccount": "ইতিমধ্যে একাউন্ট আছে?",
+    "registerLink": "এখানে নিবন্ধন করুন",
+    "loginLink": "এখানে লগইন করুন",
+    "agreeTerms": "আমি ক্লাবের নিয়মাবলী ও শর্তাবলীতে সম্মত",
+    "backToHome": "হোম পেজে ফিরে যান"
   }
 }

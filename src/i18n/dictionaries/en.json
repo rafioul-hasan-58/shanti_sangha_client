@@ -78,5 +78,29 @@
   },
   "footer": {
     "rights": "All rights reserved."
+  },
+  "auth": {
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Sign in to your Shavarchala Shanti Sangha account",
+    "registerTitle": "Create an Account",
+    "registerSubtitle": "Join the Shavarchala Shanti Sangha family",
+    "continueWithGoogle": "Continue with Google",
+    "orEmail": "or continue with email",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "e.g. John Doe",
+    "email": "Email Address",
+    "emailPlaceholder": "yourname@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "signInBtn": "Sign In",
+    "signUpBtn": "Create Account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "registerLink": "Register here",
+    "loginLink": "Sign in here",
+    "agreeTerms": "I agree to the club terms and conditions",
+    "backToHome": "Back to Home"
   }
 }
