@@ -45,7 +45,7 @@ export default function Navbar({
         {/* Brand / Logo */}
         <Link
           href={`/${locale}`}
-          className="flex items-center gap-3 sm:gap-3.5 py-1 group"
+          className="flex items-center gap-3 sm:gap-3.5 py-1 group outline-none focus:outline-none focus-visible:outline-none ring-0 select-none"
         >
           {/* 3D Flipping Logo */}
           <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center perspective-800">

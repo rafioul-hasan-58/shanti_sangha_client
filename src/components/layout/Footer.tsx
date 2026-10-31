@@ -27,15 +27,34 @@ export default function Footer({
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Brand & Description */}
           <div className="md:col-span-5 lg:col-span-5 space-y-4">
-            <Link href={`/${locale}`} className="inline-flex items-center gap-3 group">
-              <div className="h-12 w-12 relative shrink-0">
-                <Image
-                  src="/logo.png"
-                  alt="Shanti Sangha Logo"
-                  width={48}
-                  height={48}
-                  className="h-full w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
-                />
+            <Link
+              href={`/${locale}`}
+              className="inline-flex items-center gap-3.5 group outline-none focus:outline-none focus-visible:outline-none ring-0 select-none"
+            >
+              {/* 3D Flipping Logo */}
+              <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center perspective-800">
+                <div className="relative w-full h-full transform-style-3d animate-logo-flip">
+                  {/* Front Face */}
+                  <div className="absolute inset-0 backface-hidden flex items-center justify-center">
+                    <Image
+                      src="/logo.png"
+                      alt="Shanti Sangha Logo"
+                      width={64}
+                      height={64}
+                      className="h-full w-full object-contain drop-shadow-md"
+                    />
+                  </div>
+                  {/* Back Face (rotated 180deg so both sides remain right-side up) */}
+                  <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center">
+                    <Image
+                      src="/logo.png"
+                      alt="Shanti Sangha Logo"
+                      width={64}
+                      height={64}
+                      className="h-full w-full object-contain drop-shadow-md"
+                    />
+                  </div>
+                </div>
               </div>
               <div className="flex flex-col leading-tight select-none">
                 <span className="font-extrabold text-sm sm:text-base tracking-wider text-white uppercase font-sans">
@@ -90,7 +109,7 @@ export default function Footer({
                   <div className="h-12 w-12 sm:h-13 sm:w-13 rounded-xl overflow-hidden ring-2 ring-purple-200/90 shadow-xs bg-purple-50">
                     <Image
                       src="/images/creator.png"
-                      alt="Rafioul Hasan"
+                      alt="Sourav Prodhan"
                       width={56}
                       height={56}
                       priority
@@ -107,10 +126,10 @@ export default function Footer({
                 {/* Name & Title */}
                 <div className="min-w-0 flex-1">
                   <h4 className="text-sm font-bold text-gray-900 truncate">
-                    Rafioul Hasan
+                    Sourav Prodhan
                   </h4>
                   <p className="text-[11px] text-gray-500 font-medium truncate">
-                    Full-Stack Developer & AI Systems Builder
+                    Software Engineer & AI Systems Builder
                   </p>
 
                   {/* Social links row */}
@@ -152,7 +171,7 @@ export default function Footer({
             </span>
             . Developed with passion by{" "}
             <span className="font-bold text-white underline decoration-white/40 underline-offset-2">
-              Rafioul Hasan
+              Sourav
             </span>.
           </p>
 
