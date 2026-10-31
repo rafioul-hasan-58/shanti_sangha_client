@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
+import { APP_VERSION } from "@/lib/version";
 
 export default function Footer({
   dict,
@@ -164,7 +165,7 @@ export default function Footer({
 
         {/* Sub-Footer / Copyright Row */}
         <div className="mt-12 pt-6 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/80 font-medium">
-          <p>
+          <p className="text-center sm:text-left">
             © {new Date().getFullYear()}{" "}
             <span className="font-bold text-white">
               {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
@@ -175,7 +176,7 @@ export default function Footer({
             </span>.
           </p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3">
             <Link href={`/${locale}`} className="hover:text-white transition-colors">
               {isBn ? "গোপনীয়তা নীতি" : "Privacy Policy"}
             </Link>
@@ -184,7 +185,10 @@ export default function Footer({
               {isBn ? "সেবার শর্তাবলী" : "Terms of Service"}
             </Link>
             <span className="text-white/40">•</span>
-            <span>{isBn ? "সর্বস্বত্ব সংরক্ষিত" : "All Rights Reserved"}</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px] sm:text-[11px] font-mono text-white tracking-wider shadow-2xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
+              <span>version: {APP_VERSION}</span>
+            </span>
           </div>
         </div>
       </div>
