@@ -48,7 +48,7 @@ export default async function LocaleLayout({
         <RoleProvider>
           <Navbar locale={locale} dict={dict} />
           {children}
-          <Footer dict={dict} />
+          <Footer dict={dict} locale={locale} />
         </RoleProvider>
       </body>
     </html>
