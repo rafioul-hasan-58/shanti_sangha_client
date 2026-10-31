@@ -41,19 +41,19 @@
     "sports": [
       {
         "name": "Football",
-        "text": "Weekend league and youth academy."
+        "text": "Summer SPL tournament and regular matches."
       },
       {
         "name": "Cricket",
-        "text": "Tournament matches and net practice."
+        "text": "Winter cricket festival, GPL and SPL tournaments."
+      },
+      {
+        "name": "Volleyball",
+        "text": "Regular community matches and tournaments."
       },
       {
         "name": "Badminton",
-        "text": "Indoor courts open all week."
-      },
-      {
-        "name": "Kabaddi",
-        "text": "Traditional team matches."
+        "text": "Winter badminton tournaments and court practice."
       }
     ]
   },

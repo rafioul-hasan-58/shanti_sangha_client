@@ -20,14 +20,32 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Sports Section */}
       <section id="sports" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
-        <h2 className="font-display text-3xl font-bold">{dict.sections.sportsTitle}</h2>
+        <div>
+          <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-widest border border-[#006a4e]/20">
+            {locale === "bn" ? "আমাদের খেলাধুলা" : "OUR SPORTS & ACTIVITIES"}
+          </span>
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-pitch mt-2">
+            {dict.sections.sportsTitle}
+          </h2>
+        </div>
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {dict.sections.sports.map((s) => (
-            <div key={s.name} className="rounded-lg border border-brand-200 bg-white p-5 shadow-xs">
-              <h3 className="text-lg font-semibold text-brand-800">{s.name}</h3>
-              <p className="mt-2 text-sm text-brand-700">{s.text}</p>
-            </div>
-          ))}
+          {dict.sections.sports.map((s, idx) => {
+            const icons = ["⚽", "🏏", "🏐", "🏸"];
+            return (
+              <div
+                key={s.name}
+                className="group rounded-2xl border border-brand-200/80 bg-white p-6 shadow-sm hover:shadow-md hover:border-[#006a4e]/40 transition-all duration-300 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                    {icons[idx] || "🏆"}
+                  </div>
+                  <h3 className="text-lg font-bold text-pitch">{s.name}</h3>
+                  <p className="mt-2 text-sm text-brand-700 leading-relaxed font-sans">{s.text}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
