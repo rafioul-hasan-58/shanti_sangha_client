@@ -5,7 +5,7 @@ import type { Dictionary } from "@/i18n/getDictionary";
 
 export default function Footer({
   dict,
-  locale = "en",
+  locale = "bn",
 }: {
   dict: Dictionary;
   locale?: Locale;
