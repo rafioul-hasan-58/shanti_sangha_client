@@ -24,7 +24,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {locale === "bn" ? "প্রতিষ্ঠিত ২০০৭" : "ESTABLISHED 2007"}
               </span>
               <h2 className="font-display text-3xl font-bold mt-1 text-pitch">
-                {locale === "bn" ? "সাভারচালা শান্তি সংঘ ক্রীড়া ক্লাব" : "Shavarchala Shanti Sangha Sporting Club"}
+                {locale === "bn" ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
               </h2>
               <p className="mt-3 text-brand-700 leading-relaxed">
                 {locale === "bn"

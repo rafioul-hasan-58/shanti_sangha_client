@@ -64,8 +64,8 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
             {/* Slide Content */}
             <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
               <div className="max-w-2xl pt-6">
-                <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-xs uppercase px-3 py-1 rounded-sm tracking-wider mb-4 border border-white/20 backdrop-blur-sm">
-                  Shanti Sangha Sporting Club
+                <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-xs uppercase px-3.5 py-1 rounded-sm tracking-widest mb-4 border border-white/20 backdrop-blur-sm">
+                  Shavarchala Shanti Sangha
                 </span>
                 <h1 className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl text-white drop-shadow-md">
                   {s.title}
