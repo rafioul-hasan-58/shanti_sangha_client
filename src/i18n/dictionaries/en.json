@@ -19,9 +19,18 @@
   },
   "hero": {
     "slides": [
-      { "title": "Play together. Grow together.", "text": "A community club for every age and every game." },
-      { "title": "Training every weekend", "text": "Coached sessions in football, cricket and badminton." },
-      { "title": "Season matches are open", "text": "Register your team and get the fixture list." }
+      {
+        "title": "United We Work, Win or Lose with Pride",
+        "text": "Unity, cooperation, and sports can bring mental peace and help build a better life."
+      },
+      {
+        "title": "We Believe Unity Is Our Greatest Strength",
+        "text": "Sports are not just entertainment; they help develop discipline, patience, brotherhood, and a healthy mindset."
+      },
+      {
+        "title": "Healthy Body, Happy Mind, Stronger Bonds",
+        "text": "Regular sports activities keep the body healthy, refresh the mind, and strengthen relationships among people."
+      }
     ],
     "prev": "Previous slide",
     "next": "Next slide",
@@ -30,10 +39,22 @@
   "sections": {
     "sportsTitle": "What we play",
     "sports": [
-      { "name": "Football", "text": "Weekend league and youth academy." },
-      { "name": "Cricket", "text": "Tournament matches and net practice." },
-      { "name": "Badminton", "text": "Indoor courts open all week." },
-      { "name": "Kabaddi", "text": "Traditional team matches." }
+      {
+        "name": "Football",
+        "text": "Weekend league and youth academy."
+      },
+      {
+        "name": "Cricket",
+        "text": "Tournament matches and net practice."
+      },
+      {
+        "name": "Badminton",
+        "text": "Indoor courts open all week."
+      },
+      {
+        "name": "Kabaddi",
+        "text": "Traditional team matches."
+      }
     ]
   },
   "role": {
@@ -44,8 +65,18 @@
   "dashboard": {
     "userTitle": "Member dashboard",
     "adminTitle": "Admin dashboard",
-    "userStats": ["My events", "Payments due", "Teams joined"],
-    "adminStats": ["Total members", "Pending approvals", "Upcoming events"]
+    "userStats": [
+      "My events",
+      "Payments due",
+      "Teams joined"
+    ],
+    "adminStats": [
+      "Total members",
+      "Pending approvals",
+      "Upcoming events"
+    ]
   },
-  "footer": { "rights": "All rights reserved." }
+  "footer": {
+    "rights": "All rights reserved."
+  }
 }
