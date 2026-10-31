@@ -47,15 +47,32 @@ export default function Navbar({
           href={`/${locale}`}
           className="flex items-center gap-3 sm:gap-3.5 py-1 group"
         >
-          <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center">
-            <Image
-              src="/logo.png"
-              alt="Shanti Sangha Logo"
-              width={64}
-              height={64}
-              priority
-              className="h-full w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
-            />
+          {/* 3D Flipping Logo */}
+          <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center perspective-800">
+            <div className="relative w-full h-full transform-style-3d animate-logo-flip">
+              {/* Front Face */}
+              <div className="absolute inset-0 backface-hidden flex items-center justify-center">
+                <Image
+                  src="/logo.png"
+                  alt="Shanti Sangha Logo"
+                  width={64}
+                  height={64}
+                  priority
+                  className="h-full w-full object-contain drop-shadow-md"
+                />
+              </div>
+              {/* Back Face (rotated 180deg so both sides remain right-side up) */}
+              <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center">
+                <Image
+                  src="/logo.png"
+                  alt="Shanti Sangha Logo"
+                  width={64}
+                  height={64}
+                  priority
+                  className="h-full w-full object-contain drop-shadow-md"
+                />
+              </div>
+            </div>
           </div>
           <div className="flex flex-col justify-center leading-tight select-none">
             <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">

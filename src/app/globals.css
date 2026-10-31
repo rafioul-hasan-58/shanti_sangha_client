@@ -10,3 +10,42 @@
     @apply outline-2 outline-offset-2 outline-brand-500;
   }
 }
+
+/* 3D Logo Flip Animation (Matching BCB signature 360 flip) */
+@keyframes logoFlip360 {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+.perspective-800 {
+  perspective: 800px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.animate-logo-flip {
+  animation: logoFlip360 2.8s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-logo-flip {
+    animation: none;
+  }
+}
