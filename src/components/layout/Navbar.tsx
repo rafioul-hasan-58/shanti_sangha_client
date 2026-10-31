@@ -41,24 +41,24 @@ export default function Navbar({
 
   return (
     <header className="sticky top-0 z-50 bg-[#006a4e] border-b-[3px] border-white shadow-md">
-      <div className="mx-auto flex h-14 md:h-16 max-w-7xl items-center justify-between pl-4 pr-0">
+      <div className="mx-auto flex h-16 md:h-[68px] max-w-7xl items-center justify-between pl-4 pr-0">
         {/* Brand / Logo */}
         <Link
           href={`/${locale}`}
-          className="flex items-center gap-2.5 sm:gap-3 py-1 group"
+          className="flex items-center gap-3 sm:gap-3.5 py-1 group"
         >
-          <div className="relative h-10 w-10 sm:h-11 sm:w-11 shrink-0">
+          <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center">
             <Image
               src="/logo.png"
               alt="Shanti Sangha Logo"
-              width={48}
-              height={48}
+              width={64}
+              height={64}
               priority
-              className="h-full w-full object-contain drop-shadow-sm group-hover:scale-105 transition-transform"
+              className="h-full w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
             />
           </div>
-          <div className="flex flex-col justify-center leading-none select-none">
-            <span className="font-extrabold text-xs sm:text-sm tracking-wider text-white uppercase font-sans">
+          <div className="flex flex-col justify-center leading-tight select-none">
+            <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
               {locale === "bn" ? "সাভারচালা" : "SHAVARCHALA"}
             </span>
             <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
