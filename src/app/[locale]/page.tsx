@@ -51,25 +51,31 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* GPL (Premier League) Section */}
-      <section id="gpl" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
+      {/* SPL (Shanti Sangha Premier League) Section */}
+      <section id="spl" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
         <div className="rounded-2xl bg-[#006a4e] text-white p-8 sm:p-10 shadow-md border-b-4 border-white">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
               <span className="inline-block bg-white text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-wider">
-                {locale === "bn" ? "বার্ষিক টুর্নামেন্ট" : "ANNUAL TOURNAMENT"}
+                {locale === "bn" ? "বার্ষিক ক্রীড়া আয়োজন" : "ANNUAL SPORTS TOURNAMENT"}
               </span>
+
               <h2 className="font-display text-3xl font-bold mt-3">
-                {locale === "bn" ? "জিপিএল - প্রিমিয়ার লিগ" : "GPL - Premier League"}
+                {locale === "bn" ? "এসপিএল - শান্তি সংঘ প্রিমিয়ার লিগ" : "SPL - Shanti Sangha Premier League"}
               </h2>
+
               <p className="mt-2 text-brand-100 max-w-2xl text-sm sm:text-base leading-relaxed">
                 {locale === "bn"
-                  ? "শান্তি সংঘের সবচেয়ে মর্যাদাপূর্ণ ক্রিকেট ও ক্রীড়া আসর। বিভিন্ন অঞ্চলের শীর্ষ দল ও খেলোয়াড়দের রোমাঞ্চকর লড়াই।"
-                  : "The premier competitive sports and cricket championship of Shanti Sangha. Showcasing elite local talent, intense matchups, and community passion."}
+                  ? "শান্তি সংঘের অন্যতম প্রধান বার্ষিক ক্রীড়া আয়োজন এসপিএল। প্রতি বছর গ্রীষ্মকালে ফুটবল এবং শীতকালে ক্রিকেট টুর্নামেন্ট অনুষ্ঠিত হয়। বিভিন্ন অঞ্চলের দল ও খেলোয়াড়দের অংশগ্রহণে এই আয়োজন হয়ে ওঠে উৎসবমুখর ও প্রতিযোগিতামূলক।"
+                  : "SPL is Shanti Sangha's annual sporting event, featuring exciting football and cricket tournaments. Football takes place during summer, while cricket takes place during winter, bringing together local teams and players in a celebration of sportsmanship and community spirit."}
               </p>
             </div>
+
             <div className="shrink-0">
               <span className="inline-block px-6 py-3 bg-white text-[#006a4e] font-extrabold text-sm uppercase rounded tracking-wider shadow-sm">
-                {locale === "bn" ? "আসন্ন মৌসুম" : "Upcoming Season"}
+                {locale === "bn"
+                  ? "ক্রিকেট: ১৫ নভেম্বর"
+                  : "Cricket: November 15"}
               </span>
             </div>
           </div>
