@@ -161,30 +161,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* Committee (Comette) Section */}
       <CommitteeSection locale={locale} />
-
-      {/* Gallery Section */}
-      <section id="gallery" className="mx-auto max-w-6xl px-4 py-16 scroll-mt-20">
-        <h2 className="font-display text-3xl font-bold text-pitch">
-          {locale === "bn" ? "ফটো গ্যালারি" : "Photo Gallery"}
-        </h2>
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((item) => (
-            <div
-              key={item}
-              className="aspect-video bg-gradient-to-br from-brand-700 to-pitch rounded-xl flex items-center justify-center p-4 text-center text-white/80 border border-brand-600/30 shadow-xs"
-            >
-              <div className="flex flex-col items-center gap-2">
-                <svg className="w-8 h-8 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span className="text-xs uppercase tracking-wider font-semibold">
-                  {locale === "bn" ? `মুহূর্ত #${item}` : `Event Moment #${item}`}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
     </>
   );
 }

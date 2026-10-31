@@ -14,10 +14,9 @@ export default function Footer({
 
   const quickLinks = [
     { href: `/${locale}#about`, label: isBn ? "আমাদের সম্পর্কে" : "About Us" },
-    { href: `/${locale}#committee`, label: isBn ? "কার্যনির্বাহী কমিটি" : "Executive Committee" },
-    { href: `/${locale}#spl`, label: isBn ? "এসপিএল ও বার্ষিক আয়োজন" : "SPL & Annual Events" },
-    { href: `/${locale}#gallery`, label: isBn ? "ফটো গ্যালারি" : "Photo Gallery" },
     { href: `/${locale}#sports`, label: isBn ? "খেলাধুলা ও প্রশিক্ষণ" : "Sports & Activities" },
+    { href: `/${locale}#spl`, label: isBn ? "এসপিএল ও বার্ষিক আয়োজন" : "SPL & Annual Events" },
+    { href: `/${locale}#committee`, label: isBn ? "কার্যনির্বাহী কমিটি" : "Executive Committee" },
     { href: `/${locale}/dashboard`, label: isBn ? "সদস্য ড্যাশবোর্ড" : "Member Dashboard" },
   ];
 

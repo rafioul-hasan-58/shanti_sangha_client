@@ -20,21 +20,21 @@ export default function Navbar({
     {
       href: `/${locale}#about`,
       label: dict.nav.about || (locale === "bn" ? "আমাদের সম্পর্কে" : "About Us"),
-      hasDropdown: true,
-    },
-    {
-      href: `/${locale}#committee`,
-      label: dict.nav.committee || (locale === "bn" ? "কমিটি" : "Comette"),
       hasDropdown: false,
     },
     {
-      href: `/${locale}#gallery`,
-      label: dict.nav.gallery || (locale === "bn" ? "গ্যালারি" : "Gallery"),
-      hasDropdown: true,
+      href: `/${locale}#sports`,
+      label: dict.nav.sports || (locale === "bn" ? "খেলাধুলা" : "Sports"),
+      hasDropdown: false,
     },
     {
       href: `/${locale}#spl`,
       label: dict.nav.spl || (locale === "bn" ? "এসপিএল" : "SPL"),
+      hasDropdown: false,
+    },
+    {
+      href: `/${locale}#committee`,
+      label: dict.nav.committee || (locale === "bn" ? "কমিটি" : "Comette"),
       hasDropdown: false,
     },
   ];
