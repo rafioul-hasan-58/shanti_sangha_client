@@ -22,32 +22,32 @@ export default function Footer({
   ];
 
   return (
-    <footer className="mt-20 border-t border-brand-100 bg-[#f9fafb] text-brand-900 font-sans">
+    <footer className="mt-20 border-t-[3px] border-white bg-[#006a4e] text-white font-sans shadow-lg">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Brand & Description */}
           <div className="md:col-span-5 lg:col-span-5 space-y-4">
             <Link href={`/${locale}`} className="inline-flex items-center gap-3 group">
-              <div className="h-11 w-11 relative shrink-0">
+              <div className="h-12 w-12 relative shrink-0">
                 <Image
                   src="/logo.png"
                   alt="Shanti Sangha Logo"
                   width={48}
                   height={48}
-                  className="h-full w-full object-contain drop-shadow-xs group-hover:scale-105 transition-transform"
+                  className="h-full w-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
                 />
               </div>
               <div className="flex flex-col leading-tight select-none">
-                <span className="font-extrabold text-sm sm:text-base tracking-wider text-[#006a4e] uppercase font-sans">
+                <span className="font-extrabold text-sm sm:text-base tracking-wider text-white uppercase font-sans">
                   {isBn ? "সাভারচালা" : "SHAVARCHALA"}
                 </span>
-                <span className="text-xs font-semibold tracking-widest text-brand-700 uppercase font-sans">
+                <span className="text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
                   {isBn ? "শান্তি সংঘ" : "SHANTI SANGHA"}
                 </span>
               </div>
             </Link>
 
-            <p className="text-xs sm:text-sm text-brand-700/90 leading-relaxed max-w-md">
+            <p className="text-xs sm:text-sm text-white/85 leading-relaxed max-w-md">
               {isBn
                 ? "২০০৭ সালে প্রতিষ্ঠিত সাবারচালা শান্তি সংঘ ক্রীড়া ক্লাব। ফুটবল, ক্রিকেট, ব্যাডমিন্টন ও আমাদের ফ্ল্যাগশিপ টুর্নামেন্ট জিপিএল-এর মাধ্যমে সমাজের যুব ও ক্রীড়ামোদী তরুণদের ঐক্যবদ্ধ করার এক অনন্য মঞ্চ।"
                 : "A community sports club established in 2007 in Shavarchala. Dedicated to unity, sportsmanship, and athletic excellence across cricket, football, badminton, and our flagship tournament GPL."}
@@ -56,15 +56,15 @@ export default function Footer({
 
           {/* Middle Column: Platform & Features / Quick Links */}
           <div className="md:col-span-3 lg:col-span-3 space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-widest text-brand-800">
+            <h3 className="text-xs font-extrabold uppercase tracking-widest text-white">
               {isBn ? "প্ল্যাটফর্ম ও ফিচার" : "PLATFORM & FEATURES"}
             </h3>
-            <ul className="space-y-2 text-xs sm:text-sm text-brand-600 font-medium">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-white/80 font-medium">
               {quickLinks.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="hover:text-[#006a4e] hover:translate-x-0.5 inline-block transition-transform"
+                    className="hover:text-white hover:translate-x-1 inline-block transition-all"
                   >
                     {item.label}
                   </Link>
@@ -75,7 +75,7 @@ export default function Footer({
 
           {/* Right Column: Lead Engineer & Creator Card */}
           <div className="md:col-span-4 lg:col-span-4">
-            <div className="rounded-2xl border border-purple-100 bg-white/95 p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div className="rounded-2xl border border-white/20 bg-white p-5 shadow-xl hover:shadow-2xl transition-all text-gray-900">
               {/* Creator Pill Badge */}
               <div className="mb-3">
                 <span className="inline-block rounded-full bg-purple-50 border border-purple-200/80 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-purple-700">
@@ -87,18 +87,19 @@ export default function Footer({
               <div className="flex items-center gap-3.5">
                 {/* Avatar with status dot */}
                 <div className="relative shrink-0">
-                  <div className="h-12 w-12 rounded-xl overflow-hidden ring-2 ring-purple-200/90 shadow-xs">
+                  <div className="h-12 w-12 sm:h-13 sm:w-13 rounded-xl overflow-hidden ring-2 ring-purple-200/90 shadow-xs bg-purple-50">
                     <Image
                       src="/images/creator.png"
                       alt="Rafioul Hasan"
-                      width={48}
-                      height={48}
+                      width={56}
+                      height={56}
+                      priority
                       className="h-full w-full object-cover"
                     />
                   </div>
                   {/* Online status indicator */}
                   <span
-                    className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white"
+                    className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white shadow-xs"
                     title="Active"
                   />
                 </div>
@@ -143,25 +144,27 @@ export default function Footer({
         </div>
 
         {/* Sub-Footer / Copyright Row */}
-        <div className="mt-12 pt-6 border-t border-gray-200/70 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-medium">
+        <div className="mt-12 pt-6 border-t border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/80 font-medium">
           <p>
             © {new Date().getFullYear()}{" "}
-            <span className="font-bold text-gray-800">
+            <span className="font-bold text-white">
               {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
             </span>
             . Developed with passion by{" "}
-            <span className="font-bold text-gray-900">Rafioul Hasan</span>.
+            <span className="font-bold text-white underline decoration-white/40 underline-offset-2">
+              Rafioul Hasan
+            </span>.
           </p>
 
           <div className="flex items-center gap-3">
-            <Link href={`/${locale}`} className="hover:text-gray-800 transition-colors">
+            <Link href={`/${locale}`} className="hover:text-white transition-colors">
               {isBn ? "গোপনীয়তা নীতি" : "Privacy Policy"}
             </Link>
-            <span className="text-gray-300">•</span>
-            <Link href={`/${locale}`} className="hover:text-gray-800 transition-colors">
+            <span className="text-white/40">•</span>
+            <Link href={`/${locale}`} className="hover:text-white transition-colors">
               {isBn ? "সেবার শর্তাবলী" : "Terms of Service"}
             </Link>
-            <span className="text-gray-300">•</span>
+            <span className="text-white/40">•</span>
             <span>{isBn ? "সর্বস্বত্ব সংরক্ষিত" : "All Rights Reserved"}</span>
           </div>
         </div>
