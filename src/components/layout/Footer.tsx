@@ -136,7 +136,7 @@ export default function Footer({
                   {/* Social links row */}
                   <div className="mt-1 flex items-center gap-2 text-xs text-gray-600 font-medium">
                     <a
-                      href="https://github.com"
+                      href="https://github.com/rafioul-hasan-58"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 hover:text-gray-900 transition-colors"
@@ -148,7 +148,7 @@ export default function Footer({
                     </a>
                     <span className="text-gray-300">•</span>
                     <a
-                      href="mailto:contact@shantisangha.org"
+                      href="mailto:rafioulhasan2@gmail.com"
                       className="inline-flex items-center gap-1 hover:text-gray-900 transition-colors"
                     >
                       <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
