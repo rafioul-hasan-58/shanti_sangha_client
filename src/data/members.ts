@@ -1,0 +1,189 @@
+import { committeeMembers } from "./committee";
+
+export type MemberCategory = "all" | "executive" | "general" | "advisor" | "player";
+
+export interface ClubMember {
+  id: string;
+  memberId: string;
+  nameEn: string;
+  nameBn: string;
+  category: "executive" | "general" | "advisor" | "player";
+  roleEn: string;
+  roleBn: string;
+  image?: string;
+  bloodGroup?: string;
+  joiningYear: string;
+  villageEn: string;
+  villageBn: string;
+  phone?: string;
+}
+
+// Convert committee members into club members
+const executiveClubMembers: ClubMember[] = committeeMembers.map((cm, idx) => ({
+  id: cm.id,
+  memberId: `SS-EXEC-${String(idx + 1).padStart(3, "0")}`,
+  nameEn: cm.nameEn,
+  nameBn: cm.nameBn,
+  category: "executive",
+  roleEn: cm.roleEn,
+  roleBn: cm.roleBn,
+  image: cm.image,
+  bloodGroup: ["B+", "O+", "A+", "AB+"][idx % 4],
+  joiningYear: "2007",
+  villageEn: "Shavarchala",
+  villageBn: "সাভারচালা",
+}));
+
+// Additional General Members, Advisors, and Players
+const generalClubMembers: ClubMember[] = [
+  {
+    id: "advisor-1",
+    memberId: "SS-ADV-001",
+    nameEn: "Alhaj Md. Nurul Islam",
+    nameBn: "আলহাজ্ব মোঃ নুরুল ইসলাম",
+    category: "advisor",
+    roleEn: "Chief Advisor",
+    roleBn: "প্রধান উপদেষ্টা",
+    bloodGroup: "O+",
+    joiningYear: "2007",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "advisor-2",
+    memberId: "SS-ADV-002",
+    nameEn: "Md. Abdul Barek",
+    nameBn: "মোঃ আব্দুল বারেক",
+    category: "advisor",
+    roleEn: "Senior Advisor",
+    roleBn: "সিনিয়র উপদেষ্টা",
+    bloodGroup: "A+",
+    joiningYear: "2007",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "gen-1",
+    memberId: "SS-GEN-017",
+    nameEn: "Rafioul Hasan",
+    nameBn: "রাফিউল হাসান",
+    category: "general",
+    roleEn: "General Member & Tech Lead",
+    roleBn: "সাধারণ সদস্য ও টেক লিড",
+    image: "/images/creator.png",
+    bloodGroup: "O+",
+    joiningYear: "2015",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "gen-2",
+    memberId: "SS-GEN-018",
+    nameEn: "Tanvir Ahmed",
+    nameBn: "তানভীর আহমেদ",
+    category: "general",
+    roleEn: "Active Member",
+    roleBn: "সক্রিয় সদস্য",
+    bloodGroup: "B+",
+    joiningYear: "2018",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "player-1",
+    memberId: "SS-PLY-019",
+    nameEn: "Shakil Hossain",
+    nameBn: "শাকিল হোসেন",
+    category: "player",
+    roleEn: "Cricket Team Captain",
+    roleBn: "ক্রিকেট দল অধিনায়ক",
+    bloodGroup: "A+",
+    joiningYear: "2019",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "player-2",
+    memberId: "SS-PLY-020",
+    nameEn: "Mehedi Hasan",
+    nameBn: "মেহেদী হাসান",
+    category: "player",
+    roleEn: "Football Team Forward",
+    roleBn: "ফুটবল দল ফরোয়ার্ড",
+    bloodGroup: "O+",
+    joiningYear: "2020",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "gen-3",
+    memberId: "SS-GEN-021",
+    nameEn: "Arifur Rahman",
+    nameBn: "আরিফুর রহমান",
+    category: "general",
+    roleEn: "General Member",
+    roleBn: "সাধারণ সদস্য",
+    bloodGroup: "AB+",
+    joiningYear: "2021",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "player-3",
+    memberId: "SS-PLY-022",
+    nameEn: "Nahidul Islam",
+    nameBn: "নাহিদুল ইসলাম",
+    category: "player",
+    roleEn: "Volleyball Team Lead",
+    roleBn: "ভলিবল দল প্রধান",
+    bloodGroup: "B+",
+    joiningYear: "2021",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "gen-4",
+    memberId: "SS-GEN-023",
+    nameEn: "Faruk Hossain",
+    nameBn: "ফারুক হোসেন",
+    category: "general",
+    roleEn: "General Member",
+    roleBn: "সাধারণ সদস্য",
+    bloodGroup: "A+",
+    joiningYear: "2022",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "gen-5",
+    memberId: "SS-GEN-024",
+    nameEn: "Sabbir Ahmed",
+    nameBn: "সাব্বির আহমেদ",
+    category: "general",
+    roleEn: "Youth Member",
+    roleBn: "যুব সদস্য",
+    bloodGroup: "O+",
+    joiningYear: "2023",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+  {
+    id: "player-4",
+    memberId: "SS-PLY-025",
+    nameEn: "Tariqul Islam",
+    nameBn: "তারিকুল ইসলাম",
+    category: "player",
+    roleEn: "Badminton Player",
+    roleBn: "ব্যাডমিন্টন খেলোয়াড়",
+    bloodGroup: "B+",
+    joiningYear: "2023",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+  },
+];
+
+export const allClubMembers: ClubMember[] = [
+  ...executiveClubMembers,
+  ...generalClubMembers,
+];
+

@@ -37,6 +37,11 @@ export default function Navbar({
       label: dict.nav.committee || (locale === "bn" ? "কমিটি" : "Comette"),
       hasDropdown: false,
     },
+    {
+      href: `/${locale}/members`,
+      label: dict.nav.members || (locale === "bn" ? "সদস্যবৃন্দ" : "Members"),
+      hasDropdown: false,
+    },
   ];
 
   return (

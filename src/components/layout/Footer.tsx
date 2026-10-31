@@ -17,6 +17,7 @@ export default function Footer({
     { href: `/${locale}#sports`, label: isBn ? "খেলাধুলা ও প্রশিক্ষণ" : "Sports & Activities" },
     { href: `/${locale}#spl`, label: isBn ? "এসপিএল ও বার্ষিক আয়োজন" : "SPL & Annual Events" },
     { href: `/${locale}#committee`, label: isBn ? "কার্যনির্বাহী কমিটি" : "Executive Committee" },
+    { href: `/${locale}/members`, label: isBn ? "ক্লাব সদস্য তালিকা" : "Club Members Directory" },
     { href: `/${locale}/dashboard`, label: isBn ? "সদস্য ড্যাশবোর্ড" : "Member Dashboard" },
   ];
 
