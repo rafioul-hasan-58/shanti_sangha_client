@@ -187,7 +187,7 @@ export default function Footer({
             <span className="text-white/40">•</span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-[10px] sm:text-[11px] font-mono text-white tracking-wider shadow-2xs">
               <span className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-pulse" />
-              <span>version: {APP_VERSION}</span>
+              <span>Current version: {APP_VERSION}</span>
             </span>
           </div>
         </div>
