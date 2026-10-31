@@ -73,20 +73,6 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
                 <p className="mt-4 max-w-xl text-base sm:text-lg text-white/90 leading-relaxed font-sans drop-shadow-sm">
                   {s.text}
                 </p>
-                <div className="mt-8 flex flex-wrap gap-4">
-                  <a
-                    href="#sports"
-                    className="inline-flex items-center justify-center rounded-sm bg-white px-7 py-3 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-[#006a4e] shadow-lg hover:bg-neutral-100 active:scale-95 transition-all"
-                  >
-                    {s.cta}
-                  </a>
-                  <a
-                    href="#about"
-                    className="inline-flex items-center justify-center rounded-sm border-2 border-white/80 bg-white/10 px-7 py-3 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-white backdrop-blur-sm hover:bg-white/20 transition-all"
-                  >
-                    Learn More
-                  </a>
-                </div>
               </div>
             </div>
           </div>
