@@ -22,7 +22,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameEn: "Md. Rakeb",
     nameBn: "মোঃ রাকিব",
     roleEn: "Senior Vice President",
-    roleBn: "জ্যেষ্ঠ সহ-সভাপতি",
+    roleBn: "সিনিয়র সহ-সভাপতি",
     image: "/images/committee/rakib.jpeg",
   },
   {
@@ -30,7 +30,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameEn: "Rasel shuvo",
     nameBn: "রাসেল শুভ",
     roleEn: "Senior Vice President",
-    roleBn: "জ্যেষ্ঠ সহ-সভাপতি",
+    roleBn: "সিনিয়র সহ-সভাপতি",
     image: "/images/committee/rasel.jpeg",
   },
   {

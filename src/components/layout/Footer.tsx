@@ -15,7 +15,7 @@ export default function Footer({
   const quickLinks = [
     { href: `/${locale}#about`, label: isBn ? "আমাদের সম্পর্কে" : "About Us" },
     { href: `/${locale}#committee`, label: isBn ? "কার্যনির্বাহী কমিটি" : "Executive Committee" },
-    { href: `/${locale}#gpl`, label: isBn ? "জিপিএল প্রিমিয়ার লিগ" : "GPL Premier League" },
+    { href: `/${locale}#spl`, label: isBn ? "এসপিএল ও বার্ষিক আয়োজন" : "SPL & Annual Events" },
     { href: `/${locale}#gallery`, label: isBn ? "ফটো গ্যালারি" : "Photo Gallery" },
     { href: `/${locale}#sports`, label: isBn ? "খেলাধুলা ও প্রশিক্ষণ" : "Sports & Activities" },
     { href: `/${locale}/dashboard`, label: isBn ? "সদস্য ড্যাশবোর্ড" : "Member Dashboard" },
@@ -68,8 +68,8 @@ export default function Footer({
 
             <p className="text-xs sm:text-sm text-white/85 leading-relaxed max-w-md">
               {isBn
-                ? "২০০৭ সালে প্রতিষ্ঠিত সাবারচালা শান্তি সংঘ ক্রীড়া ক্লাব। ফুটবল, ক্রিকেট, ব্যাডমিন্টন ও আমাদের ফ্ল্যাগশিপ টুর্নামেন্ট জিপিএল-এর মাধ্যমে সমাজের যুব ও ক্রীড়ামোদী তরুণদের ঐক্যবদ্ধ করার এক অনন্য মঞ্চ।"
-                : "A community sports club established in 2007 in Shavarchala. Dedicated to unity, sportsmanship, and athletic excellence across cricket, football, badminton, and our flagship tournament GPL."}
+                ? "২০০৭ সাল থেকে বিগত ১৯+ বছর ধরে সাভারচালা শান্তি সংঘ নিয়মিত আয়োজন করে আসছে এসপিএল (SPL), বাৎসরিক ক্রীড়া প্রতিযোগিতা এবং বাৎসরিক ওয়াজ মাহফিল। সুস্থ খেলাধুলা ও সামাজিক ঐক্যের মাধ্যমে যুব সমাজকে এগিয়ে নেওয়াই আমাদের লক্ষ্য।"
+                : "Founded in 2007 with over 19+ years of proud community heritage, Shavarchala Shanti Sangha annually organizes SPL (Premier League), Annual Sports Program, and Waz Mahfil — uniting our community through sports and service."}
             </p>
           </div>
 

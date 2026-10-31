@@ -33,8 +33,8 @@ export default function Navbar({
       hasDropdown: true,
     },
     {
-      href: `/${locale}#gpl`,
-      label: dict.nav.gpl || "GPL",
+      href: `/${locale}#spl`,
+      label: dict.nav.spl || (locale === "bn" ? "এসপিএল" : "SPL"),
       hasDropdown: false,
     },
   ];

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import HeroCarousel from "@/components/home/HeroCarousel";
+import AboutSection from "@/components/home/AboutSection";
 import CommitteeSection from "@/components/home/CommitteeSection";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -15,28 +16,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       <HeroCarousel dict={dict.hero} />
 
       {/* About Section */}
-      <section id="about" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
-        <div className="rounded-2xl bg-white border border-brand-200 p-8 shadow-sm">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="w-28 h-28 shrink-0 flex items-center justify-center p-3 bg-brand-50 rounded-2xl border border-brand-100">
-              <img src="/logo.png" alt="Shanti Sangha" className="w-full h-full object-contain" />
-            </div>
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-[#006a4e]">
-                {locale === "bn" ? "প্রতিষ্ঠিত ২০০৭" : "ESTABLISHED 2007"}
-              </span>
-              <h2 className="font-display text-3xl font-bold mt-1 text-pitch">
-                {locale === "bn" ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
-              </h2>
-              <p className="mt-3 text-brand-700 leading-relaxed">
-                {locale === "bn"
-                  ? "২০০৭ সাল থেকে সাভারচালা শান্তি সংঘ যুব ও ক্রীড়ামোদী তরুণদের ঐক্যবদ্ধ করে ক্রীড়া প্রতিযোগিতা, টুর্নামেন্ট ও সামাজিক উন্নয়নে ভূমিকা রেখে আসছে।"
-                  : "Founded in 2007, Shavarchala Shanti Sangha brings together youth, athletes, and sports lovers across our community to promote athletic excellence, teamwork, and social development."}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutSection locale={locale} />
 
       {/* Sports Section */}
       <section id="sports" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
@@ -51,33 +31,111 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* GPL (Premier League) Section */}
-      {/* SPL (Shanti Sangha Premier League) Section */}
+      {/* SPL & Annual Arrangements Section */}
       <section id="spl" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
-        <div className="rounded-2xl bg-[#006a4e] text-white p-8 sm:p-10 shadow-md border-b-4 border-white">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="rounded-3xl bg-[#006a4e] text-white p-6 sm:p-10 shadow-md border-b-4 border-white">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/20">
             <div>
               <span className="inline-block bg-white text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-wider">
-                {locale === "bn" ? "বার্ষিক ক্রীড়া আয়োজন" : "ANNUAL SPORTS TOURNAMENT"}
+                {locale === "bn" ? "১৯+ বছরের ঐতিহ্যবাহী আয়োজন" : "19+ YEARS OF HERITAGE EVENTS"}
               </span>
 
-              <h2 className="font-display text-3xl font-bold mt-3">
-                {locale === "bn" ? "এসপিএল - শান্তি সংঘ প্রিমিয়ার লিগ" : "SPL - Shanti Sangha Premier League"}
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold mt-3">
+                {locale === "bn" ? "এসপিএল ও আমাদের বাৎসরিক ৩টি প্রধান আয়োজন" : "SPL & Our 3 Signature Annual Events"}
               </h2>
 
-              <p className="mt-2 text-brand-100 max-w-2xl text-sm sm:text-base leading-relaxed">
+              <p className="mt-2 text-white/90 max-w-2xl text-sm sm:text-base leading-relaxed font-sans">
                 {locale === "bn"
-                  ? "শান্তি সংঘের অন্যতম প্রধান বার্ষিক ক্রীড়া আয়োজন এসপিএল। প্রতি বছর গ্রীষ্মকালে ফুটবল এবং শীতকালে ক্রিকেট টুর্নামেন্ট অনুষ্ঠিত হয়। বিভিন্ন অঞ্চলের দল ও খেলোয়াড়দের অংশগ্রহণে এই আয়োজন হয়ে ওঠে উৎসবমুখর ও প্রতিযোগিতামূলক।"
-                  : "SPL is Shanti Sangha's annual sporting event, featuring exciting football and cricket tournaments. Football takes place during summer, while cricket takes place during winter, bringing together local teams and players in a celebration of sportsmanship and community spirit."}
+                  ? "সাভারচালা শান্তি সংঘ বিগত ১৯+ বছর ধরে প্রতি বছর নিয়মিত ৩টি প্রধান বাৎসরিক কর্মসূচি উৎসবমুখর পরিবেশে আয়োজন করে থাকে — এসপিএল (SPL), বাৎসরিক ক্রীড়া প্রতিযোগিতা এবং বাৎসরিক ওয়াজ মাহফিল।"
+                  : "For over 19+ years, Shavarchala Shanti Sangha has consistently organized 3 signature annual programs — the SPL Premier League, the Annual Sports Program, and the Annual Waz Mahfil."}
               </p>
             </div>
 
             <div className="shrink-0">
-              <span className="inline-block px-6 py-3 bg-white text-[#006a4e] font-extrabold text-sm uppercase rounded tracking-wider shadow-sm">
-                {locale === "bn"
-                  ? "ক্রিকেট: ১৫ নভেম্বর"
-                  : "Cricket: November 15"}
+              <span className="inline-block px-5 py-2.5 bg-white text-[#006a4e] font-extrabold text-xs sm:text-sm uppercase rounded shadow-sm tracking-wider">
+                {locale === "bn" ? "১৯+ বছর উদযাপিত" : "19+ Years Celebrated"}
               </span>
+            </div>
+          </div>
+
+          {/* 3 Signature Event Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6">
+            {/* 1. SPL */}
+            <div className="rounded-2xl bg-white/10 backdrop-blur-xs p-5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-2.5 py-1 rounded-md bg-white text-[#006a4e] text-xs font-black">
+                    {locale === "bn" ? "১" : "1"}
+                  </span>
+                  <span className="text-xs uppercase tracking-wider text-white/70 font-bold">
+                    {locale === "bn" ? "প্রিমিয়ার লিগ" : "Premier League"}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white">
+                  {locale === "bn" ? "এসপিএল (SPL)" : "SPL Premier League"}
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm text-white/85 leading-relaxed">
+                  {locale === "bn"
+                    ? "শান্তি সংঘের সবচেয়ে রোমাঞ্চকর টুর্নামেন্ট। গ্রীষ্মকালে ফুটবল এবং শীতকালে প্রিমিয়ার ক্রিকেট টুর্নামেন্টে বিভিন্ন এলাকার দল অংশগ্রহণ করে।"
+                    : "Shanti Sangha's premier sporting event. Featuring exciting summer football and winter cricket tournaments with enthusiastic local teams."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs font-semibold text-white/90">
+                <span>{locale === "bn" ? "ফুটবল ও ক্রিকেট" : "Football & Cricket"}</span>
+                <span className="text-[#a7f3d0]">⚽ 🏏</span>
+              </div>
+            </div>
+
+            {/* 2. Annual Sports */}
+            <div className="rounded-2xl bg-white/10 backdrop-blur-xs p-5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-2.5 py-1 rounded-md bg-white text-[#006a4e] text-xs font-black">
+                    {locale === "bn" ? "২" : "2"}
+                  </span>
+                  <span className="text-xs uppercase tracking-wider text-white/70 font-bold">
+                    {locale === "bn" ? "ক্রীড়া প্রতিযোগিতা" : "Sports Competition"}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white">
+                  {locale === "bn" ? "বাৎসরিক ক্রীড়া প্রতিযোগিতা" : "Annual Sports Program"}
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm text-white/85 leading-relaxed">
+                  {locale === "bn"
+                    ? "গ্রামের শিশু, কিশোর, তরুণ ও প্রবীণ সহ সব বয়সের মানুষের অংশগ্রহণে অনুষ্ঠিত হয় বার্ষিক অ্যাথলেটিক্স, দৌড়, যেমন-খুশি-তেমন-সাজো ও ঐতিহ্যবাহী খেলা।"
+                    : "A community festival of athletics, sprints, fun contests, and traditional sports bringing together children, youth, and elders alike."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs font-semibold text-white/90">
+                <span>{locale === "bn" ? "সার্বজনীন মিলনমেলা" : "Community Festival"}</span>
+                <span className="text-[#a7f3d0]">🏆 🏃‍♂️</span>
+              </div>
+            </div>
+
+            {/* 3. Waz Mahfil */}
+            <div className="rounded-2xl bg-white/10 backdrop-blur-xs p-5 border border-white/15 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="px-2.5 py-1 rounded-md bg-white text-[#006a4e] text-xs font-black">
+                    {locale === "bn" ? "৩" : "3"}
+                  </span>
+                  <span className="text-xs uppercase tracking-wider text-white/70 font-bold">
+                    {locale === "bn" ? "ধর্মীয় ও নৈতিক" : "Spiritual & Moral"}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-white">
+                  {locale === "bn" ? "বাৎসরিক ওয়াজ মাহফিল" : "Annual Waz Mahfil"}
+                </h3>
+                <p className="mt-2 text-xs sm:text-sm text-white/85 leading-relaxed">
+                  {locale === "bn"
+                    ? "এলাকায় ধর্মীয় সম্প্রীতি, নৈতিক শিক্ষা, শান্তি ও যুবসমাজকে সঠিক পথে উদ্বুদ্ধ করতে প্রতি বছর প্রখ্যাত আলেমদের উপস্থিতিতে ওয়াজ মাহফিল অনুষ্ঠিত হয়।"
+                    : "An inspirational annual spiritual gathering with esteemed Islamic scholars to promote faith, moral values, youth guidance, and community peace."}
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs font-semibold text-white/90">
+                <span>{locale === "bn" ? "নৈতিকতা ও শান্তি" : "Values & Peace"}</span>
+                <span className="text-[#a7f3d0]">🕌 📖</span>
+              </div>
             </div>
           </div>
         </div>
