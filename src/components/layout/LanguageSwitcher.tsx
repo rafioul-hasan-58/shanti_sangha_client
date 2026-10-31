@@ -11,13 +11,17 @@ export default function LanguageSwitcher({ locale }: { locale: Locale }) {
   const rest = pathname.split("/").slice(2).join("/");
 
   return (
-    <div className="flex rounded-full bg-brand-800 p-0.5 text-sm">
+    <div className="flex items-center rounded-full bg-black/20 p-0.5 text-xs font-semibold border border-white/20">
       {locales.map((l) => (
         <Link
           key={l}
           href={`/${l}${rest ? `/${rest}` : ""}`}
           aria-current={l === locale ? "true" : undefined}
-          className={`rounded-full px-3 py-1 ${l === locale ? "bg-lime text-pitch font-semibold" : "text-brand-100"}`}
+          className={`rounded-full px-2.5 py-1 transition-colors ${
+            l === locale
+              ? "bg-white text-[#006a4e] font-bold shadow-xs"
+              : "text-white/80 hover:text-white"
+          }`}
         >
           {labels[l]}
         </Link>

@@ -6,7 +6,11 @@
   "brand": "Shanti Sangha",
   "nav": {
     "home": "Home",
-    "about": "About",
+    "about": "About Us",
+    "committee": "Comette",
+    "gallery": "Gallery",
+    "gpl": "GPL",
+    "login": "Login",
     "sports": "Sports",
     "events": "Events",
     "contact": "Contact",
