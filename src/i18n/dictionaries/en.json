@@ -19,9 +19,9 @@
   },
   "hero": {
     "slides": [
-      { "title": "Play together. Grow together.", "text": "A community club for every age and every game.", "cta": "Join the club" },
-      { "title": "Training every weekend", "text": "Coached sessions in football, cricket and badminton.", "cta": "See sports" },
-      { "title": "Season matches are open", "text": "Register your team and get the fixture list.", "cta": "View events" }
+      { "title": "Play together. Grow together.", "text": "A community club for every age and every game." },
+      { "title": "Training every weekend", "text": "Coached sessions in football, cricket and badminton." },
+      { "title": "Season matches are open", "text": "Register your team and get the fixture list." }
     ],
     "prev": "Previous slide",
     "next": "Next slide",

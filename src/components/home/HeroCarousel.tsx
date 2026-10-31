@@ -16,6 +16,8 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
   const slides = dict.slides;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
 
   useEffect(() => {
     if (paused) return;
@@ -25,11 +27,30 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
 
   const go = (n: number) => setIndex((n + slides.length) % slides.length);
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEndX(null);
+    setTouchStartX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return;
+    const distance = touchStartX - touchEndX;
+    if (distance > 45) go(index + 1); // Swiped left -> next
+    if (distance < -45) go(index - 1); // Swiped right -> prev
+  };
+
   return (
     <section
       className="relative h-[480px] sm:h-[540px] md:h-[620px] overflow-hidden text-white"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       aria-roledescription="carousel"
     >
       {/* Slides */}
@@ -56,21 +77,21 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
                   isActive ? "scale-105" : "scale-100"
                 }`}
               />
-              {/* Cinematic Gradient Overlays for optimal text contrast & brand mood */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-[#006a4e]/40" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+              {/* Cinematic Gradient Overlays: Darker at top for text readability, clear in center/bottom so faces are fully visible */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/85 via-black/30 to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-transparent" />
             </div>
 
-            {/* Slide Content */}
-            <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-              <div className="max-w-2xl pt-6">
-                <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-xs uppercase px-3.5 py-1 rounded-sm tracking-widest mb-4 border border-white/20 backdrop-blur-sm">
+            {/* Slide Content positioned at the TOP so faces remain clearly visible */}
+            <div className="relative mx-auto flex h-full max-w-7xl items-start pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 lg:px-8">
+              <div className="max-w-2xl">
+                <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-[11px] sm:text-xs uppercase px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-sm tracking-widest mb-1.5 sm:mb-2.5 border border-white/20 backdrop-blur-sm shadow-sm">
                   Shavarchala Shanti Sangha
                 </span>
-                <h1 className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl text-white drop-shadow-md">
+                <h1 className="font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl text-white drop-shadow-md">
                   {s.title}
                 </h1>
-                <p className="mt-4 max-w-xl text-base sm:text-lg text-white/90 leading-relaxed font-sans drop-shadow-sm">
+                <p className="mt-1.5 sm:mt-2.5 max-w-xl text-xs sm:text-base md:text-lg text-white/95 leading-normal sm:leading-relaxed font-sans drop-shadow-sm">
                   {s.text}
                 </p>
               </div>
@@ -79,12 +100,12 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
         );
       })}
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows (Hidden on mobile mode, visible on tablet/desktop) */}
       <button
         type="button"
         onClick={() => go(index - 1)}
         aria-label={dict.prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -95,7 +116,7 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
         type="button"
         onClick={() => go(index + 1)}
         aria-label={dict.next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
       >
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
