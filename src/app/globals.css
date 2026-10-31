@@ -40,7 +40,7 @@
 }
 
 .animate-logo-flip {
-  animation: logoFlip360 2.8s linear infinite;
+  animation: logoFlip360 5.5s linear infinite;
   will-change: transform;
 }
 
