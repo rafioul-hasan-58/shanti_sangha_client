@@ -1,13 +1,15 @@
 "use client";
-/** Hero slider: auto-advances, pauses on hover, has arrows and dots. */
+
+/** Hero slider: auto-advances, pauses on hover, smooth crossfade with photography background. */
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import type { Dictionary } from "@/i18n/getDictionary";
 
-// Each slide gets its own green gradient. Swap for real photos later.
-const backgrounds = [
-  "from-brand-900 via-brand-700 to-brand-500",
-  "from-brand-800 via-brand-600 to-lime/70",
-  "from-pitch via-brand-800 to-brand-400",
+const slideImages = [
+  "/images/hero/slide1.jpg",
+  "/images/hero/slide2.jpg",
+  "/images/hero/slide3.jpg",
 ];
 
 export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
@@ -17,7 +19,7 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
 
   useEffect(() => {
     if (paused) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 5000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 6000);
     return () => clearInterval(id);
   }, [paused, slides.length]);
 
@@ -25,39 +27,108 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
 
   return (
     <section
-      className="relative overflow-hidden text-white"
+      className="relative h-[480px] sm:h-[540px] md:h-[620px] overflow-hidden text-white"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
     >
-      {slides.map((s, i) => (
-        <div
-          key={i}
-          aria-hidden={i !== index}
-          className={`bg-gradient-to-br ${backgrounds[i % backgrounds.length]} px-4 py-24 md:py-32 ${
-            i === index ? "block" : "hidden"
-          }`}
-        >
-          <div className="mx-auto max-w-6xl">
-            <h1 className="font-display max-w-2xl text-4xl font-bold leading-tight md:text-6xl">{s.title}</h1>
-            <p className="mt-4 max-w-xl text-lg text-brand-50">{s.text}</p>
-            <button className="mt-8 rounded-full bg-lime px-6 py-3 font-semibold text-pitch hover:bg-white">
-              {s.cta}
-            </button>
+      {/* Slides */}
+      {slides.map((s, i) => {
+        const imageSrc = slideImages[i % slideImages.length];
+        const isActive = i === index;
+
+        return (
+          <div
+            key={i}
+            aria-hidden={!isActive}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              isActive ? "opacity-100 z-10 pointer-events-auto" : "opacity-0 z-0 pointer-events-none"
+            }`}
+          >
+            {/* Background Image */}
+            <div className="absolute inset-0">
+              <Image
+                src={imageSrc}
+                alt={s.title}
+                fill
+                priority={i === 0}
+                className={`object-cover object-center transition-transform duration-[6000ms] ease-out ${
+                  isActive ? "scale-105" : "scale-100"
+                }`}
+              />
+              {/* Cinematic Gradient Overlays for optimal text contrast & brand mood */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-[#006a4e]/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30" />
+            </div>
+
+            {/* Slide Content */}
+            <div className="relative mx-auto flex h-full max-w-7xl items-center px-4 sm:px-6 lg:px-8">
+              <div className="max-w-2xl pt-6">
+                <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-xs uppercase px-3 py-1 rounded-sm tracking-wider mb-4 border border-white/20 backdrop-blur-sm">
+                  Shanti Sangha Sporting Club
+                </span>
+                <h1 className="font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl md:text-6xl text-white drop-shadow-md">
+                  {s.title}
+                </h1>
+                <p className="mt-4 max-w-xl text-base sm:text-lg text-white/90 leading-relaxed font-sans drop-shadow-sm">
+                  {s.text}
+                </p>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  <a
+                    href="#sports"
+                    className="inline-flex items-center justify-center rounded-sm bg-white px-7 py-3 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-[#006a4e] shadow-lg hover:bg-neutral-100 active:scale-95 transition-all"
+                  >
+                    {s.cta}
+                  </a>
+                  <a
+                    href="#about"
+                    className="inline-flex items-center justify-center rounded-sm border-2 border-white/80 bg-white/10 px-7 py-3 font-extrabold text-xs sm:text-sm uppercase tracking-wider text-white backdrop-blur-sm hover:bg-white/20 transition-all"
+                  >
+                    Learn More
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
-      <button onClick={() => go(index - 1)} aria-label={dict.prev}
-        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/30 px-3 py-2 hover:bg-black/50">‹</button>
-      <button onClick={() => go(index + 1)} aria-label={dict.next}
-        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/30 px-3 py-2 hover:bg-black/50">›</button>
+      {/* Navigation Arrows */}
+      <button
+        type="button"
+        onClick={() => go(index - 1)}
+        aria-label={dict.prev}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
 
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      <button
+        type="button"
+        onClick={() => go(index + 1)}
+        aria-label={dict.next}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-sm hover:bg-white hover:text-[#006a4e] transition-all shadow-md focus:outline-none"
+      >
+        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
+
+      {/* Pagination Dots */}
+      <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2.5">
         {slides.map((_, i) => (
-          <button key={i} onClick={() => go(i)} aria-label={`${dict.goTo} ${i + 1}`}
+          <button
+            key={i}
+            type="button"
+            onClick={() => go(i)}
+            aria-label={`${dict.goTo} ${i + 1}`}
             aria-current={i === index}
-            className={`h-2.5 rounded-full transition-all ${i === index ? "w-8 bg-lime" : "w-2.5 bg-white/60"}`} />
+            className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none ${
+              i === index ? "w-8 bg-white shadow-sm" : "w-2.5 bg-white/50 hover:bg-white/80"
+            }`}
+          />
         ))}
       </div>
     </section>
