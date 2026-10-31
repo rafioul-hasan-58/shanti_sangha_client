@@ -59,7 +59,7 @@ export default function Navbar({
           </div>
           <div className="flex flex-col justify-center leading-none select-none">
             <span className="font-extrabold text-xs sm:text-sm tracking-wider text-white uppercase font-sans">
-              {locale === "bn" ? "সাবারচালা" : "SHAVARCHALA"}
+              {locale === "bn" ? "সাভারচালা" : "SHAVARCHALA"}
             </span>
             <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
               {locale === "bn" ? "শান্তি সংঘ" : "SHANTI SANGHA"}

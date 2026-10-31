@@ -24,11 +24,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 {locale === "bn" ? "প্রতিষ্ঠিত ২০০৭" : "ESTABLISHED 2007"}
               </span>
               <h2 className="font-display text-3xl font-bold mt-1 text-pitch">
-                {locale === "bn" ? "সাবারচালা শান্তি সংঘ ক্রীড়া ক্লাব" : "Shavarchala Shanti Sangha Sporting Club"}
+                {locale === "bn" ? "সাভারচালা শান্তি সংঘ ক্রীড়া ক্লাব" : "Shavarchala Shanti Sangha Sporting Club"}
               </h2>
               <p className="mt-3 text-brand-700 leading-relaxed">
                 {locale === "bn"
-                  ? "২০০৭ সাল থেকে সাবারচালা শান্তি সংঘ যুব ও ক্রীড়ামোদী তরুণদের ঐক্যবদ্ধ করে ক্রীড়া প্রতিযোগিতা, টুর্নামেন্ট ও সামাজিক উন্নয়নে ভূমিকা রেখে আসছে।"
+                  ? "২০০৭ সাল থেকে সাভারচালা শান্তি সংঘ যুব ও ক্রীড়ামোদী তরুণদের ঐক্যবদ্ধ করে ক্রীড়া প্রতিযোগিতা, টুর্নামেন্ট ও সামাজিক উন্নয়নে ভূমিকা রেখে আসছে।"
                   : "Founded in 2007, Shavarchala Shanti Sangha brings together youth, athletes, and sports lovers across our community to promote athletic excellence, teamwork, and social development."}
               </p>
             </div>
