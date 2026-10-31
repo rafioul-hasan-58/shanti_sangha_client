@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import HeroCarousel from "@/components/home/HeroCarousel";
+import CommitteeSection from "@/components/home/CommitteeSection";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -76,27 +77,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       </section>
 
       {/* Committee (Comette) Section */}
-      <section id="committee" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
-        <h2 className="font-display text-3xl font-bold text-pitch">
-          {locale === "bn" ? "কার্যনির্বাহী কমিটি" : "Executive Committee"}
-        </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            { role: locale === "bn" ? "সভাপতি" : "President", name: locale === "bn" ? "মোঃ সভাপতি" : "Club President" },
-            { role: locale === "bn" ? "সাধারণ সম্পাদক" : "General Secretary", name: locale === "bn" ? "মোঃ সম্পাদক" : "General Secretary" },
-            { role: locale === "bn" ? "ক্রীড়া সম্পাদক" : "Sports Secretary", name: locale === "bn" ? "ক্রীড়া সমন্বয়ক" : "Sports Coordinator" },
-            { role: locale === "bn" ? "কোষাধ্যক্ষ" : "Treasurer", name: locale === "bn" ? "অর্থ সম্পাদক" : "Treasurer" },
-          ].map((member, i) => (
-            <div key={i} className="rounded-xl border border-brand-200 bg-white p-5 shadow-xs">
-              <div className="w-12 h-12 rounded-full bg-brand-100 flex items-center justify-center text-[#006a4e] font-bold text-lg mb-3">
-                {member.role[0]}
-              </div>
-              <h3 className="font-bold text-pitch">{member.name}</h3>
-              <p className="text-xs uppercase tracking-wider text-brand-600 font-semibold mt-1">{member.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <CommitteeSection locale={locale} />
 
       {/* Gallery Section */}
       <section id="gallery" className="mx-auto max-w-6xl px-4 py-16 scroll-mt-20">
