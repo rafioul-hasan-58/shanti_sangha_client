@@ -11,7 +11,7 @@ export interface CommitteeMember {
 export const committeeMembers: CommitteeMember[] = [
   {
     id: "mahfuz",
-    nameEn: "Mahfozor Rahman",
+    nameEn: "Mahfojor Rahman",
     nameBn: "মাহফুজুর রহমান",
     roleEn: "President",
     roleBn: "সভাপতি",
@@ -19,8 +19,8 @@ export const committeeMembers: CommitteeMember[] = [
   },
   {
     id: "rakib",
-    nameEn: "Md. Rakeb",
-    nameBn: "মোঃ রাকিব",
+    nameEn: "Rakib Hasan",
+    nameBn: "রাকিব হাসান",
     roleEn: "Senior Vice President",
     roleBn: "সিনিয়র সহ-সভাপতি",
     image: "/images/committee/rakib.jpeg",
@@ -28,23 +28,23 @@ export const committeeMembers: CommitteeMember[] = [
   {
     id: "rasel",
     nameEn: "Rasel shuvo",
-    nameBn: "রাসেল শুভ",
+    nameBn: "রাসেল শুভ",
     roleEn: "Senior Vice President",
     roleBn: "সিনিয়র সহ-সভাপতি",
     image: "/images/committee/rasel.jpeg",
   },
   {
     id: "ebi",
-    nameEn: "Ibrahim Fakir",
-    nameBn: "ইব্রাহিম ফকির",
+    nameEn: "Ibrahim",
+    nameBn: "ইব্রাহীম",
     roleEn: "Vice President",
     roleBn: "সহ-সভাপতি",
     image: "/images/committee/ebi.jpeg",
   },
   {
     id: "shahin",
-    nameEn: "Shahin alam shuvo",
-    nameBn: "শাহীন আলম শুভ",
+    nameEn: "Shahin Alam Shuvo",
+    nameBn: "শাহিন আলম শুভ",
     roleEn: "Vice President",
     roleBn: "সহ-সভাপতি",
     image: "/images/committee/shahin.jpeg",
@@ -52,16 +52,16 @@ export const committeeMembers: CommitteeMember[] = [
   },
   {
     id: "mustakim",
-    nameEn: "Md. Mustakim",
-    nameBn: "মোঃ মুস্তাকিম",
+    nameEn: "Mostakim",
+    nameBn: "মোস্তাকিম",
     roleEn: "General Secretary",
     roleBn: "সাধারণ সম্পাদক",
     image: "/images/committee/mustakim.jpeg",
   },
   {
     id: "emon",
-    nameEn: "DS.Emon",
-    nameBn: "ডি.এস. ইমন",
+    nameEn: "Anwar Hossain",
+    nameBn: "আনোয়ার হোসেন",
     roleEn: "Joint Secretary",
     roleBn: "যুগ্ম সাধারণ সম্পাদক",
     image: "/images/committee/emon.jpeg",
@@ -78,7 +78,7 @@ export const committeeMembers: CommitteeMember[] = [
   },
   {
     id: "jihad",
-    nameEn: "Md. Jihad",
+    nameEn: "Md. Jehad",
     nameBn: "মোঃ জিহাদ",
     roleEn: "Cashier",
     roleBn: "কোষাধ্যক্ষ",
@@ -92,19 +92,18 @@ export const committeeMembers: CommitteeMember[] = [
     roleBn: "ক্রীড়া সম্পাদক",
     image: "/images/committee/hasib.jpeg",
   },
-
   {
     id: "labib",
-    nameEn: "Md. Labib",
-    nameBn: "মোঃ লাবিব",
+    nameEn: "Labib Hasan",
+    nameBn: "লাবিব হাসান",
     roleEn: "Sports Secretary",
     roleBn: "ক্রীড়া সম্পাদক",
     image: "/images/committee/labib.jpeg",
   },
   {
     id: "smoron",
-    nameEn: "Shakhawat smoron",
-    nameBn: "শাখাওয়াত স্মরণ",
+    nameEn: "Md. Sakhaowat Hossain",
+    nameBn: "মোঃ সাখাওয়াৎ হোসেন",
     roleEn: "Organizing Secretary",
     roleBn: "সাংগঠনিক সম্পাদক",
     image: "/images/committee/smoron.jpeg",
@@ -119,14 +118,13 @@ export const committeeMembers: CommitteeMember[] = [
   },
   {
     id: "himel",
-    nameEn: "SH Himel siam",
-    nameBn: "এস.এইচ. হিমেল সিয়াম",
+    nameEn: "SH Himel Siam",
+    nameBn: "এস এইচ হিমেল সিয়াম",
     roleEn: "ICT Secretary",
     roleBn: "তথ্য ও যোগাযোগ প্রযুক্তি সম্পাদক",
     image: "/images/committee/himel.jpeg",
     isKeyLeader: true,
   },
-
   {
     id: "sohan",
     nameEn: "Sohan Khan",
@@ -135,14 +133,12 @@ export const committeeMembers: CommitteeMember[] = [
     roleBn: "প্রচার সম্পাদক",
     image: "/images/committee/sohan.jpeg",
   },
-
   {
     id: "emran",
-    nameEn: "Md. Emran",
-    nameBn: "মোঃ এমরান",
+    nameEn: "Imran",
+    nameBn: "ইমরান",
     roleEn: "Religious Affairs Secretary",
     roleBn: "ধর্ম বিষয়ক সম্পাদক",
     image: "/images/committee/emran.jpeg",
   },
-
 ];
