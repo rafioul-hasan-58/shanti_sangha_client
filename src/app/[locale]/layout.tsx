@@ -7,6 +7,7 @@ import { getDictionary } from "@/i18n/getDictionary";
 import { RoleProvider } from "@/context/RoleContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ChatBot from "@/components/common/ChatBot";
 
 const latin = Inter({ subsets: ["latin"], variable: "--font-latin" });
 const bangla = Noto_Sans_Bengali({ subsets: ["bengali"], variable: "--font-bangla" });
@@ -56,6 +57,7 @@ export default async function LocaleLayout({
           <Navbar locale={locale} dict={dict} />
           {children}
           <Footer dict={dict} locale={locale} />
+          <ChatBot locale={locale} />
         </RoleProvider>
       </body>
     </html>
