@@ -203,7 +203,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
   };
 
   const handleSend = (textToSend?: string) => {
-    const query = (textToSend || input).trim();
+    const query = (typeof textToSend === "string" ? textToSend : input).trim();
     if (!query) return;
 
     const userMessage: Message = {
@@ -234,16 +234,28 @@ export default function ChatBot({ locale }: { locale: Locale }) {
 
   return (
     <>
-      {/* Floating Action Button (Matches the User's Attached Screenshot) */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* Floating Action Button (Matches the User's Attached Screenshot with Radiation Effect) */}
+      <div className="fixed bottom-6 right-6 z-50 flex items-center justify-center">
+        {/* Radiating Waves / Radiation effect outside the button */}
+        {!isOpen && (
+          <div className="absolute inset-0 pointer-events-none -z-10 flex items-center justify-center">
+            {/* Radiation Wave 1 */}
+            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#006a4e] animate-radiate-1" />
+            {/* Radiation Wave 2 (delayed) */}
+            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#007a5a] animate-radiate-2" />
+            {/* Ambient outer glow */}
+            <span className="absolute -inset-3 rounded-full bg-emerald-400/25 blur-md animate-pulse" />
+          </div>
+        )}
+
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
-          className={`relative group w-14 h-14 sm:w-15 sm:h-15 rounded-full flex items-center justify-center transition-all duration-300 transform active:scale-95 shadow-2xl ${
+          className={`relative group w-14 h-14 sm:w-15 sm:h-15 rounded-full flex items-center justify-center transition-all duration-300 transform active:scale-95 shadow-2xl cursor-pointer ${
             isOpen
               ? "bg-[#005a42] text-white rotate-90 ring-4 ring-white/50"
-              : "bg-gradient-to-b from-[#007a5a] to-[#005a42] text-white hover:scale-105 ring-2 ring-white/80 ring-offset-2 ring-offset-transparent shadow-[#006a4e]/40 hover:shadow-[#006a4e]/60"
+              : "bg-gradient-to-b from-[#007a5a] to-[#005a42] text-white hover:scale-105 ring-2 ring-white/90 ring-offset-2 ring-offset-transparent shadow-[#006a4e]/50 hover:shadow-[#006a4e]/70"
           }`}
         >
           {isOpen ? (
@@ -396,17 +408,27 @@ export default function ChatBot({ locale }: { locale: Locale }) {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
               placeholder={isBn ? "আপনার প্রশ্ন লিখুন..." : "Type your question..."}
               className="flex-1 bg-brand-50/70 text-pitch text-sm px-4 py-2.5 rounded-2xl border border-brand-200 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 outline-none transition-all placeholder-brand-400"
             />
             <button
               type="submit"
               disabled={!input.trim()}
-              className="w-10 h-10 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-xs"
+              className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 transition-all duration-200 active:scale-95 shadow-xs ${
+                input.trim()
+                  ? "bg-[#006a4e] hover:bg-[#005a42] text-white cursor-pointer hover:shadow-md hover:scale-105"
+                  : "bg-brand-100 text-brand-300 cursor-not-allowed opacity-60"
+              }`}
               aria-label="Send message"
             >
-              <svg className="w-4 h-4 fill-current transform rotate-45 -translate-y-0.5 -translate-x-0.5" viewBox="0 0 24 24">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+              <svg className="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
               </svg>
             </button>
           </form>
