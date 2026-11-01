@@ -83,9 +83,12 @@ export default function Navbar({
             <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
               {locale === "bn" ? "সাভারচালা" : "SHAVARCHALA"}
             </span>
-            <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
+            <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
               {locale === "bn" ? "শান্তি সংঘ" : "SHANTI SANGHA"}
             </span>
+            {/* <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
+              {locale === "bn" ? "শান্তি সংঘ" : "SHANTI SANGHA"}
+            </span> */}
           </div>
         </Link>
 
