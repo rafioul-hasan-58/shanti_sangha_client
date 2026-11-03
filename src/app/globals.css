@@ -82,15 +82,15 @@
    Change these colors anytime: 'black', 'white', '#000000', '#ffffff', etc.
    ========================================================================== */
 :root {
-  /* Change photo background here: 'black', 'white', '#006a4e', etc. */
-  --pioneer-photo-bg: #ffffff;
+  /* Change photo background here: light green '#d5eedd', 'white', 'black', '#006a4e', etc. */
+  --pioneer-photo-bg: #d5eedd;
 
   /* Change card background here: '#ffffff', '#0b1210', etc. */
   --pioneer-card-bg: #ffffff;
 }
 
 .pioneer-photo-frame {
-  background-color: var(--pioneer-photo-bg, #ffffff);
+  background-color: var(--pioneer-photo-bg, #d5eedd);
 }
 
 .pioneer-card {
