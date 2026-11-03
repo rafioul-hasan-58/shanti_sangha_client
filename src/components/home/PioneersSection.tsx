@@ -115,7 +115,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
             <div className="relative shrink-0">
               <div
                 className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame"
-                style={{ backgroundColor: "var(--pioneer-photo-bg, #000000)" }}
+                style={{ backgroundColor: "var(--pioneer-photo-bg, #ffffff)" }}
               >
                 <Image
                   src={topLeader.image}
@@ -178,7 +178,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                 {/* Photo */}
                 <div
                   className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl overflow-hidden mb-4 ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame shrink-0"
-                  style={{ backgroundColor: "var(--pioneer-photo-bg, #000000)" }}
+                  style={{ backgroundColor: "var(--pioneer-photo-bg, #ffffff)" }}
                 >
                   <Image
                     src={leader.image}

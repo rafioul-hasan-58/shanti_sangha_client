@@ -83,14 +83,14 @@
    ========================================================================== */
 :root {
   /* Change photo background here: 'black', 'white', '#006a4e', etc. */
-  --pioneer-photo-bg: #000000;
+  --pioneer-photo-bg: #ffffff;
 
   /* Change card background here: '#ffffff', '#0b1210', etc. */
   --pioneer-card-bg: #ffffff;
 }
 
 .pioneer-photo-frame {
-  background-color: var(--pioneer-photo-bg, #000000);
+  background-color: var(--pioneer-photo-bg, #ffffff);
 }
 
 .pioneer-card {
