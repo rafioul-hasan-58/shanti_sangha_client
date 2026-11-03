@@ -323,7 +323,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
           <div className="bg-[#006a4e] text-white px-5 py-4 flex items-center justify-between border-b-2 border-white/20 shadow-md">
             <div className="flex items-center gap-3">
               {/* Crest Logo */}
-              <div className="relative w-10 h-10 rounded-full bg-white/10 p-1 border border-white/30 shrink-0">
+              <div className="relative w-10 h-10 rounded-full bg-white p-1 shadow-sm ring-2 ring-white/50 shrink-0 flex items-center justify-center">
                 <Image
                   src="/logo.png"
                   alt="Shanti Sangha"

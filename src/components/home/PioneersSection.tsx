@@ -26,8 +26,8 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
     roleBn: "প্রতিষ্ঠাতা সভাপতি",
     roleEn: "Founder President",
     image: "/images/formar_president/harun.png",
-    badgeBn: "👑 শান্তির অগ্রদূত • প্রতিষ্ঠাতা সভাপতি",
-    badgeEn: "👑 Pioneer of Peace • Former President",
+    badgeBn: "👑 প্রতিষ্ঠাতা সভাপতি",
+    badgeEn: "👑 Founder President",
     isTop: true,
     tributeBn:
       "সাভারচালা শান্তি সংঘের সূচনা ও সমৃদ্ধির পথে দিকনির্দেশনামূলক নেতৃত্ব ও সম্প্রীতির সুদৃঢ় ভিত্তি গড়ে দেওয়ার জন্য আমরা চিরকৃতজ্ঞ।",

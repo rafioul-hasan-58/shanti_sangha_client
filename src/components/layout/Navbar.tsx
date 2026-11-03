@@ -56,25 +56,25 @@ export default function Navbar({
           <div className="relative h-12 w-12 sm:h-14 sm:w-14 shrink-0 flex items-center justify-center perspective-800">
             <div className="relative w-full h-full transform-style-3d animate-logo-flip">
               {/* Front Face */}
-              <div className="absolute inset-0 backface-hidden flex items-center justify-center">
+              <div className="absolute inset-0 backface-hidden flex items-center justify-center rounded-full bg-white p-1 shadow-sm ring-2 ring-white/50">
                 <Image
                   src="/logo.png"
                   alt="Shanti Sangha Logo"
                   width={64}
                   height={64}
                   priority
-                  className="h-full w-full object-contain drop-shadow-md"
+                  className="h-full w-full object-contain drop-shadow-xs"
                 />
               </div>
               {/* Back Face (rotated 180deg so both sides remain right-side up) */}
-              <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center">
+              <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center rounded-full bg-white p-1 shadow-sm ring-2 ring-white/50">
                 <Image
                   src="/logo.png"
                   alt="Shanti Sangha Logo"
                   width={64}
                   height={64}
                   priority
-                  className="h-full w-full object-contain drop-shadow-md"
+                  className="h-full w-full object-contain drop-shadow-xs"
                 />
               </div>
             </div>
