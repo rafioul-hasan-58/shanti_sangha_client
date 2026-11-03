@@ -114,13 +114,14 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
             {/* Photo Column */}
             <div className="relative shrink-0">
               <div
-                className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame"
+                className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame bg-[#d5eedd]"
                 style={{ backgroundColor: "var(--pioneer-photo-bg, #d5eedd)" }}
               >
                 <Image
                   src={topLeader.image}
                   alt={isBn ? topLeader.nameBn : topLeader.nameEn}
                   fill
+                  unoptimized
                   className="object-cover object-top"
                   priority
                 />
@@ -177,13 +178,14 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
                 {/* Photo */}
                 <div
-                  className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-xl sm:rounded-2xl overflow-hidden mb-2.5 sm:mb-4 ring-2 sm:ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame shrink-0"
+                  className="relative w-24 h-24 xs:w-28 xs:h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 rounded-xl sm:rounded-2xl overflow-hidden mb-2.5 sm:mb-4 ring-2 sm:ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame bg-[#d5eedd] shrink-0"
                   style={{ backgroundColor: "var(--pioneer-photo-bg, #d5eedd)" }}
                 >
                   <Image
                     src={leader.image}
                     alt={name}
                     fill
+                    unoptimized
                     className="object-cover object-top"
                   />
                 </div>
