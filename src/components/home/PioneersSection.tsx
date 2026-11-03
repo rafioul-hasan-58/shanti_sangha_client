@@ -38,24 +38,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
   // Next Line: Next Two Leaders
   const secondLineLeaders: PioneerLeader[] = [
     {
-      id: "lutfor",
-      nameBn: "মোঃ লুৎফর রহমান",
-      nameEn: "Md. Lutfor Rahman",
-      roleBn: "প্রাক্তন সভাপতি",
-      roleEn: "Former President",
-      image: "/images/formar_president/lutfor.png",
-      badgeBn: "🕊️ শান্তির অগ্রদূত",
-      badgeEn: "🕊️ Pioneer of Peace",
-      tributeBn:
-        "শান্তি, শৃঙ্খলা ও সুস্থ ক্রীড়া চর্চার মাধ্যমে এলাকার তরুণদের ভ্রাতৃত্বের বন্ধনে আবদ্ধ করার এক অবিস্মরণীয় কান্ডারী।",
-      tributeEn:
-        "An unforgettable stalwart who united local youth in brotherhood through sportsmanship, discipline, and community peace.",
-    },
-    {
       id: "tk_roman",
-      nameBn: "টি.কে. রোমান",
-      nameEn: "T.K. Roman",
-      roleBn: "প্রাক্তন সভাপতি",
+      nameBn: "তানভীর খোরশেদ রোমান",
+      nameEn: "Tanvir Khorshed Roman",
+      roleBn: "সাবেক সভাপতি",
       roleEn: "Former President",
       image: "/images/formar_president/tk_roman.png",
       badgeBn: "🕊️ শান্তির অগ্রদূত",
@@ -65,6 +51,21 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
       tributeEn:
         "A revered pioneer whose inspiring dedication deepened the club's fraternal bond, athletic spirit, and social leadership.",
     },
+    {
+      id: "lutfor",
+      nameBn: "মোঃ লুৎফর রহমান",
+      nameEn: "Md. Lutfor Rahman",
+      roleBn: "সাবেক সভাপতি",
+      roleEn: "Former President",
+      image: "/images/formar_president/lutfor.png",
+      badgeBn: "🕊️ শান্তির অগ্রদূত",
+      badgeEn: "🕊️ Pioneer of Peace",
+      tributeBn:
+        "শান্তি, শৃঙ্খলা ও সুস্থ ক্রীড়া চর্চার মাধ্যমে এলাকার তরুণদের ভ্রাতৃত্বের বন্ধনে আবদ্ধ করার এক অবিস্মরণীয় কান্ডারী।",
+      tributeEn:
+        "An unforgettable stalwart who united local youth in brotherhood through sportsmanship, discipline, and community peace.",
+    },
+
   ];
 
   return (
@@ -101,15 +102,15 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
         {/* TOP LINE: Harun in one line (Centered Featured Card) */}
         <div className="max-w-xl sm:max-w-2xl mx-auto mb-10 relative z-10">
-          <div className="group rounded-3xl bg-white border-2 border-amber-300/60 hover:border-[#006a4e] p-6 sm:p-8 shadow-md hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden">
-            {/* Crown corner watermark */}
-            <div className="absolute -top-6 -right-6 text-amber-500/10 text-8xl pointer-events-none select-none font-serif">
+          <div className="group rounded-3xl bg-white border border-brand-200/90 hover:border-[#006a4e] p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden">
+            {/* Corner Emblem */}
+            <div className="absolute -top-6 -right-6 text-[#006a4e]/10 text-8xl pointer-events-none select-none font-serif">
               👑
             </div>
 
             {/* Photo Column */}
             <div className="relative shrink-0">
-              <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden ring-4 ring-amber-400/30 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-gradient-to-br from-amber-50 to-brand-100">
+              <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-black">
                 <Image
                   src={topLeader.image}
                   alt={isBn ? topLeader.nameBn : topLeader.nameEn}
@@ -127,7 +128,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
             {/* Details Column */}
             <div className="text-center sm:text-left flex-1 space-y-2.5">
-              <span className="inline-block text-[11px] font-bold text-amber-700 bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <span className="inline-block text-[11px] font-bold text-[#006a4e] bg-brand-50 border border-brand-200/80 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 {isBn ? topLeader.badgeBn : topLeader.badgeEn}
               </span>
 
@@ -158,7 +159,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
             return (
               <div
                 key={leader.id}
-                className="group rounded-3xl bg-white border border-brand-200/90 hover:border-[#006a4e] p-6 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
+                className="group rounded-3xl bg-white border border-brand-200/90 hover:border-[#006a4e] p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
               >
                 {/* Badge */}
                 <div className="mb-4">
@@ -168,14 +169,13 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Photo */}
-                <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl overflow-hidden mb-4 ring-4 ring-[#006a4e]/15 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-gradient-to-br from-brand-50 to-brand-100 shrink-0">
+                <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl overflow-hidden mb-4 ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-black shrink-0">
                   <Image
                     src={leader.image}
                     alt={name}
                     fill
                     className="object-cover object-top"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                 </div>
 
                 {/* Name & Role */}
@@ -201,3 +201,4 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
     </section>
   );
 }
+
