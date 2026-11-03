@@ -23,10 +23,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
     id: "harun",
     nameBn: "হারুন শেখ",
     nameEn: "Harun Sheikh",
-    roleBn: "প্রাক্তন সভাপতি",
-    roleEn: "Former President",
+    roleBn: "প্রতিষ্ঠাতা সভাপতি",
+    roleEn: "Founder President",
     image: "/images/formar_president/harun.png",
-    badgeBn: "👑 শান্তির অগ্রদূত • প্রাক্তন সভাপতি",
+    badgeBn: "👑 শান্তির অগ্রদূত • প্রতিষ্ঠাতা সভাপতি",
     badgeEn: "👑 Pioneer of Peace • Former President",
     isTop: true,
     tributeBn:
@@ -102,7 +102,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
         {/* TOP LINE: Harun in one line (Centered Featured Card) */}
         <div className="max-w-xl sm:max-w-2xl mx-auto mb-10 relative z-10">
-          <div className="group rounded-3xl bg-white border border-brand-200/90 hover:border-[#006a4e] p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden">
+          <div
+            className="group rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-6 sm:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 relative overflow-hidden"
+            style={{ backgroundColor: "var(--pioneer-card-bg, #ffffff)" }}
+          >
             {/* Corner Emblem */}
             <div className="absolute -top-6 -right-6 text-[#006a4e]/10 text-8xl pointer-events-none select-none font-serif">
               👑
@@ -110,7 +113,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
             {/* Photo Column */}
             <div className="relative shrink-0">
-              <div className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-black">
+              <div
+                className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-2xl overflow-hidden ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame"
+                style={{ backgroundColor: "var(--pioneer-photo-bg, #000000)" }}
+              >
                 <Image
                   src={topLeader.image}
                   alt={isBn ? topLeader.nameBn : topLeader.nameEn}
@@ -122,7 +128,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
               {/* Status Badge */}
               <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#006a4e] text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md border border-white/60">
-                {isBn ? "প্রাক্তন সভাপতি" : "Former President"}
+                {isBn ? topLeader.roleBn : topLeader.roleEn}
               </div>
             </div>
 
@@ -159,7 +165,8 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
             return (
               <div
                 key={leader.id}
-                className="group rounded-3xl bg-white border border-brand-200/90 hover:border-[#006a4e] p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
+                className="group rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
+                style={{ backgroundColor: "var(--pioneer-card-bg, #ffffff)" }}
               >
                 {/* Badge */}
                 <div className="mb-4">
@@ -169,7 +176,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Photo */}
-                <div className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl overflow-hidden mb-4 ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md bg-black shrink-0">
+                <div
+                  className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-2xl overflow-hidden mb-4 ring-4 ring-[#006a4e]/20 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all duration-500 shadow-md pioneer-photo-frame shrink-0"
+                  style={{ backgroundColor: "var(--pioneer-photo-bg, #000000)" }}
+                >
                   <Image
                     src={leader.image}
                     alt={name}

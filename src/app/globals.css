@@ -76,3 +76,23 @@
   animation: radiateWave 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
   animation-delay: 1.2s;
 }
+
+/* ==========================================================================
+   PIONEER OF PEACE - DYNAMIC CUSTOMIZABLE BACKGROUNDS
+   Change these colors anytime: 'black', 'white', '#000000', '#ffffff', etc.
+   ========================================================================== */
+:root {
+  /* Change photo background here: 'black', 'white', '#006a4e', etc. */
+  --pioneer-photo-bg: #000000;
+
+  /* Change card background here: '#ffffff', '#0b1210', etc. */
+  --pioneer-card-bg: #ffffff;
+}
+
+.pioneer-photo-frame {
+  background-color: var(--pioneer-photo-bg, #000000);
+}
+
+.pioneer-card {
+  background-color: var(--pioneer-card-bg, #ffffff);
+}

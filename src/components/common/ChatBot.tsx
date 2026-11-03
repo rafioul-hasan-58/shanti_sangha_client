@@ -261,12 +261,12 @@ export default function ChatBot({ locale }: { locale: Locale }) {
         {/* Radiating Waves / Radiation effect outside the button */}
         {!isOpen && (
           <div className="absolute inset-0 pointer-events-none -z-10 flex items-center justify-center">
-            {/* Radiation Wave 1 */}
-            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#006a4e] animate-radiate-1" />
-            {/* Radiation Wave 2 (delayed) */}
-            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#007a5a] animate-radiate-2" />
+            {/* Radiation Wave 1 (Oceanic Cyan) */}
+            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#059cbd]/60 animate-radiate-1" />
+            {/* Radiation Wave 2 (Deep Teal) */}
+            <span className="absolute w-14 h-14 sm:w-15 sm:h-15 rounded-full bg-[#0c566d]/50 animate-radiate-2" />
             {/* Ambient outer glow */}
-            <span className="absolute -inset-3 rounded-full bg-emerald-400/25 blur-md animate-pulse" />
+            <span className="absolute -inset-3 rounded-full bg-cyan-400/25 blur-md animate-pulse" />
           </div>
         )}
 
@@ -274,28 +274,42 @@ export default function ChatBot({ locale }: { locale: Locale }) {
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? "Close chatbot" : "Open chatbot"}
-          className={`relative group w-14 h-14 sm:w-15 sm:h-15 rounded-full flex items-center justify-center transition-all duration-300 transform active:scale-95 shadow-2xl cursor-pointer ${
+          style={
             isOpen
-              ? "bg-[#005a42] text-white rotate-90 ring-4 ring-white/50"
-              : "bg-gradient-to-b from-[#007a5a] to-[#005a42] text-white hover:scale-105 ring-2 ring-white/90 ring-offset-2 ring-offset-transparent shadow-[#006a4e]/50 hover:shadow-[#006a4e]/70"
+              ? { backgroundColor: "#006a4e" }
+              : {
+                  background:
+                    "linear-gradient(135deg, #12384b 0%, #0d5470 38%, #0784a5 72%, #059cbd 100%)",
+                }
+          }
+          className={`relative group w-14 h-14 sm:w-15 sm:h-15 rounded-full flex items-center justify-center border-[2.5px] border-white transition-all duration-300 transform active:scale-95 cursor-pointer ${
+            isOpen
+              ? "text-white rotate-90 shadow-2xl ring-4 ring-white/40"
+              : "text-white hover:scale-105 shadow-[0_8px_24px_rgba(5,156,189,0.42),0_4px_12px_rgba(0,0,0,0.25)] hover:shadow-[0_12px_28px_rgba(5,156,189,0.55),0_6px_16px_rgba(0,0,0,0.3)]"
           }`}
         >
           {isOpen ? (
             /* Close Icon when open */
-            <svg className="w-6 h-6 stroke-white fill-none" viewBox="0 0 24 24" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              className="w-6 h-6 stroke-white fill-none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M18 6L6 18M6 6l12 12" />
             </svg>
           ) : (
             /* Speech bubble icon matching screenshot */
             <div className="relative flex items-center justify-center">
               <svg
-                className="w-7 h-7 stroke-white fill-none group-hover:scale-110 transition-transform duration-200"
+                className="w-7 h-7 stroke-white fill-none group-hover:scale-105 transition-transform duration-200"
                 viewBox="0 0 24 24"
                 strokeWidth={2.2}
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
               </svg>
             </div>
           )}
