@@ -9,15 +9,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = await getDictionary(locale);
-  
+
 
   return (
     <>
       <HeroCarousel dict={dict.hero} />
-
-      {/* About Section */}
-      <AboutSection locale={locale} />
-
       {/* Sports Section */}
       <section id="sports" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
         <div>
@@ -48,6 +44,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           })}
         </div>
       </section>
+
+      {/* About Section */}
+      <AboutSection locale={locale} />
+
+      {/* Committee (Comette) Section */}
+      <CommitteeSection locale={locale} />
 
       {/* SPL & Annual Arrangements Section */}
       <section id="spl" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
@@ -159,8 +161,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
       </section>
 
-      {/* Committee (Comette) Section */}
-      <CommitteeSection locale={locale} />
     </>
   );
 }
