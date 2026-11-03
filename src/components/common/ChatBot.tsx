@@ -92,6 +92,28 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       };
     }
 
+    // Former Presidents / Pioneers of Peace
+    if (
+      q.includes("প্রাক্তন সভাপতি") ||
+      q.includes("formar") ||
+      q.includes("former") ||
+      q.includes("pioneer") ||
+      q.includes("অগ্রদূত") ||
+      q.includes("হারুন") ||
+      q.includes("লুৎফর") ||
+      q.includes("রোমান") ||
+      q.includes("harun") ||
+      q.includes("lutfor") ||
+      q.includes("roman")
+    ) {
+      return {
+        reply: isBn
+          ? "সাভারচালা শান্তি সংঘের 'শান্তির অগ্রদূত' শ্রদ্ধেয় প্রাক্তন সভাপতিবৃন্দ হলেন জনাব হারুন শেখ, জনাব মোঃ লুৎফর রহমান এবং জনাব টি.কে. রোমান। তাঁদের দিকনির্দেশনা ও আত্মত্যাগে ক্লাবের ভিত্তি সুদৃঢ় হয়েছে।"
+          : "The 'Pioneers of Peace' of Shavarchala Shanti Sangha are our esteemed former presidents: Harun Sheikh, Md. Lutfor Rahman, and T.K. Roman, whose visionary guidance built the club's foundation.",
+        action: { label: isBn ? "শান্তির অগ্রদূত দেখুন" : "View Pioneers of Peace", href: `/${locale}#pioneer-of-peace` },
+      };
+    }
+
     // Committee / Leaders / President
     if (
       q.includes("কমিটি") ||

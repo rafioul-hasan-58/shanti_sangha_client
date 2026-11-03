@@ -3,6 +3,7 @@ import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
 import HeroCarousel from "@/components/home/HeroCarousel";
 import AboutSection from "@/components/home/AboutSection";
+import PioneersSection from "@/components/home/PioneersSection";
 import CommitteeSection from "@/components/home/CommitteeSection";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -47,6 +48,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
 
       {/* About Section */}
       <AboutSection locale={locale} />
+
+      {/* Pioneer of Peace (Former Presidents) Section */}
+      <PioneersSection locale={locale} />
 
       {/* Committee (Comette) Section */}
       <CommitteeSection locale={locale} />
