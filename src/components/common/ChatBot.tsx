@@ -334,7 +334,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
               </div>
               <div className="leading-tight">
                 <h3 className="font-extrabold text-sm sm:text-base tracking-wide flex items-center gap-1.5">
-                  <span>{isBn ? "শান্তি সংঘ সহকারী" : "Shanti Sangha Bot"}</span>
+                  <span>{isBn ? "শান্তি সংঘ AI Bot" : "Shanti Sangha AI Bot"}</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 </h3>
                 <p className="text-[11px] text-white/80 font-medium">
