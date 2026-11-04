@@ -126,11 +126,11 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                   priority
                 />
               </div>
-
+              
               {/* Status Badge */}
-              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#006a4e] text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md border border-white/60">
+              {/* <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#006a4e] text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md border border-white/60">
                 {isBn ? topLeader.roleBn : topLeader.roleEn}
-              </div>
+              </div> */}
             </div>
 
             {/* Details Column */}

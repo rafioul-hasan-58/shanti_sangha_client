@@ -415,21 +415,41 @@ export default function ChatBot({ locale }: { locale: Locale }) {
               </div>
             )}
 
-            <div ref={messagesEndRef} />
-          </div>
+            {/* Suggested Question Cards directly on the screen (No horizontal slide) */}
+            {messages.length <= 1 && (
+              <div className="pt-1 pb-1 space-y-2 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <p className="text-[11px] font-bold text-[#006a4e] flex items-center gap-1.5 px-1">
+                  <span>💡</span>
+                  <span>
+                    {isBn ? "প্রয়োজনীয় কিছু প্রশ্ন (ট্যাপ করে উত্তর জানুন):" : "Suggested Questions (Tap to ask):"}
+                  </span>
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  {quickPrompts.map((p, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => handleSend(p.query)}
+                      className="w-full text-left flex items-center justify-between gap-3 text-xs font-semibold px-3.5 py-2.5 rounded-xl bg-white hover:bg-[#006a4e] text-pitch hover:text-white border border-brand-200/90 hover:border-[#006a4e] shadow-2xs hover:shadow-sm transition-all duration-200 cursor-pointer group"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{p.label}</span>
+                      </span>
+                      <svg
+                        className="w-4 h-4 text-brand-400 group-hover:text-white group-hover:translate-x-0.5 transition-all shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
-          {/* Suggested Quick Question Chips */}
-          <div className="px-3.5 py-2.5 bg-white border-t border-brand-100/90 overflow-x-auto scrollbar-none flex items-center gap-2">
-            {quickPrompts.map((p, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleSend(p.query)}
-                className="shrink-0 text-[11px] font-semibold px-2.5 py-1.5 rounded-full bg-brand-50 hover:bg-[#006a4e] text-brand-700 hover:text-white border border-brand-200 hover:border-[#006a4e] transition-all duration-150 cursor-pointer"
-              >
-                {p.label}
-              </button>
-            ))}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input & Send Form */}
