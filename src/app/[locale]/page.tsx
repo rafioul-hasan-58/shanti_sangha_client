@@ -27,7 +27,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
         <div className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {dict.sections.sports.map((s, idx) => {
-            const icons = ["⚽", "🏏", "🏐", "🏸"];
+            const icons = ["🏏", "⚽", "🏐", "🏸"];
             return (
               <div
                 key={s.name}

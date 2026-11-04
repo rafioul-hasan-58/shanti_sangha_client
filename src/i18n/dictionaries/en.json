@@ -41,12 +41,12 @@
     "sportsTitle": "What we play",
     "sports": [
       {
-        "name": "Football",
-        "text": "Summer SPL tournament and regular matches."
-      },
-      {
         "name": "Cricket",
         "text": "Winter cricket festival, GPL and SPL tournaments."
+      },
+      {
+        "name": "Football",
+        "text": "Summer SPL tournament and regular matches."
       },
       {
         "name": "Volleyball",
