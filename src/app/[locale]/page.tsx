@@ -25,20 +25,20 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {dict.sections.sportsTitle}
           </h2>
         </div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-6 sm:mt-8 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {dict.sections.sports.map((s, idx) => {
             const icons = ["⚽", "🏏", "🏐", "🏸"];
             return (
               <div
                 key={s.name}
-                className="group rounded-2xl border border-brand-200/80 bg-white p-6 shadow-sm hover:shadow-md hover:border-[#006a4e]/40 transition-all duration-300 flex flex-col justify-between"
+                className="group rounded-2xl border border-brand-200/80 bg-white p-3.5 sm:p-5 md:p-6 shadow-sm hover:shadow-md hover:border-[#006a4e]/40 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-brand-50 border border-brand-100 flex items-center justify-center text-xl sm:text-2xl mb-2.5 sm:mb-4 group-hover:scale-110 transition-transform">
                     {icons[idx] || "🏆"}
                   </div>
-                  <h3 className="text-lg font-bold text-pitch">{s.name}</h3>
-                  <p className="mt-2 text-sm text-brand-700 leading-relaxed font-sans">{s.text}</p>
+                  <h3 className="text-sm sm:text-base md:text-lg font-bold text-pitch leading-snug">{s.name}</h3>
+                  <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-brand-700 leading-relaxed font-sans">{s.text}</p>
                 </div>
               </div>
             );
