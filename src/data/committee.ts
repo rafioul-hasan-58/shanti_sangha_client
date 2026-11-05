@@ -15,7 +15,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "মাহফুজুর রহমান",
     roleEn: "President",
     roleBn: "সভাপতি",
-    image: "/images/committee/mahfuz.jpeg",
+    image: "/images/committee/mahfuz.png",
   },
   {
     id: "rakib",
@@ -23,7 +23,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "রাকিব হাসান",
     roleEn: "Senior Vice President",
     roleBn: "সিনিয়র সহ-সভাপতি",
-    image: "/images/committee/rakib.jpeg",
+    image: "/images/committee/rakib.png",
   },
   {
     id: "rasel",
@@ -31,7 +31,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "রাসেল শুভ",
     roleEn: "Senior Vice President",
     roleBn: "সিনিয়র সহ-সভাপতি",
-    image: "/images/committee/rasel.jpeg",
+    image: "/images/committee/rasel.png",
   },
   {
     id: "ebi",
@@ -64,7 +64,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "আনোয়ার হোসেন",
     roleEn: "Joint Secretary",
     roleBn: "যুগ্ম সাধারণ সম্পাদক",
-    image: "/images/committee/emon.jpeg",
+    image: "/images/committee/emon.png",
     isKeyLeader: true,
   },
   {
@@ -82,7 +82,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "মোঃ জিহাদ",
     roleEn: "Cashier",
     roleBn: "কোষাধ্যক্ষ",
-    image: "/images/committee/jihad.jpeg",
+    image: "/images/committee/jihad.png",
   },
   {
     id: "hasib",
@@ -90,7 +90,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "হাসিবুল হাসান",
     roleEn: "Sports Secretary",
     roleBn: "ক্রীড়া সম্পাদক",
-    image: "/images/committee/hasib.jpeg",
+    image: "/images/committee/hasib.png",
   },
   {
     id: "labib",
@@ -98,7 +98,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "লাবিব হাসান",
     roleEn: "Sports Secretary",
     roleBn: "ক্রীড়া সম্পাদক",
-    image: "/images/committee/labib.jpeg",
+    image: "/images/committee/labib.png",
   },
   {
     id: "smoron",
@@ -106,7 +106,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "মোঃ সাখাওয়াৎ হোসেন",
     roleEn: "Organizing Secretary",
     roleBn: "সাংগঠনিক সম্পাদক",
-    image: "/images/committee/smoron.jpeg",
+    image: "/images/committee/smoron.png",
   },
   {
     id: "sojol",
@@ -114,7 +114,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "লোকমান হোসেন সজল",
     roleEn: "Organizing Secretary",
     roleBn: "সাংগঠনিক সম্পাদক",
-    image: "/images/committee/sojol.jpeg",
+    image: "/images/committee/sojol.png",
   },
   {
     id: "himel",
@@ -131,7 +131,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "সোহান খান",
     roleEn: "Publicity Secretary",
     roleBn: "প্রচার সম্পাদক",
-    image: "/images/committee/sohan.jpeg",
+    image: "/images/committee/sohan.png",
   },
   {
     id: "emran",
