@@ -131,7 +131,7 @@ export default function Footer({
                 <div className="relative shrink-0">
                   <div className="h-12 w-12 sm:h-13 sm:w-13 rounded-xl overflow-hidden ring-2 ring-purple-200/90 shadow-xs bg-purple-50">
                     <Image
-                      src="/images/committee/sourav.png"
+                      src="/images/committee/sourav_footer.png"
                       alt="Sourav Prodhan"
                       width={56}
                       height={56}

@@ -39,7 +39,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "ইব্রাহীম",
     roleEn: "Vice President",
     roleBn: "সহ-সভাপতি",
-    image: "/images/committee/ebi.jpeg",
+    image: "/images/committee/ebi.png",
   },
   {
     id: "shahin",
@@ -56,7 +56,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "মোস্তাকিম",
     roleEn: "General Secretary",
     roleBn: "সাধারণ সম্পাদক",
-    image: "/images/committee/mustakim.jpeg",
+    image: "/images/committee/mustakim.png",
   },
   {
     id: "emon",
@@ -75,6 +75,22 @@ export const committeeMembers: CommitteeMember[] = [
     roleBn: "যুগ্ম সাধারণ সম্পাদক",
     image: "/images/committee/sourav.png",
     isKeyLeader: true,
+  },
+   {
+    id: "smoron",
+    nameEn: "Md. Sakhaowat Hossain",
+    nameBn: "মোঃ সাখাওয়াৎ হোসেন",
+    roleEn: "Organizing Secretary",
+    roleBn: "সাংগঠনিক সম্পাদক",
+    image: "/images/committee/smoron.png",
+  },
+  {
+    id: "sojol",
+    nameEn: "Lokman Hossain Sojol",
+    nameBn: "লোকমান হোসেন সজল",
+    roleEn: "Organizing Secretary",
+    roleBn: "সাংগঠনিক সম্পাদক",
+    image: "/images/committee/sojol.png",
   },
   {
     id: "jihad",
@@ -100,29 +116,14 @@ export const committeeMembers: CommitteeMember[] = [
     roleBn: "ক্রীড়া সম্পাদক",
     image: "/images/committee/labib.png",
   },
-  {
-    id: "smoron",
-    nameEn: "Md. Sakhaowat Hossain",
-    nameBn: "মোঃ সাখাওয়াৎ হোসেন",
-    roleEn: "Organizing Secretary",
-    roleBn: "সাংগঠনিক সম্পাদক",
-    image: "/images/committee/smoron.png",
-  },
-  {
-    id: "sojol",
-    nameEn: "Lokman Hossain Sojol",
-    nameBn: "লোকমান হোসেন সজল",
-    roleEn: "Organizing Secretary",
-    roleBn: "সাংগঠনিক সম্পাদক",
-    image: "/images/committee/sojol.png",
-  },
+ 
   {
     id: "himel",
     nameEn: "SH Himel Siam",
     nameBn: "এস এইচ হিমেল সিয়াম",
     roleEn: "ICT Secretary",
     roleBn: "তথ্য ও যোগাযোগ প্রযুক্তি সম্পাদক",
-    image: "/images/committee/himel.jpeg",
+    image: "/images/committee/himel.png",
     isKeyLeader: true,
   },
   {
@@ -139,6 +140,6 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "ইমরান",
     roleEn: "Religious Affairs Secretary",
     roleBn: "ধর্ম বিষয়ক সম্পাদক",
-    image: "/images/committee/emran.jpeg",
+    image: "/images/committee/emran.png",
   },
 ];
