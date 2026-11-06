@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   if (!isLocale(locale)) return {};
   const dict = await getDictionary(locale);
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://shantisangha.org"),
     title: dict.meta.title,
     description: dict.meta.description,
     icons: {
