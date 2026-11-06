@@ -47,7 +47,7 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "শাহিন আলম শুভ",
     roleEn: "Vice President",
     roleBn: "সহ-সভাপতি",
-    image: "/images/committee/shahin.jpeg",
+    image: "/images/committee/shahin.png",
     isKeyLeader: true,
   },
   {
