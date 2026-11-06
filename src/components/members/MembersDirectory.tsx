@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import { allClubMembers, type MemberCategory, type ClubMember } from "@/data/members";
+import { getPersonBySlug } from "@/data/people";
 
 export default function MembersDirectory({ locale }: { locale: Locale }) {
   const isBn = locale === "bn";
@@ -136,7 +137,7 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
       {filteredMembers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredMembers.map((member) => (
-            <MemberCard key={member.id} member={member} isBn={isBn} />
+            <MemberCard key={member.id} member={member} isBn={isBn} locale={locale} />
           ))}
         </div>
       ) : (
@@ -189,7 +190,17 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
   );
 }
 
-function MemberCard({ member, isBn }: { member: ClubMember; isBn: boolean }) {
+function MemberCard({
+  member,
+  isBn,
+  locale,
+}: {
+  member: ClubMember;
+  isBn: boolean;
+  locale: Locale;
+}) {
+  const person = getPersonBySlug(member.id);
+
   // Category styling
   const categoryBadge = {
     executive: {
@@ -259,24 +270,38 @@ function MemberCard({ member, isBn }: { member: ClubMember; isBn: boolean }) {
         </div>
       </div>
 
-      {/* Bottom Meta Information */}
-      <div className="mt-4 pt-3 border-t border-brand-100 grid grid-cols-2 gap-2 text-[11px] text-brand-600">
-        <div>
-          <span className="block text-[10px] text-brand-400 font-semibold uppercase">
-            {isBn ? "রক্তের গ্রুপ" : "Blood"}
-          </span>
-          <span className="font-bold text-red-600">
-            🩸 {member.bloodGroup || "—"}
-          </span>
+      {/* Bottom Meta Information & Profile Link */}
+      <div>
+        <div className="mt-4 pt-3 border-t border-brand-100 grid grid-cols-2 gap-2 text-[11px] text-brand-600">
+          <div>
+            <span className="block text-[10px] text-brand-400 font-semibold uppercase">
+              {isBn ? "রক্তের গ্রুপ" : "Blood"}
+            </span>
+            <span className="font-bold text-red-600">
+              🩸 {member.bloodGroup || "—"}
+            </span>
+          </div>
+          <div className="text-right">
+            <span className="block text-[10px] text-brand-400 font-semibold uppercase">
+              {isBn ? "যোগদান" : "Joined"}
+            </span>
+            <span className="font-bold text-pitch">
+              {member.joiningYear}
+            </span>
+          </div>
         </div>
-        <div className="text-right">
-          <span className="block text-[10px] text-brand-400 font-semibold uppercase">
-            {isBn ? "যোগদান" : "Joined"}
-          </span>
-          <span className="font-bold text-pitch">
-            {member.joiningYear}
-          </span>
-        </div>
+
+        {person && (
+          <div className="mt-3 pt-2 text-center border-t border-brand-100">
+            <Link
+              href={`/${locale}/${person.slug}`}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-[#006a4e] hover:underline"
+            >
+              <span>{isBn ? "সম্পূর্ণ প্রোফাইল দেখুন" : "View Full Profile"}</span>
+              <span>→</span>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

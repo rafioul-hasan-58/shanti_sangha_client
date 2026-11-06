@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import { committeeMembers } from "@/data/committee";
 
@@ -38,9 +39,10 @@ export default function CommitteeSection({ locale }: { locale: Locale }) {
           const role = isBn ? member.roleBn : member.roleEn;
 
           return (
-            <div
+            <Link
               key={member.id}
-              className="group rounded-2xl border border-brand-200/80 bg-white p-5 shadow-xs hover:shadow-md hover:border-[#006a4e]/40 transition-all flex flex-col items-center text-center animate-in fade-in duration-300"
+              href={`/${locale}/${member.id}`}
+              className="group rounded-2xl border border-brand-200/80 bg-white p-5 shadow-xs hover:shadow-md hover:border-[#006a4e]/40 transition-all flex flex-col items-center text-center animate-in fade-in duration-300 block cursor-pointer"
             >
               {/* Photo */}
               <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden mb-4 ring-2 ring-brand-100 group-hover:ring-[#006a4e] group-hover:scale-105 transition-all bg-brand-50 shadow-xs shrink-0">
@@ -65,7 +67,12 @@ export default function CommitteeSection({ locale }: { locale: Locale }) {
                   {role}
                 </span>
               </div>
-            </div>
+
+              <div className="mt-3 text-[11px] font-bold text-[#006a4e] inline-flex items-center gap-1 opacity-80 group-hover:opacity-100 group-hover:underline">
+                <span>{isBn ? "বিস্তারিত দেখুন" : "View Details"}</span>
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              </div>
+            </Link>
           );
         })}
       </div>

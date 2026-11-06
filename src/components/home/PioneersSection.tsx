@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 
 interface PioneerLeader {
@@ -102,8 +103,9 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
 
         {/* TOP LINE: Harun in first line (Centered Featured Card) */}
         <div className="max-w-xl sm:max-w-2xl mx-auto mb-6 sm:mb-10 relative z-10">
-          <div
-            className="group rounded-2xl sm:rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-5 sm:p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-5 sm:gap-8 relative overflow-hidden"
+          <Link
+            href={`/${locale}/${topLeader.id}`}
+            className="group rounded-2xl sm:rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-5 sm:p-6 md:p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col sm:flex-row items-center gap-5 sm:gap-8 relative overflow-hidden block cursor-pointer"
             style={{ backgroundColor: "var(--pioneer-card-bg, #ffffff)" }}
           >
             {/* Corner Emblem */}
@@ -126,11 +128,6 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                   priority
                 />
               </div>
-              
-              {/* Status Badge */}
-              {/* <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-[#006a4e] text-white text-[10px] sm:text-xs font-black uppercase tracking-wider px-3 py-0.5 rounded-full shadow-md border border-white/60">
-                {isBn ? topLeader.roleBn : topLeader.roleEn}
-              </div> */}
             </div>
 
             {/* Details Column */}
@@ -151,8 +148,13 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
               <p className="text-xs sm:text-sm text-brand-700 leading-relaxed font-sans italic pt-1">
                 "{isBn ? topLeader.tributeBn : topLeader.tributeEn}"
               </p>
+
+              <div className="pt-2 text-xs font-bold text-[#006a4e] inline-flex items-center gap-1 group-hover:underline">
+                <span>{isBn ? "সম্পূর্ণ পরিচিতি দেখুন" : "View Full Profile"}</span>
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* SECOND LINE: Rest of the Cards in One Line (2 Cards in One Line on Mobile & Desktop) */}
@@ -164,9 +166,10 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
             const tribute = isBn ? leader.tributeBn : leader.tributeEn;
 
             return (
-              <div
+              <Link
                 key={leader.id}
-                className="group rounded-2xl sm:rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-3.5 sm:p-5 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
+                href={`/${locale}/${leader.id}`}
+                className="group rounded-2xl sm:rounded-3xl pioneer-card border border-brand-200/90 hover:border-[#006a4e] p-3.5 sm:p-5 md:p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden block cursor-pointer"
                 style={{ backgroundColor: "var(--pioneer-card-bg, #ffffff)" }}
               >
                 {/* Badge */}
@@ -205,7 +208,12 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                 <p className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-brand-100 text-[10px] sm:text-xs text-brand-700/90 leading-relaxed font-sans italic line-clamp-3 sm:line-clamp-none">
                   "{tribute}"
                 </p>
-              </div>
+
+                <div className="mt-3 pt-2 text-[11px] sm:text-xs font-bold text-[#006a4e] inline-flex items-center gap-1 group-hover:underline">
+                  <span>{isBn ? "প্রোফাইল দেখুন" : "View Profile"}</span>
+                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                </div>
+              </Link>
             );
           })}
         </div>

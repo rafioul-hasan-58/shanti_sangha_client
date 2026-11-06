@@ -37,7 +37,7 @@ const executiveClubMembers: ClubMember[] = committeeMembers.map((cm, idx) => ({
 // Additional General Members, Advisors, and Players
 const generalClubMembers: ClubMember[] = [
   {
-    id: "former-pres-1",
+    id: "harun",
     memberId: "SS-PION-001",
     nameEn: "Harun Sheikh",
     nameBn: "হারুন শেখ",
@@ -51,7 +51,7 @@ const generalClubMembers: ClubMember[] = [
     villageBn: "সাভারচালা",
   },
   {
-    id: "former-pres-2",
+    id: "lutfor",
     memberId: "SS-PION-002",
     nameEn: "Md. Lutfor Rahman",
     nameBn: "মোঃ লুৎফর রহমান",
@@ -65,7 +65,7 @@ const generalClubMembers: ClubMember[] = [
     villageBn: "সাভারচালা",
   },
   {
-    id: "former-pres-3",
+    id: "tk_roman",
     memberId: "SS-PION-003",
     nameEn: "T.K. Roman",
     nameBn: "টি.কে. রোমান",
