@@ -52,9 +52,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
       {/* Pioneer of Peace (Former Presidents) Section */}
       <PioneersSection locale={locale} />
 
-      {/* Committee (Comette) Section */}
-      <CommitteeSection locale={locale} />
-
+   
       {/* SPL & Annual Arrangements Section */}
       <section id="spl" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
         <div className="rounded-3xl bg-[#006a4e] text-white p-6 sm:p-10 shadow-md border-b-4 border-white">
@@ -164,6 +162,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
         </div>
       </section>
+         {/* Committee (Comette) Section */}
+      <CommitteeSection locale={locale} />
+
 
     </>
   );

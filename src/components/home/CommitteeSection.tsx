@@ -70,7 +70,7 @@ export default function CommitteeSection({ locale }: { locale: Locale }) {
 
               <div className="mt-3 text-[11px] font-bold text-[#006a4e] inline-flex items-center gap-1 opacity-80 group-hover:opacity-100 group-hover:underline">
                 <span>{isBn ? "বিস্তারিত দেখুন" : "View Details"}</span>
-                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                {/* <span className="transition-transform group-hover:translate-x-0.5">→</span> */}
               </div>
             </Link>
           );

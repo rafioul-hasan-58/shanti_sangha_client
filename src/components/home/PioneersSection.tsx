@@ -150,8 +150,9 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
               </p>
 
               <div className="pt-2 text-xs font-bold text-[#006a4e] inline-flex items-center gap-1 group-hover:underline">
-                <span>{isBn ? "সম্পূর্ণ পরিচিতি দেখুন" : "View Full Profile"}</span>
-                <span className="transition-transform group-hover:translate-x-1">→</span>
+                <span>{isBn ? "বিস্তারিত দেখুন" : "View Details"}</span>
+
+                {/* <span className="transition-transform group-hover:translate-x-1">→</span> */}
               </div>
             </div>
           </Link>
@@ -210,8 +211,8 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                 </p>
 
                 <div className="mt-3 pt-2 text-[11px] sm:text-xs font-bold text-[#006a4e] inline-flex items-center gap-1 group-hover:underline">
-                  <span>{isBn ? "প্রোফাইল দেখুন" : "View Profile"}</span>
-                  <span className="transition-transform group-hover:translate-x-1">→</span>
+                  <span>{isBn ? "বিস্তারিত দেখুন" : "View Details"}</span>
+                  {/* <span className="transition-transform group-hover:translate-x-1">→</span> */}
                 </div>
               </Link>
             );
