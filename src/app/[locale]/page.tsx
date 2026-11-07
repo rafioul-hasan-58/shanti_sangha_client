@@ -5,6 +5,7 @@ import HeroCarousel from "@/components/home/HeroCarousel";
 import AboutSection from "@/components/home/AboutSection";
 import PioneersSection from "@/components/home/PioneersSection";
 import CommitteeSection from "@/components/home/CommitteeSection";
+import AdminSection from "@/components/home/AdminSection";
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -165,7 +166,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
          {/* Committee (Comette) Section */}
       <CommitteeSection locale={locale} />
 
-
+      {/* Facebook & Website Admin Panel */}
+      <AdminSection locale={locale} />
     </>
   );
 }

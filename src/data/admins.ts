@@ -1,0 +1,133 @@
+export interface DigitalAdmin {
+  id: string;
+  nameEn: string;
+  nameBn: string;
+  adminRoleEn: string;
+  adminRoleBn: string;
+  image: string;
+  badgeEn?: string;
+  badgeBn?: string;
+}
+
+export const digitalAdmins: DigitalAdmin[] = [
+  {
+    id: "sourav",
+    nameEn: "Sourav Prodhan",
+    nameBn: "সৌরভ প্রধান",
+    adminRoleEn: "Website Lead Engineer & Facebook Page Admin",
+    adminRoleBn: "ওয়েবসাইট লিড ইঞ্জিনিয়ার ও ফেসবুক পেজ অ্যাডমিন",
+    badgeEn: "💻 Lead Engineer & Admin",
+    badgeBn: "💻 লিড ইঞ্জিনিয়ার ও অ্যাডমিন",
+    image: "/images/committee/sourav.png",
+  },
+  {
+    id: "himel",
+    nameEn: "SH Himel Siam",
+    nameBn: "এস এইচ হিমেল সিয়াম",
+    adminRoleEn: "ICT & Digital Media Admin",
+    adminRoleBn: "তথ্যপ্রযুক্তি ও ডিজিটাল মিডিয়া অ্যাডমিন",
+    badgeEn: "📱 ICT & Media Admin",
+    badgeBn: "📱 আইসিটি ও মিডিয়া অ্যাডমিন",
+    image: "/images/committee/himel.png",
+  },
+  {
+    id: "sohan",
+    nameEn: "Sohan Khan",
+    nameBn: "সোহান খান",
+    adminRoleEn: "Publicity & Social Media Admin",
+    adminRoleBn: "প্রচার ও সোশ্যাল মিডিয়া অ্যাডমিন",
+    badgeEn: "📢 Publicity & Social Media",
+    badgeBn: "📢 প্রচার ও সোশ্যাল মিডিয়া",
+    image: "/images/committee/sohan.png",
+  },
+  {
+    id: "shahin",
+    nameEn: "Shahin Alam Shuvo",
+    nameBn: "শাহিন আলম শুভ",
+    adminRoleEn: "Executive Advisor & Page Admin",
+    adminRoleBn: "নির্বাহী উপদেষ্টা ও পেজ অ্যাডমিন",
+    badgeEn: "🏛️ Executive Page Admin",
+    badgeBn: "🏛️ নির্বাহী পেজ অ্যাডমিন",
+    image: "/images/committee/shahin.png",
+  },
+  {
+    id: "sojol",
+    nameEn: "Lokman Hossain Sojol",
+    nameBn: "লোকমান হোসেন সজল",
+    adminRoleEn: "Live Broadcast & Event Media Admin",
+    adminRoleBn: "লাইভ সম্প্রচার ও ইভেন্ট মিডিয়া অ্যাডমিন",
+    badgeEn: "🎥 Live & Event Media",
+    badgeBn: "🎥 লাইভ ও ইভেন্ট মিডিয়া",
+    image: "/images/committee/sojol.png",
+  },
+  {
+    id: "jihad",
+    nameEn: "Md. Jehad",
+    nameBn: "মোঃ জিহাদ",
+    adminRoleEn: "Digital Operations & Accounts Admin",
+    adminRoleBn: "ডিজিটাল অপারেশনস ও হিসাব অ্যাডমিন",
+    badgeEn: "💼 Operations & Accounts",
+    badgeBn: "💼 অপারেশনস ও হিসাব",
+    image: "/images/committee/jihad.png",
+  },
+  {
+    id: "labib",
+    nameEn: "Labib Hasan",
+    nameBn: "লাবিব হাসান",
+    adminRoleEn: "Sports Coverage & Content Moderator",
+    adminRoleBn: "ক্রীড়া সংবাদ ও কনটেন্ট মডারেটর",
+    badgeEn: "🏏 Sports Media Moderator",
+    badgeBn: "🏏 ক্রীড়া মিডিয়া মডারেটর",
+    image: "/images/committee/labib.png",
+  },
+  {
+    id: "mahfuz",
+    nameEn: "Mahfojor Rahman",
+    nameBn: "মাহফুজুর রহমান",
+    adminRoleEn: "Chief Executive & Digital Patron",
+    adminRoleBn: "প্রধান নির্বাহী ও ডিজিটাল পৃষ্ঠপোষক",
+    badgeEn: "👑 Chief Patron & Admin",
+    badgeBn: "👑 প্রধান পৃষ্ঠপোষক ও অ্যাডমিন",
+    image: "/images/committee/mahfuz.png",
+  },
+  {
+    id: "mustakim",
+    nameEn: "Mostakim",
+    nameBn: "মোস্তাকিম",
+    adminRoleEn: "Executive Secretary & Communications Admin",
+    adminRoleBn: "নির্বাহী সম্পাদক ও যোগাযোগ অ্যাডমিন",
+    badgeEn: "🏛️ Secretary & Page Admin",
+    badgeBn: "🏛️ সম্পাদক ও পেজ অ্যাডমিন",
+    image: "/images/committee/mustakim.png",
+  },
+  {
+    id: "emon",
+    nameEn: "Anwar Hossain",
+    nameBn: "আনোয়ার হোসেন",
+    adminRoleEn: "Digital Media Logistics Coordinator",
+    adminRoleBn: "ডিজিটাল মিডিয়া লজিস্টিকস সমন্বয়ক",
+    badgeEn: "⚡ Media Logistics Admin",
+    badgeBn: "⚡ মিডিয়া লজিস্টিকস অ্যাডমিন",
+    image: "/images/committee/emon.png",
+  },
+  {
+    id: "hasib",
+    nameEn: "Hasibul Hasan",
+    nameBn: "হাসিবুল হাসান",
+    adminRoleEn: "Sports Digital Media Coordinator",
+    adminRoleBn: "ক্রীড়া ডিজিটাল মিডিয়া সমন্বয়ক",
+    badgeEn: "⚽ Sports Media Admin",
+    badgeBn: "⚽ ক্রীড়া মিডিয়া অ্যাডমিন",
+    image: "/images/committee/hasib.png",
+  },
+  {
+    id: "smoron",
+    nameEn: "Md. Sakhaowat Hossain",
+    nameBn: "মোঃ সাখাওয়াৎ হোসেন",
+    adminRoleEn: "Community Engagement & Media Admin",
+    adminRoleBn: "কমিউনিটি যোগাযোগ ও মিডিয়া অ্যাডমিন",
+    badgeEn: "🤝 Community Media Admin",
+    badgeBn: "🤝 কমিউনিটি মিডিয়া অ্যাডমিন",
+    image: "/images/committee/smoron.png",
+  },
+];
