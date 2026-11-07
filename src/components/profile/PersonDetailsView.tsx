@@ -115,8 +115,8 @@ export default function PersonDetailsView({ person, locale }: Props) {
                 />
               </div>
 
-              {/* Status Badge Over Photo */}
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white text-[#006a4e] text-xs font-black uppercase tracking-wider px-4 py-1 rounded-full shadow-lg border-2 border-[#006a4e]/20 flex items-center gap-1.5">
+              {/* Status Badge Over Photo (Hidden on mobile to eliminate redundant stacked badges) */}
+              <div className="hidden md:flex absolute -bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap bg-white text-[#006a4e] text-xs font-black uppercase tracking-wider px-4 py-1 rounded-full shadow-lg border-2 border-[#006a4e]/20 items-center gap-1.5">
                 <span>{person.type === "pioneer" ? "👑" : "🏛️"}</span>
                 <span>{role}</span>
               </div>
@@ -129,9 +129,9 @@ export default function PersonDetailsView({ person, locale }: Props) {
                 <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider px-3.5 py-1 rounded-full bg-white/15 text-white border border-white/25 backdrop-blur-xs">
                   <span>{badge}</span>
                 </span>
-                <span className="inline-block text-[11px] font-mono font-bold tracking-wider px-3 py-1 rounded-full bg-black/30 text-emerald-200 border border-white/10">
+                {/* <span className="inline-block text-[11px] font-mono font-bold tracking-wider px-3 py-1 rounded-full bg-black/30 text-emerald-200 border border-white/10">
                   {person.memberId}
-                </span>
+                </span> */}
               </div>
 
               {/* Name Display */}
@@ -156,10 +156,6 @@ export default function PersonDetailsView({ person, locale }: Props) {
                   <span>{village}</span>
                 </span>
                 <span className="opacity-50">•</span>
-                <span className="flex items-center gap-1">
-                  <span>📅</span>
-                  <span>{isBn ? `যোগদান: ${person.joiningYear}` : `Joined: ${person.joiningYear}`}</span>
-                </span>
               </div>
 
               {/* Inspirational Motto Quote if available */}
@@ -171,52 +167,7 @@ export default function PersonDetailsView({ person, locale }: Props) {
                 </div>
               )}
 
-              {/* Action Buttons */}
-              <div className="pt-3 flex flex-wrap items-center justify-center md:justify-start gap-3">
-                <button
-                  type="button"
-                  onClick={handleCopyLink}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-[#006a4e] hover:bg-brand-50 text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                    />
-                  </svg>
-                  <span>
-                    {copied
-                      ? isBn
-                        ? "✓ লিংক কপি হয়েছে!"
-                        : "✓ Link Copied!"
-                      : isBn
-                      ? "প্রোফাইল শেয়ার করুন"
-                      : "Share Profile"}
-                  </span>
-                </button>
-
-                <a
-                  href="https://web.facebook.com/s.s.royals2007"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1877F2] text-white hover:bg-[#166fe5] text-xs font-bold shadow-md active:scale-95 transition-all"
-                >
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                  <span>{isBn ? "ক্লাব ফেসবুক পেজ" : "Club Facebook"}</span>
-                </a>
-
-                <Link
-                  href={`/${locale}/members`}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 text-xs font-bold transition-all"
-                >
-                  <span>👥</span>
-                  <span>{isBn ? "সকল সদস্য ডিরেক্টরি" : "All Members"}</span>
-                </Link>
-              </div>
+          
             </div>
           </div>
         </div>
@@ -225,58 +176,58 @@ export default function PersonDetailsView({ person, locale }: Props) {
       {/* Main Content Body */}
       <main className="mx-auto max-w-6xl px-4 -mt-8 relative z-20 space-y-8">
         {/* Quick Stats Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-200/90 shadow-sm flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 text-[#006a4e] flex items-center justify-center text-xl shrink-0">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-brand-200/90 shadow-sm flex items-start sm:items-center gap-2.5 sm:gap-3.5">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 text-[#006a4e] flex items-center justify-center text-lg sm:text-xl shrink-0 mt-0.5 sm:mt-0">
               🏅
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-brand-500 uppercase tracking-wider">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] sm:text-[11px] font-bold text-brand-500 uppercase tracking-wider">
                 {isBn ? "ক্লাবে পদবি" : "Designation"}
               </p>
-              <p className="text-xs sm:text-sm font-extrabold text-pitch truncate mt-0.5">
+              <p className="text-xs sm:text-sm font-extrabold text-pitch leading-snug mt-0.5 break-words">
                 {role}
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-200/90 shadow-sm flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl shrink-0">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-brand-200/90 shadow-sm flex items-start sm:items-center gap-2.5 sm:gap-3.5">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-lg sm:text-xl shrink-0 mt-0.5 sm:mt-0">
               📅
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-brand-500 uppercase tracking-wider">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] sm:text-[11px] font-bold text-brand-500 uppercase tracking-wider">
                 {isBn ? "যোগদানের বছর" : "Joined"}
               </p>
-              <p className="text-xs sm:text-sm font-extrabold text-pitch truncate mt-0.5">
+              <p className="text-xs sm:text-sm font-extrabold text-pitch leading-snug mt-0.5 break-words">
                 {person.joiningYear}
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-200/90 shadow-sm flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-xl shrink-0">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-brand-200/90 shadow-sm flex items-start sm:items-center gap-2.5 sm:gap-3.5">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg sm:text-xl shrink-0 mt-0.5 sm:mt-0">
               🩸
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-brand-500 uppercase tracking-wider">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] sm:text-[11px] font-bold text-brand-500 uppercase tracking-wider">
                 {isBn ? "রক্তের গ্রুপ" : "Blood Group"}
               </p>
-              <p className="text-xs sm:text-sm font-extrabold text-pitch truncate mt-0.5">
+              <p className="text-xs sm:text-sm font-extrabold text-pitch leading-snug mt-0.5 break-words">
                 {person.bloodGroup}
               </p>
             </div>
           </div>
 
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-200/90 shadow-sm flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-5 border border-brand-200/90 shadow-sm flex items-start sm:items-center gap-2.5 sm:gap-3.5">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg sm:text-xl shrink-0 mt-0.5 sm:mt-0">
               📍
             </div>
-            <div>
-              <p className="text-[11px] font-bold text-brand-500 uppercase tracking-wider">
+            <div className="min-w-0 flex-1">
+              <p className="text-[10px] sm:text-[11px] font-bold text-brand-500 uppercase tracking-wider">
                 {isBn ? "গ্রাম / এলাকা" : "Village"}
               </p>
-              <p className="text-xs sm:text-sm font-extrabold text-pitch truncate mt-0.5">
+              <p className="text-xs sm:text-sm font-extrabold text-pitch leading-snug mt-0.5 break-words">
                 {village}
               </p>
             </div>
@@ -301,9 +252,7 @@ export default function PersonDetailsView({ person, locale }: Props) {
             </div>
           </div>
 
-          <p className="text-sm sm:text-base text-brand-800 leading-relaxed font-sans font-normal whitespace-pre-line">
-            {bio}
-          </p>
+          {renderFormattedBio(bio)}
 
           {/* Key Responsibilities / Achievements */}
           <div className="pt-4 space-y-3.5">
@@ -344,7 +293,7 @@ export default function PersonDetailsView({ person, locale }: Props) {
               className="text-xs sm:text-sm font-bold text-[#006a4e] hover:underline flex items-center gap-1"
             >
               <span>{isBn ? "সকল সদস্য ডিরেক্টরি দেখুন" : "View All Members Directory"}</span>
-              <span>→</span>
+              {/* <span>→</span> */}
             </Link>
           </div>
 
@@ -387,6 +336,32 @@ export default function PersonDetailsView({ person, locale }: Props) {
           </div>
         </div>
       </main>
+    </div>
+  );
+}
+
+function renderFormattedBio(text: string) {
+  const paragraphs = text.split(/\n\n+/);
+
+  return (
+    <div className="space-y-4 text-sm sm:text-base text-brand-800 leading-relaxed font-sans font-normal">
+      {paragraphs.map((paragraph, pIdx) => {
+        const parts = paragraph.split(/(\*\*[^*]+\*\*)/g);
+        return (
+          <p key={pIdx}>
+            {parts.map((part, idx) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                return (
+                  <strong key={idx} className="font-extrabold text-pitch">
+                    {part.slice(2, -2)}
+                  </strong>
+                );
+              }
+              return part;
+            })}
+          </p>
+        );
+      })}
     </div>
   );
 }

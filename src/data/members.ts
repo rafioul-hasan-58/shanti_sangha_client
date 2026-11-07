@@ -29,7 +29,7 @@ const executiveClubMembers: ClubMember[] = committeeMembers.map((cm, idx) => ({
   roleBn: cm.roleBn,
   image: cm.image,
   bloodGroup: ["B+", "O+", "A+", "AB+"][idx % 4],
-  joiningYear: "2007",
+  joiningYear: cm.id === "sourav" ? "2017" : "2007",
   villageEn: "Shavarchala",
   villageBn: "সাভারচালা",
 }));

@@ -27,7 +27,7 @@ export const committeeMembers: CommitteeMember[] = [
   },
   {
     id: "rasel",
-    nameEn: "Rasel shuvo",
+    nameEn: "Rasel Shuvo",
     nameBn: "রাসেল শুভ",
     roleEn: "Senior Vice President",
     roleBn: "সিনিয়র সহ-সভাপতি",
