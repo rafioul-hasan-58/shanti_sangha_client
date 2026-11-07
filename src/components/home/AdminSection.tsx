@@ -67,22 +67,30 @@ export default function AdminSection({ locale }: Props) {
 
             // Distinct tech indicator icon based on role/portfolio
             const iconBadge =
-              admin.id === "sourav"
-                ? "💻"
+              admin.id === "harun"
+                ? "👑"
+                : admin.id === "asraful"
+                ? "🎬"
+                : admin.id === "mahbub"
+                ? "📝"
+                : admin.id === "alamin"
+                ? "📈"
                 : admin.id === "himel"
                 ? "📱"
-                : admin.id === "sohan"
-                ? "📢"
-                : admin.id === "sojol"
+                : admin.id === "adil"
+                ? "⚡"
+                : admin.id === "sourav"
+                ? "💻"
+                : admin.id === "rishan"
                 ? "🎥"
-                : admin.id === "jihad"
-                ? "💼"
+                : admin.id === "shahin"
+                ? "🏛️"
+                : admin.id === "sojol"
+                ? "📡"
                 : admin.id === "labib"
                 ? "🏏"
-                : admin.id === "mahfuz"
-                ? "👑"
-                : admin.id === "mustakim"
-                ? "🏛️"
+                : admin.id === "sohan"
+                ? "📢"
                 : "🌐";
 
             return (
@@ -99,6 +107,7 @@ export default function AdminSection({ locale }: Props) {
                         src={admin.image}
                         alt={name}
                         fill
+                        unoptimized={admin.image.endsWith(".svg")}
                         sizes="(max-width: 640px) 96px, 112px"
                         priority={idx < 4}
                         className="object-cover object-top"

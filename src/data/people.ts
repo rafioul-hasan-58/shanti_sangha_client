@@ -873,6 +873,160 @@ export const allPeople: PersonDetail[] = [
       "পবিত্র মাহে রমজানে ইফতার মাহফিল ও দুস্থদের মাঝে সহায়তা কার্যক্রম পরিচালনা",
     ],
   },
+
+  // ==========================================
+  // DIGITAL & MEDIA TEAM
+  // ==========================================
+  {
+    id: "asraful",
+    slug: "asraful",
+    alternateSlugs: ["asraful-aopo", "aopo", "ashraful", "ashraful-aopo"],
+    memberId: "SS-ADM-001",
+    nameEn: "Asraful Aopo",
+    nameBn: "আশরাফুল অপো",
+    roleEn: "Head of Digital Media",
+    roleBn: "হেড অব ডিজিটাল মিডিয়া",
+    type: "committee",
+    badgeEn: "🎬 Head of Digital Media",
+    badgeBn: "🎬 হেড অব ডিজিটাল মিডিয়া",
+    image: "/images/admin/avatar-placeholder.svg",
+    bloodGroup: "B+",
+    joiningYear: "2018",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+    bioEn:
+      "**Asraful Aopo** is the Head of Digital Media at Shavarchala Shanti Sangha. He leads creative media production, digital campaign strategies, and visual storytelling for club tournaments and social welfare programs.",
+    bioBn:
+      "**আশরাফুল অপো** সাভারচালা শান্তি সংঘের ডিজিটাল মিডিয়া প্রধান (Head of Digital Media)। ক্লাবের বিভিন্ন টুর্নামেন্ট, সামাজিক উদ্যোগ ও মিডিয়া প্রচারণায় তিনি সৃষ্টিশীল নেতৃত্ব দিয়ে চলেছেন।",
+    responsibilitiesEn: [
+      "Leads digital media strategy, creative branding, and visual productions",
+      "Oversees club coverage across digital broadcasts and promotional channels",
+    ],
+    responsibilitiesBn: [
+      "ডিজিটাল মিডিয়া ও ক্রিয়েটিভ ব্র্যান্ডিং কৌশলে সার্বিক নেতৃত্ব প্রদান",
+      "টুর্নামেন্ট ও সামাজিক কর্মসূচির আধুনিক ভিডিও ও ভিজ্যুয়াল উপস্থাপনা নিশ্চিতকরণ",
+    ],
+  },
+  {
+    id: "mahbub",
+    slug: "mahbub",
+    alternateSlugs: ["mahbub-farabi", "farabi", "mahbubfarabi"],
+    memberId: "SS-ADM-002",
+    nameEn: "Mahbub Farabi",
+    nameBn: "মাহবুব ফারাবী",
+    roleEn: "Content Manager & Digital Relations",
+    roleBn: "কনটেন্ট ম্যানেজার ও ডিজিটাল রিলেশনস",
+    type: "committee",
+    badgeEn: "📝 Content & Digital Relations",
+    badgeBn: "📝 কনটেন্ট ও ডিজিটাল রিলেশনস",
+    image: "/images/admin/mahbub.png",
+    bloodGroup: "O+",
+    joiningYear: "2019",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+    bioEn:
+      "**Mahbub Farabi** serves as the Content Manager & Digital Relations of Shavarchala Shanti Sangha, managing official written content, creative press releases, and stakeholder communications across digital platforms.",
+    bioBn:
+      "**মাহবুব ফারাবী** সাভারচালা শান্তি সংঘের কনটেন্ট ম্যানেজার ও ডিজিটাল রিলেশনস হিসেবে দায়িত্ব পালন করছেন। ক্লাবের লিখিত বার্তা, প্রেস রিলিজ ও সোশ্যাল মিডিয়া কনটেন্ট ব্যবস্থাপনায় তিনি নিবেদিতপ্রাণ।",
+    responsibilitiesEn: [
+      "Manages club editorial content, announcements, and digital member relations",
+      "Coordinates digital narratives, sponsor features, and event writeups",
+    ],
+    responsibilitiesBn: [
+      "ক্লাবের অফিসিয়াল ঘোষণা, লিখিত বার্তা ও কনটেন্ট পর্যালোচনা",
+      "টুর্নামেন্ট ও সামাজিক উদ্যোগের সুন্দর বিবরণী প্রস্তুতকরণ",
+    ],
+  },
+  {
+    id: "alamin",
+    slug: "alamin",
+    alternateSlugs: ["al-amin", "alamin-bhai", "md-alamin"],
+    memberId: "SS-ADM-003",
+    nameEn: "Al Amin",
+    nameBn: "আল আমিন",
+    roleEn: "Digital Marketing Specialist",
+    roleBn: "ডিজিটাল মার্কেটিং স্পেশালিস্ট",
+    type: "committee",
+    badgeEn: "📈 Digital Marketing Specialist",
+    badgeBn: "📈 ডিজিটাল মার্কেটিং স্পেশালিস্ট",
+    image: "/images/admin/avatar-placeholder.svg",
+    bloodGroup: "A+",
+    joiningYear: "2020",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+    bioEn:
+      "**Al Amin** is the Digital Marketing Specialist of Shavarchala Shanti Sangha, expanding the club's digital outreach, fan engagement, and campaign analytics.",
+    bioBn:
+      "**আল আমিন** সাভারচালা শান্তি সংঘের ডিজিটাল মার্কেটিং স্পেশালিস্ট। ক্লাবের টুর্নামেন্ট প্রচার, অনলাইন উপস্থিতি ও দর্শক এনগেজমেন্ট বৃদ্ধিতে তিনি কাজ করছেন।",
+    responsibilitiesEn: [
+      "Drives social media marketing campaigns and online reach",
+      "Monitors fan engagement and tournament registration analytics",
+    ],
+    responsibilitiesBn: [
+      "সোশ্যাল মিডিয়া প্রচার ও দর্শক সম্পৃক্ততা বৃদ্ধি",
+      "অনলাইন ক্যাম্পেইন ও সদস্য যোগাযোগের ডিজিটাল প্রসার",
+    ],
+  },
+  {
+    id: "adil",
+    slug: "adil",
+    alternateSlugs: ["md-adil", "adil-bhai", "adil-hossain"],
+    memberId: "SS-ADM-004",
+    nameEn: "Adil",
+    nameBn: "আদিল",
+    roleEn: "Digital Media Executive",
+    roleBn: "ডিজিটাল মিডিয়া এক্সিকিউটিভ",
+    type: "committee",
+    badgeEn: "⚡ Digital Media Executive",
+    badgeBn: "⚡ ডিজিটাল মিডিয়া এক্সিকিউটিভ",
+    image: "/images/admin/adil.png",
+    bloodGroup: "B+",
+    joiningYear: "2020",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+    bioEn:
+      "**Adil** serves as Digital Media Executive for Shavarchala Shanti Sangha, actively supporting digital operations, live broadcasts, and media logistics.",
+    bioBn:
+      "**আদিল** সাভারচালা শান্তি সংঘের ডিজিটাল মিডিয়া এক্সিকিউটিভ হিসেবে ক্লাবের সম্প্রচার, ইভেন্ট মিডিয়া ও অনলাইন কার্যক্রমে দায়িত্ব পালন করছেন।",
+    responsibilitiesEn: [
+      "Assists in live media coverage, broadcasts, and operational logistics",
+      "Maintains digital media assets and event archives",
+    ],
+    responsibilitiesBn: [
+      "মাঠপর্যায়ে লাইভ কভারেজ ও মিডিয়া কার্যক্রমে সহায়তা",
+      "ক্লাবের ডিজিটাল কনটেন্ট ও ছবি সংরক্ষণ",
+    ],
+  },
+  {
+    id: "rishan",
+    slug: "rishan",
+    alternateSlugs: ["md-rishan", "rishan-bhai"],
+    memberId: "SS-ADM-005",
+    nameEn: "Rishan",
+    nameBn: "রিশান",
+    roleEn: "Video Editor & Media Creator",
+    roleBn: "ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর",
+    type: "committee",
+    badgeEn: "🎥 Video Editor & Media Creator",
+    badgeBn: "🎥 ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর",
+    image: "/images/admin/avatar-placeholder.svg",
+    bloodGroup: "O+",
+    joiningYear: "2021",
+    villageEn: "Shavarchala",
+    villageBn: "সাভারচালা",
+    bioEn:
+      "**Rishan** is the Video Editor & Media Creator for Shavarchala Shanti Sangha, bringing tournament highlights, player reels, and promotional visual stories to life.",
+    bioBn:
+      "**রিশান** সাভারচালা শান্তি সংঘের ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর। টুর্নামেন্টের উত্তেজনাপূর্ণ হাইলাইটস, প্লেয়ার রিলস ও ভিডিও কনটেন্ট নির্মাণে তিনি কাজ করে থাকেন।",
+    responsibilitiesEn: [
+      "Produces tournament highlight reels, player interviews, and promotional videos",
+      "Edits dynamic short-form videos for social media channels",
+    ],
+    responsibilitiesBn: [
+      "টুর্নামেন্টের হাইলাইটস, প্লেয়ার ক্লিপ ও শর্ট ভিডিও নির্মাণ",
+      "ক্লাবের সামাজিক মাধ্যমের জন্য আকর্ষণীয় ভিজ্যুয়াল কনটেন্ট তৈরি",
+    ],
+  },
 ];
 
 // Lookup by slug or id or alternate slug
