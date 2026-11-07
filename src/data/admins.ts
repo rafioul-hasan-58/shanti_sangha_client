@@ -81,6 +81,16 @@ export const digitalAdmins: DigitalAdmin[] = [
     image: "/images/committee/sourav.png",
   },
   {
+    id: "jihad",
+    nameEn: "Md. Jehad",
+    nameBn: "মোঃ জিহাদ",
+    adminRoleEn: "Finance & Accounts Administrator",
+    adminRoleBn: "অর্থ ও হিসাব অ্যাডমিনিস্ট্রেটর",
+    badgeEn: "💼 Finance Admin",
+    badgeBn: "💼 অর্থ ও হিসাব অ্যাডমিন",
+    image: "/images/committee/jihad.png",
+  },
+  {
     id: "rishan",
     nameEn: "Rishan",
     nameBn: "রিশান",

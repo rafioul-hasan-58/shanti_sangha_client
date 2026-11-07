@@ -81,6 +81,8 @@ export default function AdminSection({ locale }: Props) {
                 ? "⚡"
                 : admin.id === "sourav"
                 ? "💻"
+                : admin.id === "jihad"
+                ? "💼"
                 : admin.id === "rishan"
                 ? "🎥"
                 : admin.id === "shahin"
