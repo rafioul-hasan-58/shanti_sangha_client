@@ -438,9 +438,9 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Mostakim** currently serves as the General Secretary of Shavarchala Shanti Sangha for the 2025–2026 tenure.",
+      "**Mostakim** currently serves as the General Secretary of Shavarchala Shanti Sangha for the 2025–2026 tenure. He plays an active and instrumental role in organizing, coordinating, and driving the organization's multifaceted organizational and sporting initiatives forward.\n\nIn particular, he works with deep sincerity, dedication, and diligence to ensure the successful execution of diverse tournaments and athletic events. His active participation and cooperation across every activity empower the organization's continuous journey with greater dynamism.\n\nAs the General Secretary of the current executive committee, he executes his responsibilities with exceptional accountability, working untiringly to elevate the organizational achievements of Shavarchala Shanti Sangha.",
     bioBn:
-      "**মোস্তাকিম** বর্তমানে সাভারচালা শান্তি সংঘের ২০২৫–২০২৬ মেয়াদের সাধারণ সম্পাদক হিসেবে দায়িত্ব পালন করছেন।",
+      "**মোস্তাকিম** বর্তমানে সাভারচালা শান্তি সংঘের ২০২৫–২০২৬ মেয়াদের সাধারণ সম্পাদক হিসেবে দায়িত্ব পালন করছেন। সংগঠনের বিভিন্ন সাংগঠনিক ও ক্রীড়া কার্যক্রম পরিচালনা এবং এগিয়ে নেওয়ার ক্ষেত্রে তিনি সক্রিয় ভূমিকা পালন করে আসছেন।\n\nবিশেষ করে বিভিন্ন টুর্নামেন্ট ও ক্রীড়া আয়োজন সফলভাবে সম্পন্ন করতে তিনি আন্তরিকতা, নিষ্ঠা ও পরিশ্রমের সঙ্গে কাজ করেন। সংগঠনের প্রতিটি কার্যক্রমে তাঁর অংশগ্রহণ ও সহযোগিতা সংগঠনের অগ্রযাত্রাকে আরও গতিশীল করতে সহায়তা করছে।\n\nবর্তমান কমিটির সাধারণ সম্পাদক হিসেবে তিনি অত্যন্ত দায়িত্বশীলতার সঙ্গে নিজের দায়িত্ব পালন করে যাচ্ছেন এবং সাভারচালা শান্তি সংঘের সাংগঠনিক কার্যক্রমকে এগিয়ে নিতে নিরলসভাবে কাজ করছেন।",
     responsibilitiesEn: [
       "Chief administrative officer responsible for day-to-day operations",
       "Maintains official club records, member registries, and meeting minutes",
