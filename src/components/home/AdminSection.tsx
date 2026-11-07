@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
@@ -10,7 +11,11 @@ interface Props {
 }
 
 export default function AdminSection({ locale }: Props) {
+  const [showAll, setShowAll] = useState(false);
   const isBn = locale === "bn";
+
+  // Initially show 6 admins, expand to all 12 on click
+  const visibleAdmins = showAll ? digitalAdmins : digitalAdmins.slice(0, 6);
 
   return (
     <section id="media-admin" className="mx-auto max-w-6xl px-4 pt-16 scroll-mt-20">
@@ -25,8 +30,8 @@ export default function AdminSection({ locale }: Props) {
           </h2>
           <p className="text-xs sm:text-sm text-brand-600 font-medium mt-1">
             {isBn
-              ? `মোট ১২ জন সদস্য দ্বারা পরিচালিত ক্লাবের অফিসিয়াল ওয়েবসাইট, পেজ ও ডিজিটাল প্রযুক্তি দল`
-              : `12-member dedicated team managing official website, Facebook page & digital media`}
+              ? `মোট ${digitalAdmins.length} জন সদস্য দ্বারা পরিচালিত ক্লাবের অফিসিয়াল ওয়েবসাইট, পেজ ও ডিজিটাল প্রযুক্তি দল`
+              : `${digitalAdmins.length}-member dedicated team managing official website, Facebook page & digital media`}
           </p>
         </div>
 
@@ -46,9 +51,9 @@ export default function AdminSection({ locale }: Props) {
         </div>
       </div>
 
-      {/* Grid of Admin Cards (12 Members) */}
+      {/* Grid of Admin Cards (6 initially, 12 when expanded) */}
       <div className="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4">
-        {digitalAdmins.map((admin, idx) => {
+        {visibleAdmins.map((admin, idx) => {
           const name = isBn ? admin.nameBn : admin.nameEn;
           const role = isBn ? admin.adminRoleBn : admin.adminRoleEn;
           const badge = isBn ? admin.badgeBn : admin.badgeEn;
@@ -98,6 +103,37 @@ export default function AdminSection({ locale }: Props) {
           );
         })}
       </div>
+
+      {/* View All / Show Less Button */}
+      {digitalAdmins.length > 6 && (
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setShowAll(!showAll)}
+            className="inline-flex items-center gap-2 rounded-full bg-[#006a4e] px-8 py-3 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white shadow-md hover:bg-[#005a42] hover:shadow-lg active:scale-95 transition-all"
+          >
+            <span>
+              {showAll
+                ? isBn
+                  ? "সংক্ষেপ করুন"
+                  : "Show Less"
+                : isBn
+                ? `সকল অ্যাডমিন দেখুন (${digitalAdmins.length})`
+                : `View All Admins (${digitalAdmins.length})`}
+            </span>
+            <svg
+              className={`w-4 h-4 transition-transform duration-300 ${
+                showAll ? "rotate-180" : "rotate-0"
+              }`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      )}
     </section>
   );
 }
