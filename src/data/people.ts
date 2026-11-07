@@ -151,17 +151,17 @@ export const allPeople: PersonDetail[] = [
     roleEn: "Former President",
     roleBn: "সাবেক সভাপতি",
     type: "pioneer",
-    badgeEn: "🕊️ Former President • Pioneer of Peace",
-    badgeBn: "🕊️ সাবেক সভাপতি • শান্তির অগ্রদূত",
+    badgeEn: "🏏 Cricket Patron • Former President",
+    badgeBn: "🏏 ক্রিকেট পৃষ্ঠপোষক • সাবেক সভাপতি",
     image: "/images/formar_president/lutfor.png",
     bloodGroup: "B+",
     joiningYear: "2007",
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "Lutfor Rahman is an unforgettable stalwart in Shanti Sangha's heritage. Serving as Former President, he devoted his tenure to institutional discipline, large-scale community events including the Annual Waz Mahfil, and promoting peaceful coexistence.",
+      "**Lutfor Rahman** is a Former President of Shavarchala Shanti Sangha. A devoted cricket enthusiast and passionate sports patron, his love and dedication are deeply intertwined with the organization's sporting arena.\n\nOver the years, he has played an essential role in organizing cricket tournaments, managing match operations, and driving athletic activities forward. His leadership and involvement in organizing and successfully orchestrating the GPL (Gosinga Premier League) are particularly noteworthy. Through his initiative and support, the organization's cricketing endeavors have become more vibrant and dynamic.\n\nAlongside his deep passion for cricket, he remains actively involved in diverse social and organizational programs of the club. In moments of the organization's need, his participation, assistance, and meaningful contributions have continuously propelled Shavarchala Shanti Sangha forward.\n\nHis lasting contributions to the sporting landscape and organizational progress of Shavarchala Shanti Sangha will always be remembered with deep appreciation.",
     bioBn:
-      "লুৎফর রহমান সাভারচালা শান্তি সংঘের ইতিহাসে এক অবিস্মরণীয় কান্ডারী। সাবেক সভাপতি হিসেবে তিনি ক্লাবের প্রাতিষ্ঠানিক রূপদান, বাৎসরিক ওয়াজ মাহফিল এবং এলাকার তরুণ সমাজকে শৃঙ্খলা ও শান্তির পতাকাতলে একত্রিত করার ক্ষেত্রে ঐতিহাসিক ভূমিকা পালন করেছেন।",
+      "**লুৎফর রহমান** সাভারচালা শান্তি সংঘের সাবেক সভাপতি। তিনি একজন ক্রিকেটপ্রেমী ও ক্রীড়ানুরাগী ব্যক্তিত্ব, যাঁর ভালোবাসা ও আন্তরিকতা সংগঠনের ক্রীড়াঙ্গনের সঙ্গে গভীরভাবে জড়িয়ে রয়েছে।\n\nসাভারচালা শান্তি সংঘের বিভিন্ন সময়ে ক্রিকেট খেলার আয়োজন, টুর্নামেন্ট পরিচালনা এবং ক্রীড়া কার্যক্রমকে এগিয়ে নিতে তিনি গুরুত্বপূর্ণ ভূমিকা পালন করেছেন। বিশেষ করে জিপিএল (GPL) আয়োজন ও সফলভাবে পরিচালনায় তাঁর নেতৃত্ব ও সম্পৃক্ততা উল্লেখযোগ্য। তাঁর উদ্যোগ ও সহযোগিতায় সংগঠনের ক্রিকেট কার্যক্রম আরও প্রাণবন্ত ও গতিশীল হয়েছে।\n\nক্রিকেটের প্রতি গভীর অনুরাগের পাশাপাশি তিনি সংগঠনের বিভিন্ন সামাজিক ও সাংগঠনিক কর্মকাণ্ডেও সক্রিয়ভাবে সম্পৃক্ত রয়েছেন। সাভারচালা শান্তি সংঘের প্রয়োজনে বিভিন্ন সময়ে তাঁর অংশগ্রহণ, সহযোগিতা ও অবদান সংগঠনের কার্যক্রমকে এগিয়ে নিতে সহায়তা করেছে।\n\nসাভারচালা শান্তি সংঘের ক্রীড়াঙ্গন ও সাংগঠনিক অগ্রযাত্রায় তাঁর অবদান স্মরণীয় হয়ে থাকবে।",
     responsibilitiesEn: [
       "Led the club with a focus on administrative discipline and ethical governance",
       "Orchestrated the signature Annual Waz Mahfil gathering thousands of villagers",
@@ -892,15 +892,12 @@ export function getPersonBySlug(slug: string): PersonDetail | undefined {
   });
 }
 
-// All slugs for static generation
+// All canonical slugs for static generation
 export function getAllPersonSlugs(): string[] {
   const slugs: string[] = [];
   allPeople.forEach((p) => {
     slugs.push(p.slug);
     if (p.id !== p.slug) slugs.push(p.id);
-    if (p.alternateSlugs) {
-      p.alternateSlugs.forEach((alt) => slugs.push(alt));
-    }
   });
   return Array.from(new Set(slugs));
 }
