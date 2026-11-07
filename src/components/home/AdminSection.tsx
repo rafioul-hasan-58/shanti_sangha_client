@@ -126,19 +126,12 @@ export default function AdminSection({ locale }: Props) {
                   {name}
                 </h3>
 
-                {/* Admin Badge */}
-                {badge && (
-                  <div className="mt-2">
-                    <span className="inline-block rounded-full bg-[#006a4e]/10 border border-[#006a4e]/25 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#006a4e]">
-                      {badge}
-                    </span>
-                  </div>
-                )}
-
-                {/* Role Title */}
-                <p className="mt-2 text-xs text-brand-700 line-clamp-2 leading-relaxed">
-                  {role}
-                </p>
+                {/* Admin Designation Badge (Single, Non-Redundant) */}
+                <div className="mt-2.5">
+                  <span className="inline-block rounded-full bg-[#006a4e]/10 border border-[#006a4e]/20 px-3 py-0.5 text-[10px] sm:text-[11px] font-bold tracking-wide text-[#006a4e]">
+                    {badge || role}
+                  </span>
+                </div>
 
                 {/* View Details Link */}
                 <div className="mt-3 text-[11px] font-bold text-[#006a4e] inline-flex items-center gap-1 opacity-80 group-hover:opacity-100 group-hover:underline">
