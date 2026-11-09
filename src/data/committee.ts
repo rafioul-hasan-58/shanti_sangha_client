@@ -140,6 +140,6 @@ export const committeeMembers: CommitteeMember[] = [
     nameBn: "ইমরান",
     roleEn: "Religious Affairs Secretary",
     roleBn: "ধর্ম বিষয়ক সম্পাদক",
-    image: "/images/committee/emran.png",
+    image: "/images/committee/imran.png",
   },
 ];
