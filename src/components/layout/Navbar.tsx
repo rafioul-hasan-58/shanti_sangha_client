@@ -7,6 +7,7 @@ import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
 import LanguageSwitcher from "./LanguageSwitcher";
+import UserProfileDropdown from "./UserProfileDropdown";
 
 export default function Navbar({
   locale,
@@ -121,47 +122,8 @@ export default function Navbar({
           </div>
 
           {isAuthenticated && user ? (
-            <div className="self-stretch flex items-center pr-3 sm:pr-4">
-              <div className="flex items-center gap-2 bg-[#005a42] hover:bg-[#004d38] border border-white/20 rounded-full py-1 pl-1.5 pr-2.5 transition-colors shadow-xs">
-                <Link
-                  href={`/${locale}/dashboard`}
-                  className="flex items-center gap-2 text-white"
-                  title={user.name}
-                >
-                  {user.picture ? (
-                    <div className="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border border-white/40 shrink-0">
-                      <Image
-                        src={user.picture}
-                        alt={user.name}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-[#006a4e] font-extrabold flex items-center justify-center text-xs shrink-0 shadow-xs">
-                      {user.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <span className="hidden lg:inline-block max-w-[120px] truncate text-xs font-bold tracking-wide">
-                    {user.name}
-                  </span>
-                </Link>
-
-                <div className="h-4 w-[1px] bg-white/30 mx-0.5" />
-
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="text-white/80 hover:text-white p-1 rounded transition-colors text-xs font-semibold cursor-pointer"
-                  title={isBn ? "লগআউট" : "Logout"}
-                  aria-label="Logout"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              </div>
+            <div className="self-stretch flex items-center pr-2 sm:pr-4">
+              <UserProfileDropdown user={user} locale={locale} onLogout={logout} />
             </div>
           ) : (
             /* Login Button (Full height white block matching BCB style) */
