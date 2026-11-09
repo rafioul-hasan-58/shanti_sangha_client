@@ -7,5 +7,5 @@ export default async function UserDashboard({ params }: { params: Promise<{ loca
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
   const dict = await getDictionary(locale);
-  return <DashboardShell title={dict.dashboard.userTitle} stats={dict.dashboard.userStats} dict={dict} />;
+  return <DashboardShell title={dict.dashboard.userTitle} stats={dict.dashboard.userStats} dict={dict} locale={locale} />;
 }

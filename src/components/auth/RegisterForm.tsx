@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useRole } from "@/context/RoleContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function RegisterForm({
   locale,
@@ -17,6 +18,7 @@ export default function RegisterForm({
 }) {
   const router = useRouter();
   const { setRole } = useRole();
+  const { loginWithGoogle, loginWithCredentials } = useAuth();
   const isBn = locale === "bn";
 
   const [fullName, setFullName] = useState("");
@@ -69,23 +71,34 @@ export default function RegisterForm({
     }
 
     setLoading(true);
-    // Simulate user creation
-    setTimeout(() => {
-      setRole("user");
-      setLoading(false);
+    try {
+      await loginWithCredentials(email, fullName);
       router.push(`/${locale}/dashboard`);
-    }, 1000);
+    } catch {
+      setError(
+        isBn ? "নিবন্ধন ব্যর্থ হয়েছে।" : "Registration failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
     setError(null);
     setGoogleLoading(true);
-    // Simulate Google SSO sign-up
-    setTimeout(() => {
-      setRole("user");
-      setGoogleLoading(false);
+    try {
+      await loginWithGoogle();
       router.push(`/${locale}/dashboard`);
-    }, 1000);
+    } catch (err: unknown) {
+      console.error("Google sign up error:", err);
+      setError(
+        isBn
+          ? "গুগল সাইন-আপ সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+          : "Google sign-up could not be completed. Please try again."
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (

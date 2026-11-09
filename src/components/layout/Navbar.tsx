@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
+import { useAuth } from "@/context/AuthContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Navbar({
@@ -15,31 +16,33 @@ export default function Navbar({
   dict: Dictionary;
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const isBn = locale === "bn";
 
   const navLinks = [
     {
       href: `/${locale}#about`,
-      label: dict.nav.about || (locale === "bn" ? "আমাদের সম্পর্কে" : "About Us"),
+      label: dict.nav.about || (isBn ? "আমাদের সম্পর্কে" : "About Us"),
       hasDropdown: false,
     },
     {
       href: `/${locale}#sports`,
-      label: dict.nav.sports || (locale === "bn" ? "খেলাধুলা" : "Sports"),
+      label: dict.nav.sports || (isBn ? "খেলাধুলা" : "Sports"),
       hasDropdown: false,
     },
     {
       href: `/${locale}#spl`,
-      label: dict.nav.spl || (locale === "bn" ? "এসপিএল" : "SPL"),
+      label: dict.nav.spl || (isBn ? "এসপিএল" : "SPL"),
       hasDropdown: false,
     },
     {
       href: `/${locale}#committee`,
-      label: dict.nav.committee || (locale === "bn" ? "কমিটি" : "Comette"),
+      label: dict.nav.committee || (isBn ? "কমিটি" : "Comette"),
       hasDropdown: false,
     },
     {
       href: `/${locale}/members`,
-      label: dict.nav.members || (locale === "bn" ? "সদস্যবৃন্দ" : "Members"),
+      label: dict.nav.members || (isBn ? "সদস্যবৃন্দ" : "Members"),
       hasDropdown: false,
     },
   ];
@@ -81,14 +84,11 @@ export default function Navbar({
           </div>
           <div className="flex flex-col justify-center leading-tight select-none">
             <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
-              {locale === "bn" ? "সাভারচালা" : "SHAVARCHALA"}
+              {isBn ? "সাভারচালা" : "SHAVARCHALA"}
             </span>
             <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
-              {locale === "bn" ? "শান্তি সংঘ" : "SHANTI SANGHA"}
+              {isBn ? "শান্তি সংঘ" : "SHANTI SANGHA"}
             </span>
-            {/* <span className="text-[10px] sm:text-xs font-semibold tracking-widest text-white/90 uppercase font-sans mt-0.5">
-              {locale === "bn" ? "শান্তি সংঘ" : "SHANTI SANGHA"}
-            </span> */}
           </div>
         </Link>
 
@@ -113,20 +113,65 @@ export default function Navbar({
           ))}
         </nav>
 
-        {/* Right Action: Language Switcher + Login Button */}
+        {/* Right Action: Language Switcher + User Profile / Login Button */}
         <div className="flex items-center h-full">
           {/* Language Switcher */}
           <div className="hidden sm:flex items-center mr-3">
             <LanguageSwitcher locale={locale} />
           </div>
 
-          {/* Login Button (Full height white block matching BCB style) */}
-          <Link
-            href={`/${locale}/login`}
-            className="self-stretch flex items-center justify-center px-5 sm:px-8 bg-white text-[#006a4e] font-extrabold text-xs sm:text-sm uppercase tracking-wider hover:bg-neutral-100 transition-colors shadow-inner"
-          >
-            {dict.nav.login || (locale === "bn" ? "লগইন" : "LOGIN")}
-          </Link>
+          {isAuthenticated && user ? (
+            <div className="self-stretch flex items-center pr-3 sm:pr-4">
+              <div className="flex items-center gap-2 bg-[#005a42] hover:bg-[#004d38] border border-white/20 rounded-full py-1 pl-1.5 pr-2.5 transition-colors shadow-xs">
+                <Link
+                  href={`/${locale}/dashboard`}
+                  className="flex items-center gap-2 text-white"
+                  title={user.name}
+                >
+                  {user.picture ? (
+                    <div className="relative w-7 h-7 sm:w-8 sm:h-8 rounded-full overflow-hidden border border-white/40 shrink-0">
+                      <Image
+                        src={user.picture}
+                        alt={user.name}
+                        fill
+                        unoptimized
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white text-[#006a4e] font-extrabold flex items-center justify-center text-xs shrink-0 shadow-xs">
+                      {user.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="hidden lg:inline-block max-w-[120px] truncate text-xs font-bold tracking-wide">
+                    {user.name}
+                  </span>
+                </Link>
+
+                <div className="h-4 w-[1px] bg-white/30 mx-0.5" />
+
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="text-white/80 hover:text-white p-1 rounded transition-colors text-xs font-semibold cursor-pointer"
+                  title={isBn ? "লগআউট" : "Logout"}
+                  aria-label="Logout"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Login Button (Full height white block matching BCB style) */
+            <Link
+              href={`/${locale}/login`}
+              className="self-stretch flex items-center justify-center px-5 sm:px-8 bg-white text-[#006a4e] font-extrabold text-xs sm:text-sm uppercase tracking-wider hover:bg-neutral-100 transition-colors shadow-inner"
+            >
+              {dict.nav.login || (isBn ? "লগইন" : "LOGIN")}
+            </Link>
+          )}
 
           {/* Mobile Menu Hamburger */}
           <button
@@ -173,23 +218,69 @@ export default function Navbar({
             <span className="text-xs uppercase tracking-wider text-white/80 font-semibold">Language</span>
             <LanguageSwitcher locale={locale} />
           </div>
-          {/* Mobile Login & Register Actions */}
-          <div className="pt-2 grid grid-cols-2 gap-2 border-t border-white/10">
-            <Link
-              href={`/${locale}/login`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center py-2 px-3 bg-white text-[#006a4e] font-extrabold text-xs uppercase tracking-wider rounded text-center shadow-xs"
-            >
-              {dict.nav.login || (locale === "bn" ? "লগইন" : "Login")}
-            </Link>
-            <Link
-              href={`/${locale}/register`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center py-2 px-3 bg-white/20 text-white font-extrabold text-xs uppercase tracking-wider rounded text-center border border-white/30 hover:bg-white/30"
-            >
-              {locale === "bn" ? "নিবন্ধন" : "Register"}
-            </Link>
-          </div>
+
+          {/* Mobile User Profile or Login/Register Actions */}
+          {isAuthenticated && user ? (
+            <div className="pt-2 border-t border-white/10 space-y-2.5">
+              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/10 border border-white/15">
+                {user.picture ? (
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/40 shrink-0">
+                    <Image
+                      src={user.picture}
+                      alt={user.name}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-white text-[#006a4e] font-extrabold flex items-center justify-center text-sm shrink-0">
+                    {user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                  <p className="text-xs text-white/70 truncate">{user.email}</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Link
+                  href={`/${locale}/dashboard`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-center py-2 px-3 bg-white text-[#006a4e] font-extrabold text-xs uppercase tracking-wider rounded text-center shadow-xs"
+                >
+                  {isBn ? "ড্যাশবোর্ড" : "Dashboard"}
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="flex items-center justify-center py-2 px-3 bg-red-600/90 hover:bg-red-600 text-white font-extrabold text-xs uppercase tracking-wider rounded text-center transition-colors cursor-pointer"
+                >
+                  {isBn ? "লগআউট" : "Logout"}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="pt-2 grid grid-cols-2 gap-2 border-t border-white/10">
+              <Link
+                href={`/${locale}/login`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center py-2 px-3 bg-white text-[#006a4e] font-extrabold text-xs uppercase tracking-wider rounded text-center shadow-xs"
+              >
+                {dict.nav.login || (isBn ? "লগইন" : "Login")}
+              </Link>
+              <Link
+                href={`/${locale}/register`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center py-2 px-3 bg-white/20 text-white font-extrabold text-xs uppercase tracking-wider rounded text-center border border-white/30 hover:bg-white/30"
+              >
+                {isBn ? "নিবন্ধন" : "Register"}
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </header>

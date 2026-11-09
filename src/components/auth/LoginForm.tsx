@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useRole } from "@/context/RoleContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginForm({
   locale,
@@ -17,6 +18,7 @@ export default function LoginForm({
 }) {
   const router = useRouter();
   const { setRole } = useRole();
+  const { loginWithGoogle, loginWithCredentials } = useAuth();
   const isBn = locale === "bn";
 
   const [email, setEmail] = useState("");
@@ -41,23 +43,34 @@ export default function LoginForm({
     }
 
     setLoading(true);
-    // Simulate authentication
-    setTimeout(() => {
-      setRole("user");
-      setLoading(false);
+    try {
+      await loginWithCredentials(email);
       router.push(`/${locale}/dashboard`);
-    }, 800);
+    } catch {
+      setError(
+        isBn ? "লগইন ব্যর্থ হয়েছে।" : "Login failed. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setError(null);
     setGoogleLoading(true);
-    // Simulate Google SSO authentication
-    setTimeout(() => {
-      setRole("user");
-      setGoogleLoading(false);
+    try {
+      await loginWithGoogle();
       router.push(`/${locale}/dashboard`);
-    }, 1000);
+    } catch (err: unknown) {
+      console.error("Google sign in error:", err);
+      setError(
+        isBn
+          ? "গুগল সাইন-ইন সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+          : "Google sign-in could not be completed. Please try again."
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
   };
 
   return (
