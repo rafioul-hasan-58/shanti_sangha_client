@@ -28,7 +28,7 @@ export const digitalAdmins: DigitalAdmin[] = [
     adminRoleBn: "হেড অব ডিজিটাল মিডিয়া",
     badgeEn: "🎬 Head of Digital Media",
     badgeBn: "🎬 হেড অব ডিজিটাল মিডিয়া",
-    image: "/images/admin/avatar-placeholder.svg",
+    image: "/images/admin/apu.png",
   },
   {
     id: "mahbub",
@@ -48,7 +48,7 @@ export const digitalAdmins: DigitalAdmin[] = [
     adminRoleBn: "ডিজিটাল মার্কেটিং স্পেশালিস্ট",
     badgeEn: "📈 Digital Marketing",
     badgeBn: "📈 ডিজিটাল মার্কেটিং",
-    image: "/images/admin/avatar-placeholder.svg",
+    image: "/images/admin/alamin.png",
   },
   {
     id: "himel",
