@@ -179,7 +179,7 @@ export default function UserProfileDropdown({
             aria-orientation="vertical"
             aria-labelledby="user-profile-trigger"
             onKeyDown={handleMenuKeyDown}
-            className="fixed sm:absolute bottom-4 sm:bottom-auto inset-x-4 sm:inset-x-auto sm:right-0 sm:top-full z-50 sm:mt-2.5 w-auto sm:w-76 rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150 sm:origin-top-right select-none"
+            className="min-w-[260px] max-w-sm w-max fixed sm:absolute bottom-4 sm:bottom-auto inset-x-4 sm:inset-x-auto sm:right-0 sm:top-full z-50 sm:mt-2.5  sm:w-76 rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150 sm:origin-top-right select-none"
           >
             {/* Identity Header */}
             <div className="flex items-start gap-3.5">
@@ -210,31 +210,6 @@ export default function UserProfileDropdown({
                 <p className="text-xs text-slate-400 truncate mt-0.5">
                   {user.email || (isBn ? "ক্লাব মেম্বার" : "Club Member")}
                 </p>
-
-                {/* Pill Badges Row (Intermediate B2 & 🔥 2d style) */}
-                <div className="mt-2 flex items-center gap-1.5 flex-wrap">
-                  <span className="inline-block bg-purple-100/70 text-purple-700 font-bold text-[10px] px-2.5 py-0.5 rounded-lg border border-purple-200/50">
-                    {role === "admin"
-                      ? isBn
-                        ? "অ্যাডমিন"
-                        : "Admin"
-                      : isBn
-                      ? "ক্লাব মেম্বার"
-                      : "Club Member"}
-                  </span>
-
-                  {user.provider === "google" ? (
-                    <span className="inline-flex items-center gap-1 bg-amber-100/70 text-amber-700 font-bold text-[10px] px-2.5 py-0.5 rounded-lg border border-amber-200/50">
-                      <span>🔥</span>
-                      <span>Google</span>
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 bg-amber-100/70 text-amber-700 font-bold text-[10px] px-2.5 py-0.5 rounded-lg border border-amber-200/50">
-                      <span>🔥</span>
-                      <span>Active</span>
-                    </span>
-                  )}
-                </div>
               </div>
             </div>
 
@@ -251,7 +226,7 @@ export default function UserProfileDropdown({
                 className="flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
               >
                 <span className="text-base leading-none">📊</span>
-                <span>{isBn ? "লার্নিং ড্যাশবোর্ড" : "Learning Dashboard"}</span>
+                <span>{isBn ? "লার্নিং ড্যাশবোর্ড" : " Dashboard"}</span>
               </Link>
 
               <Link
