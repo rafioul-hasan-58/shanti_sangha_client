@@ -44,11 +44,12 @@ export default function LoginForm({
 
     setLoading(true);
     try {
-      await loginWithCredentials(email);
+      await loginWithCredentials(email, password);
       router.push(`/${locale}/dashboard`);
-    } catch {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : null;
       setError(
-        isBn ? "লগইন ব্যর্থ হয়েছে।" : "Login failed. Please try again."
+        msg || (isBn ? "লগইন ব্যর্থ হয়েছে।" : "Login failed. Please try again.")
       );
     } finally {
       setLoading(false);

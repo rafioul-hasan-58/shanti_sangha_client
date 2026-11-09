@@ -10,6 +10,7 @@ import {
 } from "react";
 import type { AuthUser, Role } from "@/types";
 import { useRole } from "./RoleContext";
+import { API_BASE_URL } from "@/lib/api";
 
 export const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
@@ -21,7 +22,12 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   loginWithGoogle: () => Promise<AuthUser>;
-  loginWithCredentials: (email: string, name?: string) => Promise<AuthUser>;
+  loginWithCredentials: (email: string, password?: string) => Promise<AuthUser>;
+  registerWithCredentials: (
+    fullName: string,
+    email: string,
+    password: string
+  ) => Promise<AuthUser>;
   logout: () => void;
   clearError: () => void;
 }
@@ -35,6 +41,9 @@ const AuthContext = createContext<AuthContextType>({
     throw new Error("AuthContext not initialized");
   },
   loginWithCredentials: async () => {
+    throw new Error("AuthContext not initialized");
+  },
+  registerWithCredentials: async () => {
     throw new Error("AuthContext not initialized");
   },
   logout: () => {},
@@ -85,6 +94,7 @@ export function ensureGoogleScript(): Promise<void> {
 }
 
 const STORAGE_KEY = "shanti_auth_user";
+const TOKEN_KEY = "shanti_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
@@ -139,6 +149,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               return reject(new Error(errMsg));
             }
 
+            // Log access token to browser console
+            console.log("Google OAuth Access Token:", response.access_token);
+
             try {
               // Fetch user profile from Google UserInfo endpoint
               const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -153,20 +166,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
               const profile = await userInfoRes.json();
 
+              // Send access token to backend API if available
+              let backendToken: string | undefined;
+              let backendRole: Role = "user";
+              let backendId: string | undefined;
+
+              try {
+                const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ accessToken: response.access_token }),
+                });
+
+                if (apiRes.ok) {
+                  const apiJson = await apiRes.json();
+                  if (apiJson.success && apiJson.data) {
+                    const data = apiJson.data;
+                    backendToken = data.token || data.accessToken;
+                    if (data.user?.role) backendRole = data.user.role as Role;
+                    if (data.user?.id) backendId = data.user.id;
+                  }
+                }
+              } catch (apiErr) {
+                console.warn("Backend auth/google sync notice:", apiErr);
+              }
+
               const authUser: AuthUser = {
-                id: profile.sub || String(Date.now()),
+                id: backendId || profile.sub || String(Date.now()),
                 name: profile.name || profile.email?.split("@")[0] || "Google Member",
                 email: profile.email || "",
                 picture: profile.picture,
+                accessToken: response.access_token,
+                token: backendToken,
                 provider: "google",
-                role: "user",
+                role: backendRole,
               };
 
               setUser(authUser);
-              setRole("user");
+              setRole(authUser.role);
+
               try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-                localStorage.setItem("role", "user");
+                localStorage.setItem("role", authUser.role);
+                if (backendToken) {
+                  localStorage.setItem(TOKEN_KEY, backendToken);
+                }
               } catch {}
 
               resolve(authUser);
@@ -193,13 +237,69 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, [setRole]);
 
-  /** Email & password simulated login */
+  /** Email & password login (communicates with backend API) */
   const loginWithCredentials = useCallback(
-    async (email: string, name?: string): Promise<AuthUser> => {
+    async (email: string, password?: string): Promise<AuthUser> => {
       setError(null);
+
+      if (password) {
+        try {
+          const apiRes = await fetch(`${API_BASE_URL}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const apiJson = await apiRes.json().catch(() => null);
+
+          if (apiRes.ok && apiJson?.success) {
+            const data = apiJson.data || {};
+            const backendUser = data.user || {};
+            const backendToken = data.token || data.accessToken;
+            const backendRole = (backendUser.role as Role) || "user";
+
+            const authUser: AuthUser = {
+              id: backendUser.id || String(Date.now()),
+              name: backendUser.fullName || backendUser.name || email.split("@")[0],
+              email: backendUser.email || email,
+              picture: backendUser.avatar,
+              token: backendToken,
+              provider: "credentials",
+              role: backendRole,
+            };
+
+            setUser(authUser);
+            setRole(backendRole);
+
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
+              localStorage.setItem("role", backendRole);
+              if (backendToken) {
+                localStorage.setItem(TOKEN_KEY, backendToken);
+              }
+            } catch {}
+
+            return authUser;
+          } else {
+            const msg =
+              apiJson?.message ||
+              apiJson?.errorMessages?.[0] ||
+              "Invalid email or password";
+            setError(msg);
+            throw new Error(msg);
+          }
+        } catch (fetchErr: unknown) {
+          if (fetchErr instanceof Error) {
+            setError(fetchErr.message);
+            throw fetchErr;
+          }
+        }
+      }
+
+      // Simulated local fallback
       const authUser: AuthUser = {
         id: String(Date.now()),
-        name: name || email.split("@")[0] || "Club Member",
+        name: email.split("@")[0] || "Club Member",
         email,
         provider: "credentials",
         role: "user",
@@ -217,12 +317,77 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [setRole]
   );
 
+  /** Registration (communicates with backend API) */
+  const registerWithCredentials = useCallback(
+    async (
+      fullName: string,
+      email: string,
+      password: string
+    ): Promise<AuthUser> => {
+      setError(null);
+
+      try {
+        const apiRes = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ fullName, email, password }),
+        });
+
+        const apiJson = await apiRes.json().catch(() => null);
+
+        if (apiRes.ok && apiJson?.success) {
+          const data = apiJson.data || {};
+          const backendUser = data.user || {};
+          const backendToken = data.token || data.accessToken;
+          const backendRole = (backendUser.role as Role) || "user";
+
+          const authUser: AuthUser = {
+            id: backendUser.id || String(Date.now()),
+            name: backendUser.fullName || fullName,
+            email: backendUser.email || email,
+            token: backendToken,
+            provider: "credentials",
+            role: backendRole,
+          };
+
+          setUser(authUser);
+          setRole(backendRole);
+
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
+            localStorage.setItem("role", backendRole);
+            if (backendToken) {
+              localStorage.setItem(TOKEN_KEY, backendToken);
+            }
+          } catch {}
+
+          return authUser;
+        } else {
+          const msg =
+            apiJson?.message ||
+            apiJson?.errorMessages?.[0] ||
+            "Registration failed";
+          setError(msg);
+          throw new Error(msg);
+        }
+      } catch (fetchErr: unknown) {
+        if (fetchErr instanceof Error) {
+          setError(fetchErr.message);
+          throw fetchErr;
+        }
+        throw new Error("Registration failed");
+      }
+    },
+    [setRole]
+  );
+
   /** Sign out */
   const logout = useCallback(() => {
     setUser(null);
     setRole("user");
     try {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem("role");
       if (window.google?.accounts?.id) {
         window.google.accounts.id.disableAutoSelect();
@@ -239,6 +404,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
         loginWithGoogle,
         loginWithCredentials,
+        registerWithCredentials,
         logout,
         clearError,
       }}
@@ -249,4 +415,3 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-

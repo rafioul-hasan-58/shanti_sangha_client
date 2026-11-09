@@ -18,7 +18,7 @@ export default function RegisterForm({
 }) {
   const router = useRouter();
   const { setRole } = useRole();
-  const { loginWithGoogle, loginWithCredentials } = useAuth();
+  const { loginWithGoogle, registerWithCredentials } = useAuth();
   const isBn = locale === "bn";
 
   const [fullName, setFullName] = useState("");
@@ -72,11 +72,12 @@ export default function RegisterForm({
 
     setLoading(true);
     try {
-      await loginWithCredentials(email, fullName);
+      await registerWithCredentials(fullName, email, password);
       router.push(`/${locale}/dashboard`);
-    } catch {
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : null;
       setError(
-        isBn ? "নিবন্ধন ব্যর্থ হয়েছে।" : "Registration failed. Please try again."
+        msg || (isBn ? "নিবন্ধন ব্যর্থ হয়েছে।" : "Registration failed. Please try again.")
       );
     } finally {
       setLoading(false);

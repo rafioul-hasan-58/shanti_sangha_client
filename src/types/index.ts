@@ -5,6 +5,8 @@ export interface AuthUser {
   name: string;
   email: string;
   picture?: string;
+  accessToken?: string;
+  token?: string;
   provider: "google" | "credentials";
   role: Role;
 }
