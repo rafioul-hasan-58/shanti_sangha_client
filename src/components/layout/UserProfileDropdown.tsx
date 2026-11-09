@@ -108,7 +108,7 @@ export default function UserProfileDropdown({
 
   return (
     <div ref={dropdownRef} className={`relative inline-block text-left ${className}`}>
-      {/* 1. TRIGGER PILL BUTTON (Matching the screenshot pill style) */}
+      {/* 1. TRIGGER BUTTON (Clean Round Circle Profile Picture) */}
       <button
         ref={triggerRef}
         type="button"
@@ -117,49 +117,31 @@ export default function UserProfileDropdown({
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-label="User profile menu"
-        className={`group flex items-center gap-2.5 bg-white text-slate-800 rounded-full pl-1.5 pr-3.5 py-1 border transition-all cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+        className={`group relative rounded-full p-0.5 transition-all cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-white ${
           isOpen
-            ? "border-purple-300 ring-2 ring-purple-200/80 shadow-md"
-            : "border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-sm"
+            ? "ring-2 ring-white shadow-md scale-105"
+            : "hover:scale-105 transition-transform"
         }`}
       >
-        {/* Avatar with Green Online Dot */}
-        <div className="relative shrink-0">
+        {/* Profile picture with round circle */}
+        <div className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-full ring-2 ring-white/90 overflow-hidden shadow-xs bg-white">
           {user.picture ? (
-            <div className="relative h-8 w-8 rounded-full overflow-hidden">
-              <Image
-                src={user.picture}
-                alt={user.name}
-                fill
-                unoptimized
-                className="object-cover"
-              />
-            </div>
+            <Image
+              src={user.picture}
+              alt={user.name}
+              fill
+              unoptimized
+              className="object-cover"
+            />
           ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-xs">
+            <div className="flex h-full w-full items-center justify-center bg-white font-extrabold text-[#006a4e] text-sm">
               {user.name.charAt(0).toUpperCase()}
             </div>
           )}
-
-          {/* Green Online Dot */}
-          <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
         </div>
 
-        {/* User Name & Subtitle (2 Lines) */}
-        <div className="hidden sm:flex flex-col text-left justify-center leading-tight min-w-0">
-          <span className="text-xs font-bold text-slate-800 max-w-[125px] truncate">
-            {user.name}
-          </span>
-          <span className="text-[10px] text-slate-400 font-medium truncate">
-            {role === "admin"
-              ? isBn
-                ? "অ্যাডমিন"
-                : "Admin"
-              : isBn
-              ? "মেম্বার"
-              : "Member"}
-          </span>
-        </div>
+        {/* Green Online Dot */}
+        <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
       </button>
 
       {/* 2. DROPDOWN POPUP CARD */}
@@ -179,7 +161,7 @@ export default function UserProfileDropdown({
             aria-orientation="vertical"
             aria-labelledby="user-profile-trigger"
             onKeyDown={handleMenuKeyDown}
-            className="min-w-[260px] max-w-sm w-max fixed sm:absolute bottom-4 sm:bottom-auto inset-x-4 sm:inset-x-auto sm:right-0 sm:top-full z-50 sm:mt-2.5  sm:w-76 rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150 sm:origin-top-right select-none"
+            className="absolute right-0 top-full mt-2 z-50 w-72 sm:w-76 max-w-[calc(100vw-24px)] rounded-3xl bg-white p-5 shadow-2xl border border-slate-100 ring-1 ring-black/5 animate-in fade-in zoom-in-95 duration-150 origin-top-right select-none"
           >
             {/* Identity Header */}
             <div className="flex items-start gap-3.5">
