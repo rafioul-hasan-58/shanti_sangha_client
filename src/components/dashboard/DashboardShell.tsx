@@ -210,13 +210,8 @@ export default function DashboardShell({
               </div>
             </Link>
 
-            {/* Right: Streak Pill + Moon Icon Button + Hamburger Icon */}
+            {/* Right: Language Switcher + Hamburger Drawer Button */}
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60 text-xs font-bold inline-flex items-center gap-1 shadow-2xs">
-                <span>🔥</span>
-                <span>2</span>
-              </span>
-
               <LanguageSwitcher locale={locale as any} variant="toggle" />
 
               <button
@@ -388,143 +383,76 @@ export default function DashboardShell({
                 </div>
               )}
 
-              {/* DUAL MAIN CARDS: STREAK CARD & LATEST EVALUATION (Directly from reference image) */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                {/* Left Card: Daily Streak (lg:col-span-4) */}
-                <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
-                          🔥
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                            {isBn ? "ক্লাব উপস্থিতি স্ট্রিক" : "DAILY ACTIVITY STREAK"}
-                          </p>
-                          <h4 className="text-2xl font-black text-slate-900">
-                            14 {isBn ? "দিন" : "Days"}
-                          </h4>
-                        </div>
+              {/* LATEST MATCH RESULT & EVALUATION */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
+                <div>
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                    <div>
+                      <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full mb-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>{isBn ? "সর্বশেষ ম্যাচ ফলাফল • Nov 8, 2026" : "Latest SPL Match • Nov 8, 2026"}</span>
                       </div>
-                      <span className="text-xs text-amber-600 font-bold bg-amber-50 px-2 py-1 rounded-lg">
-                        {isBn ? "সেরা: ৩০ দিন" : "Best: 30d"}
-                      </span>
+                      <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
+                        {isBn ? "সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ (এসপিএল সিজন ৫)" : "Shavarchala Royals vs Vikings XI (SPL Season 5)"}
+                      </h3>
                     </div>
 
-                    {/* Weekly Consistency Dots */}
-                    <div className="mt-6">
-                      <p className="text-xs font-bold text-slate-600 mb-3">
-                        {isBn ? "সাপ্তাহিক উপস্থিতি ক্যালেন্ডার:" : "Weekly Consistency"}
-                      </p>
-                      <div className="grid grid-cols-7 gap-1.5 text-center">
-                        {[
-                          { day: "S", active: true },
-                          { day: "M", active: true },
-                          { day: "T", active: true },
-                          { day: "W", active: true },
-                          { day: "T", active: false },
-                          { day: "F", active: true },
-                          { day: "S", active: false },
-                        ].map((d, i) => (
-                          <div
-                            key={i}
-                            className={`py-2 rounded-xl text-xs font-bold border transition-colors ${
-                              d.active
-                                ? "bg-amber-100/70 border-amber-300 text-amber-900"
-                                : "bg-slate-50 border-slate-100 text-slate-400"
-                            }`}
-                          >
-                            <span>{d.day}</span>
-                          </div>
-                        ))}
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("sports")}
+                        className="px-3.5 py-1.5 rounded-full bg-[#006a4e]/10 text-[#006a4e] hover:bg-[#006a4e]/20 text-xs font-bold transition-colors cursor-pointer"
+                      >
+                        {isBn ? "পূর্ণ রিপোর্ট" : "Full Report"}
+                      </button>
                     </div>
                   </div>
 
-                  {/* Level Progress */}
-                  <div className="mt-6 pt-4 border-t border-slate-100">
-                    <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
-                      <span>{isBn ? "পরবর্তী ধাপ: গোল্ড মেম্বার" : "Tier: Gold Member"}</span>
-                      <span className="text-[#006a4e]">80%</span>
-                    </div>
-                    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-amber-500 to-[#006a4e] rounded-full w-4/5" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Card: Latest Diagnostic / Match Result (lg:col-span-8) */}
-                <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
-                  <div>
-                    {/* Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  {/* Chips Row (Accuracy, Time, Level equivalent) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                    <div className="p-3.5 rounded-2xl bg-[#006a4e]/10 border border-[#006a4e]/20 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-[#006a4e] text-white font-black flex items-center justify-center text-xs">
+                        WIN
+                      </div>
                       <div>
-                        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full mb-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                          <span>{isBn ? "সর্বশেষ ম্যাচ ফলাফল • Nov 8, 2026" : "Latest SPL Match • Nov 8, 2026"}</span>
-                        </div>
-                        <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
-                          {isBn ? "সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ (এসপিএল সিজন ৫)" : "Shavarchala Royals vs Vikings XI (SPL Season 5)"}
-                        </h3>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setActiveTab("sports")}
-                          className="px-3.5 py-1.5 rounded-full bg-[#006a4e]/10 text-[#006a4e] hover:bg-[#006a4e]/20 text-xs font-bold transition-colors cursor-pointer"
-                        >
-                          {isBn ? "পূর্ণ রিপোর্ট" : "Full Report"}
-                        </button>
+                        <p className="text-[10px] font-bold uppercase text-[#006a4e]">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
+                        <p className="text-sm font-extrabold text-slate-900">{isBn ? "৬ উইকেটে জয়ী" : "Won by 6 Wkts"}</p>
                       </div>
                     </div>
 
-                    {/* Chips Row (Accuracy, Time, Level equivalent) */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
-                      <div className="p-3.5 rounded-2xl bg-[#006a4e]/10 border border-[#006a4e]/20 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-[#006a4e] text-white font-black flex items-center justify-center text-xs">
-                          WIN
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase text-[#006a4e]">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
-                          <p className="text-sm font-extrabold text-slate-900">{isBn ? "৬ উইকেটে জয়ী" : "Won by 6 Wkts"}</p>
-                        </div>
+                    <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-xs">
+                        MOM
                       </div>
-
-                      <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-xs">
-                          MOM
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase text-blue-600">{isBn ? "সেরা পারফরমার" : "Top Performer"}</p>
-                          <p className="text-xs font-extrabold text-slate-900 truncate">{isBn ? "রাকিবুল ইসলাম" : "Rakibul Islam"}</p>
-                        </div>
-                      </div>
-
-                      <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-xs">
-                          #1
-                        </div>
-                        <div>
-                          <p className="text-[10px] font-bold uppercase text-emerald-600">{isBn ? "পয়েন্ট টেবিল" : "Table Rank"}</p>
-                          <p className="text-xs font-extrabold text-slate-900">{isBn ? "শীর্ষস্থান (১০ পয়েন্ট)" : "1st Place (10 pts)"}</p>
-                        </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase text-blue-600">{isBn ? "সেরা পারফরমার" : "Top Performer"}</p>
+                        <p className="text-xs font-extrabold text-slate-900 truncate">{isBn ? "রাকিবুল ইসলাম" : "Rakibul Islam"}</p>
                       </div>
                     </div>
 
-                    {/* Recommendation / Directive Box */}
-                    <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 leading-relaxed">
-                      <p className="font-bold text-slate-800 flex items-center gap-1.5 mb-1">
-                        <span>📢</span>
-                        <span>{isBn ? "কমিটি ও কোচিং স্টাফদের নির্দেশনা:" : "Club Committee Directive:"}</span>
-                      </p>
-                      <p>
-                        {isBn
-                          ? "আগামী শুক্রবার সকাল ৮:৩০ মিনিটে সাভারচালা হাই স্কুল মাঠে এসপিএল টুর্নামেন্টের সেমিফাইনাল ম্যাচ অনুষ্ঠিত হবে। সকল খেলোয়াড় ও শুভানুধ্যায়ী সদস্যদের নির্ধারিত সময়ের পূর্বেই মাঠে উপস্থিত হওয়ার আহ্বান জানানো হচ্ছে।"
-                          : "Semi-final match scheduled for this Friday at 8:30 AM at Shavarchala High School Ground. All members and supporters are requested to be present on time."}
-                      </p>
+                    <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-xs">
+                        #1
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase text-emerald-600">{isBn ? "পয়েন্ট টেবিল" : "Table Rank"}</p>
+                        <p className="text-xs font-extrabold text-slate-900">{isBn ? "শীর্ষস্থান (১০ পয়েন্ট)" : "1st Place (10 pts)"}</p>
+                      </div>
                     </div>
+                  </div>
+
+                  {/* Recommendation / Directive Box */}
+                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 leading-relaxed">
+                    <p className="font-bold text-slate-800 flex items-center gap-1.5 mb-1">
+                      <span>📢</span>
+                      <span>{isBn ? "কমিটি ও কোচিং স্টাফদের নির্দেশনা:" : "Club Committee Directive:"}</span>
+                    </p>
+                    <p>
+                      {isBn
+                        ? "আগামী শুক্রবার সকাল ৮:৩০ মিনিটে সাভারচালা হাই স্কুল মাঠে এসপিএল টুর্নামেন্টের সেমিফাইনাল ম্যাচ অনুষ্ঠিত হবে। সকল খেলোয়াড় ও শুভানুধ্যায়ী সদস্যদের নির্ধারিত সময়ের পূর্বেই মাঠে উপস্থিত হওয়ার আহ্বান জানানো হচ্ছে।"
+                        : "Semi-final match scheduled for this Friday at 8:30 AM at Shavarchala High School Ground. All members and supporters are requested to be present on time."}
+                    </p>
                   </div>
                 </div>
               </div>
