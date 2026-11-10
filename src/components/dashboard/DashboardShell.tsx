@@ -217,16 +217,7 @@ export default function DashboardShell({
                 <span>2</span>
               </span>
 
-              <button
-                type="button"
-                onClick={() => alert(isBn ? "ডার্ক মোড শীঘ্রই যুক্ত হচ্ছে!" : "Dark mode coming soon!")}
-                aria-label="Toggle theme"
-                className="p-2 rounded-2xl bg-slate-100/90 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
-              >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                </svg>
-              </button>
+              <LanguageSwitcher locale={locale as any} variant="toggle" />
 
               <button
                 type="button"
