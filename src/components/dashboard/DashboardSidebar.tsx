@@ -15,10 +15,10 @@ export interface NavItemConfig {
   hasChevron?: boolean;
   adminOnly?: boolean;
   showPendingBadge?: boolean;
-  badge?: {
-    text: string;
-    type?: string;
-  };
+  // badge?: {
+  //   text: string;
+  //   type?: string;
+  // };
 }
 
 export interface NavCategoryConfig {
@@ -26,7 +26,7 @@ export interface NavCategoryConfig {
   titleBn: string;
   titleEn: string;
   adminOnly?: boolean;
-  badge?: string;
+  // badge?: string;
   items: NavItemConfig[];
 }
 
@@ -202,11 +202,7 @@ export default function DashboardSidebar({
                   <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                     {isBn ? category.titleBn : category.titleEn}
                   </p>
-                  {category.badge && (
-                    <span className="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full">
-                      {category.badge}
-                    </span>
-                  )}
+
                 </div>
 
                 {/* Category Items */}
@@ -260,7 +256,7 @@ export default function DashboardSidebar({
                             )}
 
                             {/* Tag Badge */}
-                            {item.badge && (
+                            {/* {item.badge && (
                               <span
                                 className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
                                   item.badge.type === "danger"
@@ -270,7 +266,7 @@ export default function DashboardSidebar({
                               >
                                 {item.badge.text}
                               </span>
-                            )}
+                            )} */}
 
                             {/* Chevron */}
                             {item.hasChevron && !isActive && (
@@ -341,11 +337,11 @@ export default function DashboardSidebar({
                           <span className="truncate">{label}</span>
                         </div>
 
-                        {item.badge && (
+                        {/* {item.badge && (
                           <span className="text-emerald-500 text-sm">
                             {item.badge.text}
                           </span>
-                        )}
+                        )} */}
                       </button>
                     );
                   })}

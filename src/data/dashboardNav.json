@@ -11,17 +11,6 @@
           "labelEn": "Dashboard",
           "icon": "dashboard",
           "type": "tab"
-        },
-        {
-          "id": "ai_chat",
-          "labelBn": "এআই প্র্যাকটিস চ্যাট",
-          "labelEn": "AI Practice Chat",
-          "icon": "chat",
-          "type": "action",
-          "badge": {
-            "text": "✨",
-            "type": "sparkle"
-          }
         }
       ]
     },
@@ -71,7 +60,7 @@
           "labelEn": "Member Approvals",
           "icon": "shield_check",
           "type": "tab",
-          "showPendingBadge": true
+          "showPendingBadge": false
         },
         {
           "id": "admin_live",
