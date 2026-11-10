@@ -189,20 +189,20 @@ export default function DashboardShell({
             href={`/${locale}`}
             className="flex items-center gap-3 group select-none"
           >
-            <div className="relative h-10 w-10 shrink-0">
+            <div className="relative h-11 w-11 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-2 flex items-center justify-center shadow-xs">
               <Image
                 src="/logo.png"
                 alt="Shanti Sangha"
                 fill
-                className="object-contain drop-shadow-xs"
+                className="object-contain p-1 drop-shadow-xs"
               />
             </div>
             <div>
-              <h2 className="font-extrabold text-sm text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight">
+              <h2 className="font-black text-base text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight tracking-tight">
                 {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
               </h2>
-              <p className="text-[11px] font-semibold text-[#006a4e] mt-0.5">
-                {isBn ? "ক্লাব লার্নিং ও পোর্টাল" : "Club Portal Hub"}
+              <p className="text-xs font-semibold text-[#006a4e] mt-0.5">
+                {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
               </p>
             </div>
           </Link>
@@ -220,113 +220,157 @@ export default function DashboardShell({
         </div>
 
         {/* Sidebar Navigation Items */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 space-y-5">
           {/* Group 1: MAIN */}
           <div>
-            <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-2">
-              {isBn ? "প্রধান মেনু / MAIN" : "MAIN"}
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-2">
+              {isBn ? "মেইন / MAIN" : "MAIN"}
             </p>
-            <nav className="space-y-1">
+            <nav className="space-y-1.5">
+              {/* Dashboard Pill */}
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("overview");
                   setMobileSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeTab === "overview"
                     ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <rect x="3" y="3" width="7" height="7" rx="2" />
+                  <rect x="14" y="3" width="7" height="7" rx="2" />
+                  <rect x="3" y="14" width="7" height="7" rx="2" />
+                  <rect x="14" y="14" width="7" height="7" rx="2" />
                 </svg>
-                <span>{isBn ? "ড্যাশবোর্ড ওভারভিউ" : "Dashboard"}</span>
+                <span>{isBn ? "ড্যাশবোর্ড" : "Dashboard"}</span>
               </button>
 
+              {/* AI Practice / Club Assistant Chat */}
               <button
                 type="button"
                 onClick={() => {
-                  setActiveTab("profile");
+                  if (typeof window !== "undefined") {
+                    const chatBtn = document.querySelector('button[aria-label="Chat with assistant"]') as HTMLButtonElement | null;
+                    if (chatBtn) chatBtn.click();
+                  }
                   setMobileSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                  activeTab === "profile"
-                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                }`}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer group"
               >
-                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span>{isBn ? "প্রোফাইল ও সেটিংস" : "Settings & Profile"}</span>
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-slate-500 group-hover:text-slate-800 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                  <span>{isBn ? "এআই প্র্যাকটিস চ্যাট" : "AI Practice Chat"}</span>
+                </div>
+                <span className="text-emerald-500 text-sm">✨</span>
               </button>
+            </nav>
+          </div>
 
+          {/* Group 2: CORE ACTIVITIES (Matching "CORE SKILLS" from reference image) */}
+          <div className="pt-2">
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-2">
+              {isBn ? "ক্লাব কার্যক্রম / CORE SKILLS" : "CORE SKILLS"}
+            </p>
+            <nav className="space-y-1.5">
+              {/* Sports & SPL Tournaments */}
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab("sports");
                   setMobileSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                   activeTab === "sports"
-                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                <span className="text-sm">🏏</span>
-                <span>{isBn ? "ম্যাচ ও এসপিএল টুর্নামেন্ট" : "Sports & SPL"}</span>
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  <span>{isBn ? "খেলাধুলা ও এসপিএল" : "Skills & Sports"}</span>
+                </div>
+                <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
 
+              {/* Members Directory */}
               <Link
                 href={`/${locale}/members`}
                 onClick={() => setMobileSidebarOpen(false)}
-                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-sm">👥</span>
-                  <span>{isBn ? "ক্লাব সদস্যবৃন্দ" : "Members Directory"}</span>
+                  <svg className="w-5 h-5 text-slate-500 group-hover:text-slate-800 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                  <span>{isBn ? "ক্লাব সদস্য তালিকা" : "Club Members"}</span>
                 </div>
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </Link>
+
+              {/* Community & Welfare */}
+              <Link
+                href={`/${locale}#about`}
+                onClick={() => setMobileSidebarOpen(false)}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <svg className="w-5 h-5 text-slate-500 group-hover:text-slate-800 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                  <span>{isBn ? "সমাজকল্যাণ ও রক্তদান" : "Reading & Welfare"}</span>
+                </div>
+                <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </Link>
             </nav>
           </div>
 
-          {/* Group 2: ADMIN MANAGEMENT (Only visible to Admin) */}
+          {/* Group 3: ASSESSMENT & TEST (Admin Controls) */}
           {isAdmin && (
             <div className="pt-2 border-t border-slate-100">
               <div className="flex items-center justify-between px-3 mb-2">
-                <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">
-                  {isBn ? "অ্যাডমিন কন্ট্রোল / ADMIN" : "ADMIN CONTROLS"}
+                <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                  {isBn ? "অ্যাডমিন টেস্ট ও নিয়ন্ত্রণ" : "ASSESSMENT & TEST"}
                 </p>
-                <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-1.5 py-0.5 rounded-md">
-                  PRO
+                <span className="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full">
+                  ADAPTIVE
                 </span>
               </div>
-              <nav className="space-y-1">
+              <nav className="space-y-1.5">
                 <button
                   type="button"
                   onClick={() => {
                     setActiveTab("admin_members");
                     setMobileSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     activeTab === "admin_members"
-                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
-                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                      ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-sm">🛡️</span>
-                    <span>{isBn ? "সদস্য অনুমোদন" : "Member Approvals"}</span>
+                    <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span>{isBn ? "সদস্য রেজিস্ট্রেশন অনুমোদন" : "Member Approvals"}</span>
                   </div>
                   {pendingMembers.length > 0 && (
-                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
-                      activeTab === "admin_members" ? "bg-white text-amber-800" : "bg-red-500 text-white"
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      activeTab === "admin_members" ? "bg-white text-[#006a4e]" : "bg-red-500 text-white"
                     }`}>
                       {pendingMembers.length}
                     </span>
@@ -339,14 +383,19 @@ export default function DashboardShell({
                     setActiveTab("admin_live");
                     setMobileSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     activeTab === "admin_live"
-                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
-                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                      ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
+                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
-                  <span className="text-sm">📡</span>
-                  <span>{isBn ? "লাইভ স্কোর কন্ট্রোল" : "Live Match Control"}</span>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span>{isBn ? "লাইভ স্কোর কন্ট্রোল" : "Live Match Control"}</span>
+                  </div>
+                  <span className="text-[10px] bg-red-100 text-red-600 font-bold px-1.5 py-0.2 rounded">LIVE</span>
                 </button>
 
                 <button
@@ -355,106 +404,109 @@ export default function DashboardShell({
                     setActiveTab("admin_finance");
                     setMobileSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     activeTab === "admin_finance"
-                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
-                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                      ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
-                  <span className="text-sm">💼</span>
-                  <span>{isBn ? "ক্লাব ফান্ড ও অর্থ" : "Club Finance"}</span>
+                  <div className="flex items-center gap-3">
+                    <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    <span>{isBn ? "ক্লাব ফান্ড ও অর্থ" : "Club Finance"}</span>
+                  </div>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">AUDIT</span>
                 </button>
               </nav>
             </div>
           )}
         </div>
 
-        {/* Sidebar Footer: User Card, Role Switcher, & Sign Out */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
-          {/* User Profile Mini Bar */}
-          <div className="flex items-center gap-3 p-2 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
-            <div className="relative shrink-0">
-              {user?.picture ? (
-                <div className="relative h-9 w-9 rounded-full overflow-hidden">
-                  <Image
-                    src={user.picture}
-                    alt={displayName}
-                    fill
-                    unoptimized
-                    className="object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-xs">
-                  {displayName.charAt(0).toUpperCase()}
-                </div>
-              )}
-              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
-            </div>
+        {/* ======================================================== */}
+        {/* Sidebar Footer: Profile Card & Sign Out (Matching Screenshot) */}
+        {/* ======================================================== */}
+        <div className="p-4 border-t border-slate-100 bg-white space-y-3">
+          {/* User Profile Card (Clicking opens Profile & Settings) */}
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              setActiveTab("profile");
+              setMobileSidebarOpen(false);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setActiveTab("profile");
+                setMobileSidebarOpen(false);
+              }
+            }}
+            className={`w-full flex items-center justify-between p-2.5 rounded-2xl border transition-all cursor-pointer select-none group ${
+              activeTab === "profile"
+                ? "bg-[#006a4e]/10 border-[#006a4e] ring-2 ring-[#006a4e]/25 shadow-xs"
+                : "bg-white border-slate-200/90 hover:border-[#006a4e]/40 hover:shadow-xs"
+            }`}
+          >
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="relative shrink-0">
+                {user?.picture ? (
+                  <div className="relative h-10 w-10 rounded-full overflow-hidden ring-1 ring-slate-200">
+                    <Image
+                      src={user.picture}
+                      alt={displayName}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-sm">
+                    {displayName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
 
-            <div className="min-w-0 flex-1">
-              <h5 className="text-xs font-bold text-slate-900 truncate leading-tight">
-                {displayName}
-              </h5>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className={`inline-block text-[9px] font-extrabold px-1.5 py-0.2 rounded-md ${
-                  isAdmin ? "bg-amber-100 text-amber-800" : "bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20"
-                }`}>
+              <div className="min-w-0 flex-1 text-left">
+                <h5 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-[#006a4e] transition-colors leading-tight">
+                  {displayName}
+                </h5>
+                <p className="text-[11px] font-semibold text-slate-500 mt-0.5 truncate">
                   {isAdmin ? (isBn ? "অ্যাডমিন" : "Admin") : (isBn ? "মেম্বার" : "Member")}
-                </span>
-                <span className="text-[10px] text-amber-600 font-bold">🔥 2d</span>
+                </p>
               </div>
             </div>
-          </div>
 
-          {/* Quick Active Role Switcher (Admins can toggle view) */}
-          <div className="flex items-center justify-between text-[11px] px-1 font-semibold text-slate-500">
-            <span>{isBn ? "সক্রিয় ভিউ:" : "Active View:"}</span>
-            <div className="inline-flex rounded-lg bg-slate-200 p-0.5 text-[10px] font-bold">
-              <button
-                type="button"
-                onClick={() => setRole("user")}
-                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-                  role === "user"
-                    ? "bg-white text-[#006a4e] shadow-2xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {isBn ? "মেম্বার" : "User"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setRole("admin")}
-                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
-                  role === "admin"
-                    ? "bg-amber-600 text-white shadow-2xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                {isBn ? "অ্যাডমিন" : "Admin"}
-              </button>
+            {/* Subtle Settings Gear Icon */}
+            <div className="text-slate-400 group-hover:text-[#006a4e] p-1.5 transition-colors">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
             </div>
           </div>
 
-          {/* Back to Home and Sign Out */}
-          <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-xs">
-            <Link
-              href={`/${locale}`}
-              className="text-slate-500 hover:text-[#006a4e] font-semibold flex items-center gap-1"
-            >
-              <span>←</span>
-              <span>{isBn ? "মূল পাতা" : "Website"}</span>
-            </Link>
-
+          {/* Sign Out & Theme Toggle (Matching Screenshot Layout) */}
+          <div className="flex items-center justify-between pt-1">
             <button
               type="button"
               onClick={logout}
-              className="text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
+              className="flex items-center gap-2 text-xs sm:text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors cursor-pointer"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              <svg className="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
-              <span>{isBn ? "লগআউট" : "Sign Out"}</span>
+              <span>{isBn ? "সাইন আউট" : "Sign Out"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => alert(isBn ? "ডার্ক মোড শীঘ্রই যুক্ত হচ্ছে!" : "Dark mode coming soon!")}
+              aria-label="Toggle theme"
+              className="p-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
             </button>
           </div>
         </div>
