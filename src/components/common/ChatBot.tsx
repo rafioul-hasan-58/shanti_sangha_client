@@ -22,10 +22,6 @@ export default function ChatBot({ locale }: { locale: Locale }) {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  if (pathname?.includes("/dashboard") || pathname?.includes("/admin")) {
-    return null;
-  }
-
   // Initial welcome message
   const initialMessages: Message[] = [
     {
@@ -66,6 +62,11 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       scrollToBottom();
     }
   }, [messages, isOpen, isTyping]);
+
+  // Hide on dashboard and admin portals (checked AFTER all hooks to adhere to React Hook rules)
+  if (pathname?.includes("/dashboard") || pathname?.includes("/admin")) {
+    return null;
+  }
 
   // Knowledge base answer generator
   const getBotResponse = (userText: string): { reply: string; action?: { label: string; href: string } } => {
