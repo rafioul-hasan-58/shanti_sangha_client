@@ -186,21 +186,63 @@ export default function DashboardShell({
       {/* MAIN CONTENT AREA                                         */}
       {/* ======================================================== */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Top Navbar Header */}
-        <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            {/* Mobile hamburger */}
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(true)}
-              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
-              aria-label="Open sidebar menu"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
+        {/* Top Navbar Header (Responsive: Custom Mobile Header matching screenshot media_1794287327321_edadde93.png) */}
+        <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-2.5 sm:py-3.5 flex items-center justify-between gap-4 shadow-2xs">
+          {/* 1. MOBILE HEADER VIEW (Visible on screens < md) */}
+          <div className="flex md:hidden items-center justify-between w-full">
+            {/* Left: Brand Logo + Club Name + Subtitle (Current Theme Green) */}
+            <Link href={`/${locale}`} className="flex items-center gap-2.5 select-none">
+              <div className="relative h-10 w-10 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-1.5 flex items-center justify-center shadow-xs">
+                <Image
+                  src="/logo.png"
+                  alt="Shanti Sangha"
+                  fill
+                  className="object-contain p-0.5 drop-shadow-xs"
+                />
+              </div>
+              <div className="text-left">
+                <h2 className="font-black text-sm text-slate-900 tracking-tight leading-tight">
+                  {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
+                </h2>
+                <p className="text-[10px] font-bold text-[#006a4e] leading-tight">
+                  {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
+                </p>
+              </div>
+            </Link>
 
+            {/* Right: Streak Pill + Moon Icon Button + Hamburger Icon */}
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/60 text-xs font-bold inline-flex items-center gap-1 shadow-2xs">
+                <span>🔥</span>
+                <span>2</span>
+              </span>
+
+              <button
+                type="button"
+                onClick={() => alert(isBn ? "ডার্ক মোড শীঘ্রই যুক্ত হচ্ছে!" : "Dark mode coming soon!")}
+                aria-label="Toggle theme"
+                className="p-2 rounded-2xl bg-slate-100/90 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMobileSidebarOpen(true)}
+                aria-label="Open navigation drawer"
+                className="p-2 rounded-2xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* 2. DESKTOP HEADER VIEW (Visible on screens >= md) */}
+          <div className="hidden md:flex items-center justify-between w-full">
             <div>
               <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
                 {activeTab === "overview" && (isBn ? "ড্যাশবোর্ড ও ক্লাবের পরিসংখ্যান" : "Dashboard Overview")}
@@ -210,41 +252,39 @@ export default function DashboardShell({
                 {activeTab === "admin_live" && (isBn ? "অ্যাডমিন: লাইভ স্কোরবোর্ড কন্ট্রোলার" : "Admin: Live Match Controller")}
                 {activeTab === "admin_finance" && (isBn ? "অ্যাডমিন: ক্লাব ফান্ড ও হিসাব" : "Admin: Club Finance & Treasury")}
               </h1>
-              <p className="text-xs text-slate-400 font-medium hidden sm:block">
+              <p className="text-xs text-slate-400 font-medium">
                 {isBn ? "সাভারচালা শান্তি সংঘ অফিসিয়াল ডিজিটাল প্ল্যাটফর্ম" : "Official Shavarchala Shanti Sangha Portal"}
               </p>
             </div>
-          </div>
 
-          {/* Top Quick Actions (Matching Primary Green/Dark/White pills from reference image) */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveTab("sports")}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#006a4e] hover:bg-[#005a42] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
-            >
-              <span>⚡</span>
-              <span>{isBn ? "এসপিএল ম্যাচ সেন্টার" : "Match Center"}</span>
-            </button>
+            {/* Desktop Quick Actions */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setActiveTab("sports")}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#006a4e] hover:bg-[#005a42] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              >
+                <span>⚡</span>
+                <span>{isBn ? "এসপিএল ম্যাচ সেন্টার" : "Match Center"}</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => setShowMemberIdModal(true)}
-              className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
-            >
-              <span>🪪</span>
-              <span>{isBn ? "ডিজিটাল আইডি" : "Digital ID"}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setShowMemberIdModal(true)}
+                className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              >
+                <span>🪪</span>
+                <span>{isBn ? "ডিজিটাল আইডি" : "Digital ID"}</span>
+              </button>
 
-            <Link
-              href={`/${locale}`}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors"
-            >
-              <span>🏠</span>
-              <span className="hidden sm:inline">{isBn ? "হোম পেজ" : "Home"}</span>
-            </Link>
+              <Link
+                href={`/${locale}`}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors"
+              >
+                <span>🏠</span>
+                <span>{isBn ? "হোম পেজ" : "Home"}</span>
+              </Link>
 
-            <div className="hidden sm:block">
               <LanguageSwitcher locale={locale as any} />
             </div>
           </div>

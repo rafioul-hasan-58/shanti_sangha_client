@@ -143,19 +143,20 @@ export default function DashboardSidebar({
         />
       )}
 
-      {/* Main Sidebar Element */}
+      {/* Main Sidebar Element (Drawer on mobile, sticky sidebar on desktop) */}
       <aside
-        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 lg:w-72 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-transform duration-300 shadow-sm md:shadow-none md:translate-x-0 ${
+        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-[82vw] max-w-[320px] md:w-64 lg:w-72 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-transform duration-300 shadow-2xl md:shadow-none md:translate-x-0 ${
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* 1. Header: Brand & Hub */}
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
           <Link
             href={`/${locale}`}
+            onClick={() => setMobileOpen(false)}
             className="flex items-center gap-3 group select-none"
           >
-            <div className="relative h-11 w-11 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-2 flex items-center justify-center shadow-xs">
+            <div className="relative h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-2 flex items-center justify-center shadow-xs">
               <Image
                 src="/logo.png"
                 alt="Shanti Sangha"
@@ -164,24 +165,24 @@ export default function DashboardSidebar({
               />
             </div>
             <div>
-              <h2 className="font-black text-base text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight tracking-tight">
+              <h2 className="font-black text-sm sm:text-base text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight tracking-tight">
                 {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
               </h2>
-              <p className="text-xs font-semibold text-[#006a4e] mt-0.5">
+              <p className="text-[11px] sm:text-xs font-semibold text-[#006a4e] mt-0.5">
                 {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
               </p>
             </div>
           </Link>
 
-          {/* Mobile close button */}
+          {/* Mobile close button (Clean ✕ matching reference screenshot) */}
           <button
             type="button"
             onClick={() => setMobileOpen(false)}
             aria-label="Close sidebar"
-            className="md:hidden text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
+            className="md:hidden text-slate-400 hover:text-slate-700 p-1.5 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -223,7 +224,7 @@ export default function DashboardSidebar({
                             setActiveTab(item.id);
                             setMobileOpen(false);
                           }}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                             isActive
                               ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
                               : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
