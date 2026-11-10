@@ -220,7 +220,7 @@ export default function UserProfileDropdown({
                 className="flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
               >
                 <span className="text-base leading-none">📊</span>
-                <span>{isBn ? "লার্নিং ড্যাশবোর্ড" : " Dashboard"}</span>
+                <span>{isBn ? "ড্যাশবোর্ড" : " Dashboard"}</span>
               </Link>
 
               <Link
@@ -243,17 +243,6 @@ export default function UserProfileDropdown({
               >
                 <span className="text-base leading-none">💬</span>
                 <span>{isBn ? "সদস্য ডিরেক্টরি" : "Club Members"}</span>
-              </Link>
-
-              <Link
-                href={`/${locale}/admin`}
-                role="menuitem"
-                tabIndex={0}
-                onClick={closeDropdown}
-                className="flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
-              >
-                <span className="text-base leading-none">🛡️</span>
-                <span>{isBn ? "অ্যাডমিন প্যানেল" : "Admin Panel"}</span>
               </Link>
             </div>
 
