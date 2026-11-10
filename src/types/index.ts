@@ -1,5 +1,24 @@
 export type Role = "user" | "admin";
 
+export type BloodGroup =
+  | "UNKNOWN"
+  | "A_POSITIVE"
+  | "A_NEGATIVE"
+  | "B_POSITIVE"
+  | "B_NEGATIVE"
+  | "AB_POSITIVE"
+  | "AB_NEGATIVE"
+  | "O_POSITIVE"
+  | "O_NEGATIVE"
+  | "A+"
+  | "A-"
+  | "B+"
+  | "B-"
+  | "AB+"
+  | "AB-"
+  | "O+"
+  | "O-";
+
 export interface AuthUser {
   id: string;
   name: string;
@@ -9,6 +28,18 @@ export interface AuthUser {
   token?: string;
   provider: "google" | "credentials";
   role: Role;
+
+  // Profile update fields matching Prisma schema
+  fatherName?: string | null;
+  motherName?: string | null;
+  bloodGroup?: BloodGroup | string | null;
+  bio?: string | null;
+  summary?: string | null;
+  profession?: string | null;
+  village?: string | null;
+  currentLocation?: string | null;
+  whatsappNumber?: string | null;
+  facebookProfile?: string | null;
 }
 
 declare global {

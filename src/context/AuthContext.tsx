@@ -28,6 +28,7 @@ interface AuthContextType {
     email: string,
     password: string
   ) => Promise<AuthUser>;
+  updateProfile: (profileData: Partial<AuthUser>) => Promise<AuthUser>;
   logout: () => void;
   clearError: () => void;
 }
@@ -44,6 +45,9 @@ const AuthContext = createContext<AuthContextType>({
     throw new Error("AuthContext not initialized");
   },
   registerWithCredentials: async () => {
+    throw new Error("AuthContext not initialized");
+  },
+  updateProfile: async () => {
     throw new Error("AuthContext not initialized");
   },
   logout: () => {},
@@ -170,6 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               let backendToken: string | undefined;
               let backendRole: Role = "user";
               let backendId: string | undefined;
+              let backendUser: Record<string, any> = {};
 
               try {
                 const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
@@ -183,8 +188,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                   if (apiJson.success && apiJson.data) {
                     const data = apiJson.data;
                     backendToken = data.token || data.accessToken;
-                    if (data.user?.role) backendRole = data.user.role as Role;
-                    if (data.user?.id) backendId = data.user.id;
+                    if (data.user) {
+                      backendUser = data.user;
+                      if (data.user.role) backendRole = data.user.role as Role;
+                      if (data.user.id) backendId = data.user.id;
+                    }
                   }
                 }
               } catch (apiErr) {
@@ -193,13 +201,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
               const authUser: AuthUser = {
                 id: backendId || profile.sub || String(Date.now()),
-                name: profile.name || profile.email?.split("@")[0] || "Google Member",
-                email: profile.email || "",
-                picture: profile.picture,
+                name: backendUser.name || backendUser.fullName || profile.name || profile.email?.split("@")[0] || "Google Member",
+                email: backendUser.email || profile.email || "",
+                picture: backendUser.picture || backendUser.avatar || profile.picture,
                 accessToken: response.access_token,
                 token: backendToken,
                 provider: "google",
                 role: backendRole,
+                fatherName: backendUser.fatherName || undefined,
+                motherName: backendUser.motherName || undefined,
+                bloodGroup: backendUser.bloodGroup || undefined,
+                bio: backendUser.bio || undefined,
+                summary: backendUser.summary || undefined,
+                profession: backendUser.profession || undefined,
+                village: backendUser.village || undefined,
+                currentLocation: backendUser.currentLocation || undefined,
+                whatsappNumber: backendUser.whatsappNumber || undefined,
+                facebookProfile: backendUser.facebookProfile || undefined,
               };
 
               setUser(authUser);
@@ -262,10 +280,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               id: backendUser.id || String(Date.now()),
               name: backendUser.fullName || backendUser.name || email.split("@")[0],
               email: backendUser.email || email,
-              picture: backendUser.avatar,
+              picture: backendUser.avatar || backendUser.picture,
               token: backendToken,
               provider: "credentials",
               role: backendRole,
+              fatherName: backendUser.fatherName || undefined,
+              motherName: backendUser.motherName || undefined,
+              bloodGroup: backendUser.bloodGroup || undefined,
+              bio: backendUser.bio || undefined,
+              summary: backendUser.summary || undefined,
+              profession: backendUser.profession || undefined,
+              village: backendUser.village || undefined,
+              currentLocation: backendUser.currentLocation || undefined,
+              whatsappNumber: backendUser.whatsappNumber || undefined,
+              facebookProfile: backendUser.facebookProfile || undefined,
             };
 
             setUser(authUser);
