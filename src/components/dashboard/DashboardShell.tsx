@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,8 @@ import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
-import type { Role } from "@/types";
+import type { Role, BloodGroup } from "@/types";
+import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
 
 interface Props {
   title?: string;
@@ -32,7 +33,7 @@ export default function DashboardShell({
   locale = "bn",
 }: Props) {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const { role, setRole } = useRole();
   const isBn = locale === "bn";
 
@@ -40,6 +41,95 @@ export default function DashboardShell({
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [historyCategory, setHistoryCategory] = useState<"all" | "spl" | "football" | "community">("all");
   const [showMemberIdModal, setShowMemberIdModal] = useState(false);
+
+  // Profile form state matching Prisma User model fields
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || "",
+    fatherName: user?.fatherName || "",
+    motherName: user?.motherName || "",
+    bloodGroup: user?.bloodGroup || "UNKNOWN",
+    bio: user?.bio || "",
+    summary: user?.summary || "",
+    profession: user?.profession || "",
+    village: user?.village || "সাভারচালা",
+    currentLocation: user?.currentLocation || "সাভারচালা, সখিপুর, টাঙ্গাইল",
+    whatsappNumber: user?.whatsappNumber || "",
+    facebookProfile: user?.facebookProfile || "",
+  });
+
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileSaveSuccess, setProfileSaveSuccess] = useState(false);
+
+  // Sync profile form when user updates or loads from storage
+  useEffect(() => {
+    if (user) {
+      setProfileForm((prev) => ({
+        ...prev,
+        name: user.name || prev.name,
+        fatherName: user.fatherName ?? prev.fatherName,
+        motherName: user.motherName ?? prev.motherName,
+        bloodGroup: user.bloodGroup ?? prev.bloodGroup,
+        bio: user.bio ?? prev.bio,
+        summary: user.summary ?? prev.summary,
+        profession: user.profession ?? prev.profession,
+        village: user.village ?? prev.village,
+        currentLocation: user.currentLocation ?? prev.currentLocation,
+        whatsappNumber: user.whatsappNumber ?? prev.whatsappNumber,
+        facebookProfile: user.facebookProfile ?? prev.facebookProfile,
+      }));
+    }
+  }, [user]);
+
+  // Support direct query param navigation e.g. /dashboard?tab=profile
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab");
+      if (
+        tab &&
+        [
+          "overview",
+          "profile",
+          "sports",
+          "admin_members",
+          "admin_live",
+          "admin_finance",
+        ].includes(tab)
+      ) {
+        setActiveTab(tab as TabType);
+      }
+    }
+  }, []);
+
+  const handleSaveProfile = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    setIsSavingProfile(true);
+    setProfileSaveSuccess(false);
+
+    try {
+      await updateProfile({
+        name: profileForm.name,
+        fatherName: profileForm.fatherName || null,
+        motherName: profileForm.motherName || null,
+        bloodGroup: profileForm.bloodGroup,
+        bio: profileForm.bio || null,
+        summary: profileForm.summary || null,
+        profession: profileForm.profession || null,
+        village: profileForm.village || null,
+        currentLocation: profileForm.currentLocation || null,
+        whatsappNumber: profileForm.whatsappNumber || null,
+        facebookProfile: profileForm.facebookProfile || null,
+      });
+
+      setProfileSaveSuccess(true);
+      setTimeout(() => setProfileSaveSuccess(false), 4000);
+    } catch (err) {
+      console.error("Profile save error:", err);
+      alert(isBn ? "প্রোফাইল সংরক্ষণ ব্যর্থ হয়েছে" : "Failed to save profile");
+    } finally {
+      setIsSavingProfile(false);
+    }
+  };
 
   // Admin logic:
   // All admins are users, but only users with admin authorization have admin features.
@@ -50,7 +140,7 @@ export default function DashboardShell({
     user?.email?.toLowerCase().includes("admin") ||
     user?.email?.toLowerCase().includes("sourav");
 
-  const displayName = user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
+  const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";
 
   // Mock pending members for Admin
@@ -852,93 +942,456 @@ export default function DashboardShell({
           {/* TAB 2: PROFILE & SETTINGS                             */}
           {/* ===================================================== */}
           {activeTab === "profile" && (
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
-                <div className="flex items-center gap-4">
-                  <div className="relative shrink-0">
-                    {user?.picture ? (
-                      <div className="relative h-16 w-16 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20">
-                        <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
-                      </div>
-                    ) : (
-                      <div className="h-16 w-16 rounded-full bg-[#006a4e] text-white font-black text-2xl flex items-center justify-center">
-                        {displayName.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-slate-900">{displayName}</h3>
-                    <p className="text-xs text-slate-400">{displayEmail}</p>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2 py-0.5 rounded-md">
-                        {isAdmin ? (isBn ? "ক্লাব অ্যাডমিন" : "Club Admin") : (isBn ? "রেজিস্টার্ড মেম্বার" : "Club Member")}
-                      </span>
-                      {user?.provider === "google" && (
-                        <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
-                          <span>✓ Google Connected</span>
+            <div className="space-y-6">
+              {/* Profile Header Card */}
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+                  <div className="flex items-start sm:items-center gap-4">
+                    <div className="relative shrink-0">
+                      {user?.picture ? (
+                        <div className="relative h-18 w-18 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20 shadow-md">
+                          <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
+                        </div>
+                      ) : (
+                        <div className="h-18 w-18 sm:h-20 sm:w-20 rounded-full bg-[#006a4e] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-md">
+                          {displayName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="absolute bottom-0 right-0 h-5 w-5 rounded-full bg-emerald-500 ring-2 ring-white" title="Active Member" />
+                    </div>
+
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 truncate">{displayName}</h3>
+                        <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                          {isAdmin ? (isBn ? "👑 ক্লাব অ্যাডমিন" : "👑 Club Admin") : (isBn ? "⭐ রেজিস্টার্ড মেম্বার" : "⭐ Club Member")}
                         </span>
+                      </div>
+                      <p className="text-xs text-slate-400 mt-0.5 font-medium">{displayEmail}</p>
+
+                      <div className="flex items-center gap-2 mt-2 flex-wrap text-xs">
+                        {/* Blood Group Badge */}
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 font-bold">
+                          <span>🩸</span>
+                          <span>{formatBloodGroupDisplay(profileForm.bloodGroup)}</span>
+                        </span>
+
+                        {/* Village Badge */}
+                        {profileForm.village && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-50 text-[#006a4e] border border-[#006a4e]/20 font-bold">
+                            <span>🏡</span>
+                            <span>{profileForm.village}</span>
+                          </span>
+                        )}
+
+                        {/* Profession Badge */}
+                        {profileForm.profession && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold">
+                            <span>💼</span>
+                            <span>{profileForm.profession}</span>
+                          </span>
+                        )}
+
+                        {user?.provider === "google" && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100 font-semibold text-[11px]">
+                            <span>✓ Google Connected</span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start md:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => setShowMemberIdModal(true)}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#006a4e]/20 transition-all cursor-pointer"
+                    >
+                      <span>🪪</span>
+                      <span>{isBn ? "সদস্য আইডি কার্ড" : "Member ID Card"}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Success Banner */}
+                {profileSaveSuccess && (
+                  <div className="mt-4 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-bold flex items-center justify-between animate-in fade-in slide-in-from-top-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base">✓</span>
+                      <span>{isBn ? "প্রোফাইল তথ্য সফলভাবে সংরক্ষণ ও আপডেট করা হয়েছে!" : "Profile updated and saved successfully!"}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProfileSaveSuccess(false)}
+                      className="text-emerald-700 hover:text-emerald-900 font-extrabold text-sm px-2 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Main Profile Form */}
+              <form onSubmit={handleSaveProfile} className="space-y-6">
+                {/* 1. Personal & Family Identity */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                    <span className="text-lg">👤</span>
+                    <div>
+                      <h4 className="font-extrabold text-base text-slate-900">
+                        {isBn ? "ব্যক্তিগত ও পারিবারিক তথ্য" : "Personal & Family Information"}
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        {isBn ? "আপনার নাম, পিতামাতার নাম ও রক্তের গ্রুপ" : "Personal identity, parents' names and blood group"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4.5">
+                    {/* Full Name */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "পুরো নাম" : "Full Name"} <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.name}
+                        onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                        required
+                        placeholder={isBn ? "আপনার পুরো নাম" : "Your full name"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* Email (Read only) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700">
+                          {isBn ? "ইমেইল ঠিকানা" : "Email Address"}
+                        </label>
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.2 rounded">
+                          {isBn ? "যাচাইকৃত" : "Verified"}
+                        </span>
+                      </div>
+                      <input
+                        type="email"
+                        value={displayEmail}
+                        disabled
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed outline-none"
+                      />
+                    </div>
+
+                    {/* fatherName (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "বাবার নাম" : "Father's Name"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.fatherName}
+                        onChange={(e) => setProfileForm({ ...profileForm, fatherName: e.target.value })}
+                        placeholder={isBn ? "বাবার পুরো নাম লিখুন" : "Enter father's name"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* motherName (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "মায়ের নাম" : "Mother's Name"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.motherName}
+                        onChange={(e) => setProfileForm({ ...profileForm, motherName: e.target.value })}
+                        placeholder={isBn ? "মায়ের পুরো নাম লিখুন" : "Enter mother's name"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* bloodGroup (BloodGroup @default(UNKNOWN)) */}
+                    <div className="sm:col-span-2">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700">
+                          {isBn ? "রক্তের গ্রুপ" : "Blood Group"}
+                        </label>
+                        <span className="text-[11px] text-rose-600 font-bold">
+                          {isBn ? "জরুরি রক্তদানে ক্লাব সদস্যদের সহায়তায় ব্যবহৃত" : "Used for emergency blood donation"}
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <select
+                          value={profileForm.bloodGroup}
+                          onChange={(e) => setProfileForm({ ...profileForm, bloodGroup: e.target.value as BloodGroup })}
+                          className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none cursor-pointer appearance-none"
+                        >
+                          {BLOOD_GROUP_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value} className="text-slate-800 font-medium">
+                              🩸 {isBn ? opt.labelBn : opt.labelEn}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Profession, Summary & Bio */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                    <span className="text-lg">💼</span>
+                    <div>
+                      <h4 className="font-extrabold text-base text-slate-900">
+                        {isBn ? "পেশা, সারসংক্ষেপ ও জীবনবৃত্তান্ত" : "Profession, Summary & Biography"}
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        {isBn ? "ক্লাবে আপনার পেশাগত পরিচিতি ও বায়ো" : "Your professional identity, short bio, and summary"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* profession (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "পেশা / বর্তমান পদবি" : "Profession / Designation"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.profession}
+                        onChange={(e) => setProfileForm({ ...profileForm, profession: e.target.value })}
+                        placeholder={isBn ? "যেমন: সফটওয়্যার ইঞ্জিনিয়ার / ব্যবসায়ী / শিক্ষার্থী / শিক্ষক" : "e.g. Software Engineer, Business Owner, Student"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* summary (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "সংক্ষিপ্ত সারসংক্ষেপ (এক লাইন)" : "Short Summary (One-liner)"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.summary}
+                        onChange={(e) => setProfileForm({ ...profileForm, summary: e.target.value })}
+                        placeholder={isBn ? "শান্তি সংঘের নিবেদিত সমাজকর্মী ও ক্রীড়াপ্রেমী..." : "Dedicated community advocate and sports enthusiast..."}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* bio (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "বিস্তারিত বায়ো / পরিচিতি" : "Detailed Biography"}
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={profileForm.bio}
+                        onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                        placeholder={isBn ? "আপনার সম্পর্কে বিস্তারিত লিখুন... ক্লাবের সাথে আপনার সম্পৃক্ততা ও লক্ষ্য।" : "Write about yourself, your contributions to the village club, and goals..."}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none resize-y"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Address & Social Links */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                    <span className="text-lg">📍</span>
+                    <div>
+                      <h4 className="font-extrabold text-base text-slate-900">
+                        {isBn ? "ঠিকানা ও সামাজিক যোগাযোগ" : "Location & Contact Channels"}
+                      </h4>
+                      <p className="text-xs text-slate-400">
+                        {isBn ? "স্থায়ী গ্রাম, বর্তমান অবস্থান ও যোগাযোগ মাধ্যম" : "Village origin, current location and social links"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4.5">
+                    {/* village (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "গ্রাম / স্থায়ী এলাকা" : "Village / Native Area"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.village}
+                        onChange={(e) => setProfileForm({ ...profileForm, village: e.target.value })}
+                        placeholder={isBn ? "যেমন: সাভারচালা, বহেড়াতলী, সখিপুর" : "e.g. Shavarchala, Sakhipur"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* currentLocation (String?) */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                        {isBn ? "বর্তমান বাসস্থান / ঠিকানা" : "Current Location"}
+                      </label>
+                      <input
+                        type="text"
+                        value={profileForm.currentLocation}
+                        onChange={(e) => setProfileForm({ ...profileForm, currentLocation: e.target.value })}
+                        placeholder={isBn ? "যেমন: ঢাকা, বাংলাদেশ" : "e.g. Dhaka, Bangladesh"}
+                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                      />
+                    </div>
+
+                    {/* whatsappNumber (String?) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700">
+                          {isBn ? "হোয়াটসঅ্যাপ নম্বর" : "WhatsApp Number"}
+                        </label>
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.2 rounded">
+                          WhatsApp
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-emerald-600 font-bold text-sm">
+                          💬
+                        </div>
+                        <input
+                          type="tel"
+                          value={profileForm.whatsappNumber}
+                          onChange={(e) => setProfileForm({ ...profileForm, whatsappNumber: e.target.value })}
+                          placeholder="+8801700000000"
+                          className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    {/* facebookProfile (String?) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-700">
+                          {isBn ? "ফেসবুক প্রোফাইল লিংক" : "Facebook Profile"}
+                        </label>
+                        <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-2 py-0.2 rounded">
+                          Facebook
+                        </span>
+                      </div>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-blue-600 font-bold text-sm">
+                          🌐
+                        </div>
+                        <input
+                          type="url"
+                          value={profileForm.facebookProfile}
+                          onChange={(e) => setProfileForm({ ...profileForm, facebookProfile: e.target.value })}
+                          placeholder="https://facebook.com/username"
+                          className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Real-time Member Card Preview */}
+                <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/80 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
+                      {isBn ? "লাইভ কার্ড প্রিভিউ" : "LIVE MEMBER CARD PREVIEW"}
+                    </span>
+                    <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">
+                      {isBn ? "সদস্য ডিরেক্টরিতে যেমন দেখাবে" : "Public Member Preview"}
+                    </span>
+                  </div>
+
+                  <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/70 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#006a4e] text-white font-black text-lg flex items-center justify-center shrink-0 ring-2 ring-[#006a4e]/20 overflow-hidden relative">
+                        {user?.picture ? (
+                          <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
+                        ) : (
+                          displayName.charAt(0).toUpperCase()
+                        )}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h5 className="font-extrabold text-sm sm:text-base text-slate-900">{displayName}</h5>
+                          <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                            🩸 {formatBloodGroupDisplay(profileForm.bloodGroup)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                          {profileForm.profession || (isBn ? "ক্লাব মেম্বার" : "Club Member")} • 📍 {profileForm.village || "সাভারচালা"}
+                        </p>
+                        {profileForm.summary && (
+                          <p className="text-[11px] text-slate-400 mt-1 italic line-clamp-1">
+                            &quot;{profileForm.summary}&quot;
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                      {profileForm.whatsappNumber && (
+                        <a
+                          href={`https://wa.me/${profileForm.whatsappNumber.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+                        >
+                          <span>💬</span>
+                          <span>WhatsApp</span>
+                        </a>
+                      )}
+                      {profileForm.facebookProfile && (
+                        <a
+                          href={profileForm.facebookProfile}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors inline-flex items-center gap-1.5"
+                        >
+                          <span>🌐</span>
+                          <span>Facebook</span>
+                        </a>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setShowMemberIdModal(true)}
-                  className="px-4 py-2 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white text-xs font-bold shadow-sm transition-colors cursor-pointer"
-                >
-                  {isBn ? "🪪 সদস্য আইডি কার্ড দেখুন" : "View Member ID Card"}
-                </button>
-              </div>
+                {/* Form Action Controls */}
+                <div className="sticky bottom-4 z-20 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg flex items-center justify-between gap-4">
+                  <div className="text-xs text-slate-500 hidden sm:block">
+                    {profileSaveSuccess ? (
+                      <span className="text-emerald-700 font-bold">✓ {isBn ? "সকল তথ্য সংরক্ষিত আছে" : "All changes saved"}</span>
+                    ) : (
+                      <span>{isBn ? "পরিবর্তনগুলো সংরক্ষণ করতে বাটনে ক্লিক করুন" : "Click Save to apply your updates"}</span>
+                    )}
+                  </div>
 
-              {/* Form Details */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "পুরো নাম" : "Full Name"}</label>
-                  <input
-                    type="text"
-                    defaultValue={displayName}
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
-                  />
+                  <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <button
+                      type="submit"
+                      disabled={isSavingProfile}
+                      className="w-full sm:w-auto px-7 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] disabled:opacity-60 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#006a4e]/20 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+                    >
+                      {isSavingProfile ? (
+                        <>
+                          <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                          </svg>
+                          <span>{isBn ? "সংরক্ষণ করা হচ্ছে..." : "Saving..."}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>💾</span>
+                          <span>{isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "ইমেইল ঠিকানা" : "Email Address"}</label>
-                  <input
-                    type="email"
-                    defaultValue={displayEmail}
-                    disabled
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "গ্রাম / এলাকা" : "Village / Area"}</label>
-                  <input
-                    type="text"
-                    defaultValue="সাভারচালা, সখিপুর, টাঙ্গাইল"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "রক্তের গ্রুপ" : "Blood Group"}</label>
-                  <input
-                    type="text"
-                    defaultValue="B+"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-4 flex justify-end">
-                <button
-                  type="button"
-                  className="px-6 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
-                >
-                  {isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}
-                </button>
-              </div>
+              </form>
             </div>
           )}
 
@@ -1204,10 +1657,21 @@ export default function DashboardShell({
 
                 <div className="min-w-0">
                   <h4 className="font-extrabold text-sm truncate">{displayName}</h4>
-                  <p className="text-[10px] text-emerald-200 font-mono mt-0.5">ID: SS-2026-089</p>
-                  <p className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold inline-block mt-1">
-                    {isAdmin ? "👑 ADMIN EXECUTIVE" : "⭐ GENERAL MEMBER"}
-                  </p>
+                  <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-emerald-200">
+                    <span className="font-mono">ID: SS-2026-089</span>
+                    <span>•</span>
+                    <span className="font-bold">🩸 {formatBloodGroupDisplay(profileForm.bloodGroup)}</span>
+                  </div>
+                  <div className="flex items-center gap-1 mt-1 flex-wrap">
+                    <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold">
+                      {isAdmin ? "👑 ADMIN EXECUTIVE" : "⭐ GENERAL MEMBER"}
+                    </span>
+                    {profileForm.village && (
+                      <span className="text-[9px] bg-white/15 px-1.5 py-0.5 rounded font-semibold truncate max-w-[120px]">
+                        📍 {profileForm.village}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
 

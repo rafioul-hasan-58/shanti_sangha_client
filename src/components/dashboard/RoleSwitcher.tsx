@@ -8,7 +8,8 @@ import type { Dictionary } from "@/i18n/getDictionary";
 export default function RoleSwitcher({ dict }: { dict: Dictionary["role"] }) {
   const { role, setRole } = useRole();
   const router = useRouter();
-  const { locale } = useParams<{ locale: string }>();
+  const params = useParams();
+  const locale = (params?.locale as string) || "bn";
 
   const choose = (next: Role) => {
     setRole(next);

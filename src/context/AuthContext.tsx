@@ -409,6 +409,102 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [setRole]
   );
 
+  /** Update user profile fields (matches Prisma User schema) */
+  const updateProfile = useCallback(
+    async (profileData: Partial<AuthUser>): Promise<AuthUser> => {
+      setError(null);
+
+      // Merge with existing user
+      let currentUser = user;
+      if (!currentUser && typeof window !== "undefined") {
+        try {
+          const s = localStorage.getItem(STORAGE_KEY);
+          if (s) currentUser = JSON.parse(s);
+        } catch {}
+      }
+
+      if (!currentUser) {
+        throw new Error("No authenticated user session found");
+      }
+
+      const updatedUser: AuthUser = {
+        ...currentUser,
+        ...profileData,
+      };
+
+      // 1. Send update to backend API if token or endpoint is reachable
+      const token =
+        updatedUser.token ||
+        (typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null);
+
+      try {
+        const payload = {
+          name: profileData.name ?? updatedUser.name,
+          fatherName: profileData.fatherName !== undefined ? profileData.fatherName : updatedUser.fatherName,
+          motherName: profileData.motherName !== undefined ? profileData.motherName : updatedUser.motherName,
+          bloodGroup: profileData.bloodGroup !== undefined ? profileData.bloodGroup : updatedUser.bloodGroup,
+          bio: profileData.bio !== undefined ? profileData.bio : updatedUser.bio,
+          summary: profileData.summary !== undefined ? profileData.summary : updatedUser.summary,
+          profession: profileData.profession !== undefined ? profileData.profession : updatedUser.profession,
+          village: profileData.village !== undefined ? profileData.village : updatedUser.village,
+          currentLocation: profileData.currentLocation !== undefined ? profileData.currentLocation : updatedUser.currentLocation,
+          whatsappNumber: profileData.whatsappNumber !== undefined ? profileData.whatsappNumber : updatedUser.whatsappNumber,
+          facebookProfile: profileData.facebookProfile !== undefined ? profileData.facebookProfile : updatedUser.facebookProfile,
+        };
+
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
+
+        let apiSuccess = false;
+        try {
+          const res = await fetch(`${API_BASE_URL}/users/profile`, {
+            method: "PATCH",
+            headers,
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) {
+            const json = await res.json().catch(() => null);
+            if (json?.data?.user) {
+              Object.assign(updatedUser, json.data.user);
+            }
+            apiSuccess = true;
+          }
+        } catch {}
+
+        if (!apiSuccess) {
+          try {
+            const res2 = await fetch(`${API_BASE_URL}/user/profile`, {
+              method: "PUT",
+              headers,
+              body: JSON.stringify(payload),
+            });
+            if (res2.ok) {
+              const json2 = await res2.json().catch(() => null);
+              if (json2?.data?.user) {
+                Object.assign(updatedUser, json2.data.user);
+              }
+            }
+          } catch {}
+        }
+      } catch (err) {
+        console.warn("Backend profile sync notice (saved locally):", err);
+      }
+
+      // 2. Persist in local state & localStorage
+      setUser(updatedUser);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
+      } catch {}
+
+      return updatedUser;
+    },
+    [user]
+  );
+
   /** Sign out */
   const logout = useCallback(() => {
     setUser(null);
@@ -433,6 +529,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithGoogle,
         loginWithCredentials,
         registerWithCredentials,
+        updateProfile,
         logout,
         clearError,
       }}

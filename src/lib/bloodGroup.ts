@@ -46,3 +46,4 @@ export function toPrismaBloodGroup(bg?: string | null): BloodGroup {
   if (upper === "O-" || upper === "O_NEGATIVE") return "O_NEGATIVE";
   return "UNKNOWN";
 }
+

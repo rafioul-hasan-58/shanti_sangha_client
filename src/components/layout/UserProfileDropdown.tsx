@@ -192,6 +192,18 @@ export default function UserProfileDropdown({
                 <p className="text-xs text-slate-400 truncate mt-0.5">
                   {user.email || (isBn ? "ক্লাব মেম্বার" : "Club Member")}
                 </p>
+                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                  {user.bloodGroup && user.bloodGroup !== "UNKNOWN" && (
+                    <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                      🩸 {user.bloodGroup}
+                    </span>
+                  )}
+                  {user.profession && (
+                    <span className="text-[10px] text-slate-500 font-medium truncate max-w-[120px]">
+                      {user.profession}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -212,7 +224,7 @@ export default function UserProfileDropdown({
               </Link>
 
               <Link
-                href={`/${locale}/dashboard`}
+                href={`/${locale}/dashboard?tab=profile`}
                 role="menuitem"
                 tabIndex={0}
                 onClick={closeDropdown}
