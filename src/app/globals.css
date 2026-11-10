@@ -2,6 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #006a4e;
+  --primary-dark: #004d38;
+  --primary-light: #00a67e;
+  --secondary: #f2b705;   /* gold accent */
+  --accent: #f42a41;      /* flag red, use sparingly */
+  --surface: #f7f4ea;     /* cream page background */
+  --text: #12231d;
+}
+
 @layer base {
   body {
     @apply bg-chalk text-pitch antialiased;

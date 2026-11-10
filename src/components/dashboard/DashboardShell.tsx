@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import DashboardSidebar from "./DashboardSidebar";
+import AdminOverviewView from "./AdminOverviewView";
 import type { BloodGroup } from "@/types";
 import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
 
@@ -167,7 +168,7 @@ export default function DashboardShell({
   });
 
   return (
-    <div className="min-h-screen bg-[#f8f9fd] flex flex-col md:flex-row font-sans text-slate-800">
+    <div className="min-h-screen bg-[#f7f4ea] flex flex-col md:flex-row font-sans text-slate-800">
       {/* MODULAR DASHBOARD SIDEBAR (Tabs loaded dynamically from src/data/dashboardNav.json) */}
       <DashboardSidebar
         activeTab={activeTab}
@@ -228,10 +229,17 @@ export default function DashboardShell({
         {/* Dashboard Main Body */}
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
           {/* ===================================================== */}
-          {/* TAB 1: OVERVIEW (Default Dashboard View)             */}
+          {/* TAB 1: OVERVIEW                                       */}
           {/* ===================================================== */}
           {activeTab === "overview" && (
-            <div className="space-y-6">
+            isAdmin ? (
+              <AdminOverviewView
+                adminName={user?.name || "Admin"}
+                locale={locale}
+                onReviewPending={() => setActiveTab("admin_members")}
+              />
+            ) : (
+              <div className="space-y-6">
               {/* TOP STATS CARDS (4 Cards matching the reference layout) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Stat 1: Total Matches & Events */}
@@ -566,6 +574,7 @@ export default function DashboardShell({
                 </div>
               </div>
             </div>
+            )
           )}
 
           {/* ===================================================== */}
