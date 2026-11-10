@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
@@ -16,9 +17,18 @@ export default function Navbar({
   locale: Locale;
   dict: Dictionary;
 }) {
+  const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const isBn = locale === "bn";
+
+  // Hide public navbar on dashboard and admin portal to show full-height dashboard layout
+  const isDashboardRoute =
+    pathname?.includes("/dashboard") || pathname?.includes("/admin");
+
+  if (isDashboardRoute) {
+    return null;
+  }
 
   const navLinks = [
     {

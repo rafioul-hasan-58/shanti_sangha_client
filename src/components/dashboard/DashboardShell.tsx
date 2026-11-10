@@ -1,113 +1,1241 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { Dictionary } from "@/i18n/getDictionary";
-import RoleSwitcher from "./RoleSwitcher";
 import { useAuth } from "@/context/AuthContext";
+import { useRole } from "@/context/RoleContext";
+import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import type { Role } from "@/types";
 
-/** Shared frame for the member and admin dashboards. */
-export default function DashboardShell({
-  title,
-  stats,
-  dict,
-  locale = "bn",
-}: {
-  title: string;
-  stats: string[];
+interface Props {
+  title?: string;
+  stats?: string[];
   dict: Dictionary;
   locale?: string;
-}) {
+}
+
+type TabType =
+  | "overview"
+  | "profile"
+  | "sports"
+  | "members"
+  | "notices"
+  | "admin_members"
+  | "admin_live"
+  | "admin_finance";
+
+export default function DashboardShell({
+  dict,
+  locale = "bn",
+}: Props) {
+  const router = useRouter();
   const { user, logout } = useAuth();
+  const { role, setRole } = useRole();
   const isBn = locale === "bn";
 
+  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [historyCategory, setHistoryCategory] = useState<"all" | "spl" | "football" | "community">("all");
+  const [showMemberIdModal, setShowMemberIdModal] = useState(false);
+
+  // Admin logic:
+  // All admins are users, but only users with admin authorization have admin features.
+  const isAdmin =
+    role === "admin" ||
+    user?.role === "admin" ||
+    user?.email === "rafioulhasan2@gmail.com" ||
+    user?.email?.toLowerCase().includes("admin") ||
+    user?.email?.toLowerCase().includes("sourav");
+
+  const displayName = user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
+  const displayEmail = user?.email || "rafioulhasan2@gmail.com";
+
+  // Mock pending members for Admin
+  const [pendingMembers, setPendingMembers] = useState([
+    { id: "1", name: "তানভীর আহমেদ", email: "tanvir.ahmed@example.com", phone: "+880 1712-345678", date: "Nov 9, 2026", status: "pending" },
+    { id: "2", name: "মাহমুদুল হাসান", email: "mahmud.h@example.com", phone: "+880 1823-456789", date: "Nov 8, 2026", status: "pending" },
+    { id: "3", name: "শাকিল হোসেন", email: "shakil.h@example.com", phone: "+880 1934-567890", date: "Nov 7, 2026", status: "pending" },
+  ]);
+
+  const handleApprove = (id: string) => {
+    setPendingMembers((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  // Mock live score for admin
+  const [liveScore, setLiveScore] = useState({
+    teamA: "সাভারচালা রয়্যালস",
+    teamB: "সাভারচালা ভাইকিংস",
+    score: "142/4",
+    overs: "16.2",
+    target: "165",
+    striker: "রাকিবুল ইসলাম (45*)",
+    bowler: "শামীম রেজা (2/28)",
+  });
+
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10">
-      {/* Authenticated User Profile Banner */}
-      {user && (
-        <div className="mb-8 p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-[#006a4e]/10 via-[#006a4e]/5 to-transparent border border-[#006a4e]/20 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 shadow-xs">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left">
-            {user.picture ? (
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-[#006a4e] shadow-md shrink-0">
-                <Image
-                  src={user.picture}
-                  alt={user.name}
-                  fill
-                  unoptimized
-                  className="object-cover"
-                />
-              </div>
-            ) : (
-              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#006a4e] text-white font-extrabold flex items-center justify-center text-2xl shadow-md shrink-0">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-            )}
+    <div className="min-h-screen bg-[#f8f9fd] flex flex-col md:flex-row font-sans text-slate-800">
+      {/* MOBILE BACKDROP */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/40 backdrop-blur-xs md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* ======================================================== */}
+      {/* LEFT SIDEBAR (Matching reference image layout & groups)   */}
+      {/* ======================================================== */}
+      <aside
+        className={`fixed md:sticky top-0 left-0 z-50 h-screen w-64 lg:w-72 bg-white border-r border-slate-200/80 flex flex-col justify-between transition-transform duration-300 shadow-sm md:shadow-none md:translate-x-0 ${
+          mobileSidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Sidebar Header: Brand & Hub */}
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+          <Link
+            href={`/${locale}`}
+            className="flex items-center gap-3 group select-none"
+          >
+            <div className="relative h-10 w-10 shrink-0">
+              <Image
+                src="/logo.png"
+                alt="Shanti Sangha"
+                fill
+                className="object-contain drop-shadow-xs"
+              />
+            </div>
             <div>
-              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
-                <h2 className="text-xl sm:text-2xl font-black text-pitch">
-                  {user.name}
-                </h2>
-                {user.provider === "google" ? (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white border border-[#1877F2]/20 px-3 py-0.5 text-xs font-bold text-slate-700 shadow-2xs">
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                      <path
-                        fill="#4285F4"
-                        d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"
-                      />
-                      <path
-                        fill="#34A853"
-                        d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                      />
-                      <path
-                        fill="#FBBC05"
-                        d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                      />
-                      <path
-                        fill="#EA4335"
-                        d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                      />
-                    </svg>
-                    <span>Google Connected</span>
-                  </span>
-                ) : (
-                  <span className="inline-block rounded-full bg-[#006a4e]/10 text-[#006a4e] px-2.5 py-0.5 text-xs font-bold">
-                    {isBn ? "ক্লাব মেম্বার" : "Club Member"}
-                  </span>
-                )}
-              </div>
-              <p className="text-xs sm:text-sm text-brand-700 font-medium mt-1">
-                {user.email}
+              <h2 className="font-extrabold text-sm text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight">
+                {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
+              </h2>
+              <p className="text-[11px] font-semibold text-purple-600 mt-0.5">
+                {isBn ? "ক্লাব লার্নিং ও পোর্টাল" : "Club Portal Hub"}
               </p>
-              <div className="mt-3 flex items-center justify-center sm:justify-start gap-3">
+            </div>
+          </Link>
+
+          {/* Mobile close button */}
+          <button
+            type="button"
+            onClick={() => setMobileSidebarOpen(false)}
+            className="md:hidden text-slate-400 hover:text-slate-700 p-1"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Sidebar Navigation Items */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Group 1: MAIN */}
+          <div>
+            <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 px-3 mb-2">
+              {isBn ? "প্রধান মেনু / MAIN" : "MAIN"}
+            </p>
+            <nav className="space-y-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("overview");
+                  setMobileSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  activeTab === "overview"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+                <span>{isBn ? "ড্যাশবোর্ড ওভারভিউ" : "Dashboard"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("profile");
+                  setMobileSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  activeTab === "profile"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
+                <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>{isBn ? "প্রোফাইল ও সেটিংস" : "Settings & Profile"}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab("sports");
+                  setMobileSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  activeTab === "sports"
+                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+                }`}
+              >
+                <span className="text-sm">🏏</span>
+                <span>{isBn ? "ম্যাচ ও এসপিএল টুর্নামেন্ট" : "Sports & SPL"}</span>
+              </button>
+
+              <Link
+                href={`/${locale}/members`}
+                onClick={() => setMobileSidebarOpen(false)}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-sm">👥</span>
+                  <span>{isBn ? "ক্লাব সদস্যবৃন্দ" : "Members Directory"}</span>
+                </div>
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </Link>
+            </nav>
+          </div>
+
+          {/* Group 2: ADMIN MANAGEMENT (Only visible to Admin) */}
+          {isAdmin && (
+            <div className="pt-2 border-t border-slate-100">
+              <div className="flex items-center justify-between px-3 mb-2">
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-amber-600">
+                  {isBn ? "অ্যাডমিন কন্ট্রোল / ADMIN" : "ADMIN CONTROLS"}
+                </p>
+                <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-1.5 py-0.5 rounded-md">
+                  PRO
+                </span>
+              </div>
+              <nav className="space-y-1">
                 <button
                   type="button"
-                  onClick={logout}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 hover:underline cursor-pointer"
+                  onClick={() => {
+                    setActiveTab("admin_members");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeTab === "admin_members"
+                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
+                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                  }`}
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  <span>{isBn ? "লগআউট করুন" : "Sign Out"}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm">🛡️</span>
+                    <span>{isBn ? "সদস্য অনুমোদন" : "Member Approvals"}</span>
+                  </div>
+                  {pendingMembers.length > 0 && (
+                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+                      activeTab === "admin_members" ? "bg-white text-amber-800" : "bg-red-500 text-white"
+                    }`}>
+                      {pendingMembers.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("admin_live");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeTab === "admin_live"
+                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
+                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                  }`}
+                >
+                  <span className="text-sm">📡</span>
+                  <span>{isBn ? "লাইভ স্কোর কন্ট্রোল" : "Live Match Control"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("admin_finance");
+                    setMobileSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                    activeTab === "admin_finance"
+                      ? "bg-amber-600 text-white shadow-md shadow-amber-500/20"
+                      : "text-slate-700 hover:bg-amber-50 hover:text-amber-800"
+                  }`}
+                >
+                  <span className="text-sm">💼</span>
+                  <span>{isBn ? "ক্লাব ফান্ড ও অর্থ" : "Club Finance"}</span>
+                </button>
+              </nav>
+            </div>
+          )}
+        </div>
+
+        {/* Sidebar Footer: User Card, Role Switcher, & Sign Out */}
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
+          {/* User Profile Mini Bar */}
+          <div className="flex items-center gap-3 p-2 rounded-2xl bg-white border border-slate-200/80 shadow-2xs">
+            <div className="relative shrink-0">
+              {user?.picture ? (
+                <div className="relative h-9 w-9 rounded-full overflow-hidden">
+                  <Image
+                    src={user.picture}
+                    alt={displayName}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-xs">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <h5 className="text-xs font-bold text-slate-900 truncate leading-tight">
+                {displayName}
+              </h5>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className={`inline-block text-[9px] font-extrabold px-1.5 py-0.2 rounded-md ${
+                  isAdmin ? "bg-amber-100 text-amber-800" : "bg-purple-100 text-purple-700"
+                }`}>
+                  {isAdmin ? (isBn ? "অ্যাডমিন" : "Admin") : (isBn ? "মেম্বার" : "Member")}
+                </span>
+                <span className="text-[10px] text-amber-600 font-bold">🔥 2d</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Active Role Switcher (Admins can toggle view) */}
+          <div className="flex items-center justify-between text-[11px] px-1 font-semibold text-slate-500">
+            <span>{isBn ? "সক্রিয় ভিউ:" : "Active View:"}</span>
+            <div className="inline-flex rounded-lg bg-slate-200 p-0.5 text-[10px] font-bold">
+              <button
+                type="button"
+                onClick={() => setRole("user")}
+                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                  role === "user"
+                    ? "bg-white text-[#006a4e] shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {isBn ? "মেম্বার" : "User"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole("admin")}
+                className={`px-2 py-0.5 rounded-md transition-all cursor-pointer ${
+                  role === "admin"
+                    ? "bg-amber-600 text-white shadow-2xs"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {isBn ? "অ্যাডমিন" : "Admin"}
+              </button>
+            </div>
+          </div>
+
+          {/* Back to Home and Sign Out */}
+          <div className="flex items-center justify-between pt-1 border-t border-slate-200/60 text-xs">
+            <Link
+              href={`/${locale}`}
+              className="text-slate-500 hover:text-[#006a4e] font-semibold flex items-center gap-1"
+            >
+              <span>←</span>
+              <span>{isBn ? "মূল পাতা" : "Website"}</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={logout}
+              className="text-rose-500 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              <span>{isBn ? "লগআউট" : "Sign Out"}</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* ======================================================== */}
+      {/* MAIN CONTENT AREA                                         */}
+      {/* ======================================================== */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        {/* Top Navbar Header */}
+        <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            {/* Mobile hamburger */}
+            <button
+              type="button"
+              onClick={() => setMobileSidebarOpen(true)}
+              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
+              aria-label="Open sidebar menu"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            <div>
+              <h1 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
+                {activeTab === "overview" && (isBn ? "ড্যাশবোর্ড ও ক্লাবের পরিসংখ্যান" : "Dashboard Overview")}
+                {activeTab === "profile" && (isBn ? "সদস্য প্রোফাইল ও সেটিংস" : "Settings & Profile")}
+                {activeTab === "sports" && (isBn ? "এসপিএল ও খেলাধুলা সেন্টার" : "Sports & SPL Tournaments")}
+                {activeTab === "admin_members" && (isBn ? "অ্যাডমিন: সদস্য অনুমোদন ও পরিচালনা" : "Admin: Member Approvals")}
+                {activeTab === "admin_live" && (isBn ? "অ্যাডমিন: লাইভ স্কোরবোর্ড কন্ট্রোলার" : "Admin: Live Match Controller")}
+                {activeTab === "admin_finance" && (isBn ? "অ্যাডমিন: ক্লাব ফান্ড ও হিসাব" : "Admin: Club Finance & Treasury")}
+              </h1>
+              <p className="text-xs text-slate-400 font-medium hidden sm:block">
+                {isBn ? "সাভারচালা শান্তি সংঘ অফিসিয়াল ডিজিটাল প্ল্যাটফর্ম" : "Official Shavarchala Shanti Sangha Portal"}
+              </p>
+            </div>
+          </div>
+
+          {/* Top Quick Actions (Matching Purple/Dark/White pills from reference image) */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveTab("sports")}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            >
+              <span>⚡</span>
+              <span>{isBn ? "এসপিএল ম্যাচ সেন্টার" : "Match Center"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowMemberIdModal(true)}
+              className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+            >
+              <span>🪪</span>
+              <span>{isBn ? "ডিজিটাল আইডি" : "Digital ID"}</span>
+            </button>
+
+            <Link
+              href={`/${locale}`}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-colors"
+            >
+              <span>🏠</span>
+              <span className="hidden sm:inline">{isBn ? "হোম পেজ" : "Home"}</span>
+            </Link>
+
+            <div className="hidden sm:block">
+              <LanguageSwitcher locale={locale as any} />
+            </div>
+          </div>
+        </header>
+
+        {/* Dashboard Main Body */}
+        <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          {/* ===================================================== */}
+          {/* TAB 1: OVERVIEW (Default Dashboard View)             */}
+          {/* ===================================================== */}
+          {activeTab === "overview" && (
+            <div className="space-y-6">
+              {/* TOP STATS CARDS (4 Cards matching the reference layout) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Stat 1: Total Matches & Events */}
+                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between text-slate-400 mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      {isBn ? "মোট ম্যাচ ও সেশন" : "TOTAL CLUB MATCHES"}
+                    </span>
+                    <span className="text-purple-600 bg-purple-50 p-1.5 rounded-xl text-xs">🎤</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
+                    24 {isBn ? "টি" : "Sessions"}
+                  </h3>
+                  <p className="text-xs text-purple-600 font-semibold mt-1">
+                    {isBn ? "এসপিএল ও প্রীতি ম্যাচ" : "Matches & Tournaments"}
+                  </p>
+                </div>
+
+                {/* Stat 2: Membership Status */}
+                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between text-slate-400 mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      {isBn ? "সদস্য স্ট্যাটাস" : "MEMBERSHIP STATUS"}
+                    </span>
+                    <span className="text-emerald-600 bg-emerald-50 p-1.5 rounded-xl text-xs">📖</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-emerald-600">
+                    {isBn ? "সক্রিয়" : "Active"}
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1">
+                    {isBn ? "ভেরিফাইড ক্লাব সদস্য" : "Verified Member"}
+                  </p>
+                </div>
+
+                {/* Stat 3: Club Sessions & Attendance */}
+                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between text-slate-400 mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      {isBn ? "উপস্থিতির হার" : "ATTENDANCE RATE"}
+                    </span>
+                    <span className="text-blue-600 bg-blue-50 p-1.5 rounded-xl text-xs">⚡</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
+                    92%
+                  </h3>
+                  <p className="text-xs text-blue-600 font-semibold mt-1">
+                    {isBn ? "নিয়মিত অংশগ্রহণকারী" : "Regular Participation"}
+                  </p>
+                </div>
+
+                {/* Stat 4: Overall Performance / Accuracy */}
+                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between text-slate-400 mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      {isBn ? "পারফরম্যান্স স্কোর" : "OVERALL CLUB SCORE"}
+                    </span>
+                    <span className="text-amber-600 bg-amber-50 p-1.5 rounded-xl text-xs">🎯</span>
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
+                    88%
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium mt-1">
+                    {isBn ? "শীর্ষ ১০% সদস্য তালিকায়" : "Top 10% Member"}
+                  </p>
+                </div>
+              </div>
+
+              {/* ADMIN SPECIAL KPI ROW (Only visible to Admin) */}
+              {isAdmin && (
+                <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-300/40 rounded-3xl p-4 sm:p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 uppercase tracking-wider">
+                      <span>👑</span>
+                      <span>{isBn ? "অ্যাডমিন এক্সক্লুসিভ স্ট্যাটাস" : "Admin Executive Insights"}</span>
+                    </span>
+                    <span className="text-xs font-bold text-amber-700 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
+                      {isBn ? "সিস্টেম রানিং" : "System Live"}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
+                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "মোট সদস্য" : "Total Members"}</p>
+                      <p className="text-xl font-black text-slate-900">128 {isBn ? "জন" : ""}</p>
+                    </div>
+                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "অপেক্ষমাণ অনুমোদন" : "Pending Approvals"}</p>
+                      <p className="text-xl font-black text-amber-600">{pendingMembers.length} {isBn ? "জন" : ""}</p>
+                    </div>
+                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "তহবিল স্থিতি" : "Fund Balance"}</p>
+                      <p className="text-xl font-black text-emerald-600">৳ ৪৮,৫০০</p>
+                    </div>
+                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "লাইভ ম্যাচ" : "Live Matches"}</p>
+                      <p className="text-xl font-black text-blue-600">১ {isBn ? "টি রানিং" : "Active"}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* DUAL MAIN CARDS: STREAK CARD & LATEST EVALUATION (Directly from reference image) */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Left Card: Daily Streak (lg:col-span-4) */}
+                <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
+                          🔥
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                            {isBn ? "ক্লাব উপস্থিতি স্ট্রিক" : "DAILY ACTIVITY STREAK"}
+                          </p>
+                          <h4 className="text-2xl font-black text-slate-900">
+                            14 {isBn ? "দিন" : "Days"}
+                          </h4>
+                        </div>
+                      </div>
+                      <span className="text-xs text-amber-600 font-bold bg-amber-50 px-2 py-1 rounded-lg">
+                        {isBn ? "সেরা: ৩০ দিন" : "Best: 30d"}
+                      </span>
+                    </div>
+
+                    {/* Weekly Consistency Dots */}
+                    <div className="mt-6">
+                      <p className="text-xs font-bold text-slate-600 mb-3">
+                        {isBn ? "সাপ্তাহিক উপস্থিতি ক্যালেন্ডার:" : "Weekly Consistency"}
+                      </p>
+                      <div className="grid grid-cols-7 gap-1.5 text-center">
+                        {[
+                          { day: "S", active: true },
+                          { day: "M", active: true },
+                          { day: "T", active: true },
+                          { day: "W", active: true },
+                          { day: "T", active: false },
+                          { day: "F", active: true },
+                          { day: "S", active: false },
+                        ].map((d, i) => (
+                          <div
+                            key={i}
+                            className={`py-2 rounded-xl text-xs font-bold border transition-colors ${
+                              d.active
+                                ? "bg-amber-100/70 border-amber-300 text-amber-900"
+                                : "bg-slate-50 border-slate-100 text-slate-400"
+                            }`}
+                          >
+                            <span>{d.day}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Level Progress */}
+                  <div className="mt-6 pt-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
+                      <span>{isBn ? "পরবর্তী ধাপ: গোল্ড মেম্বার" : "Tier: Gold Member"}</span>
+                      <span className="text-purple-600">80%</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-amber-500 to-purple-600 rounded-full w-4/5" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Card: Latest Diagnostic / Match Result (lg:col-span-8) */}
+                <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
+                  <div>
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                      <div>
+                        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full mb-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                          <span>{isBn ? "সর্বশেষ ম্যাচ ফলাফল • Nov 8, 2026" : "Latest SPL Match • Nov 8, 2026"}</span>
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
+                          {isBn ? "সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ (এসপিএল সিজন ৫)" : "Shavarchala Royals vs Vikings XI (SPL Season 5)"}
+                        </h3>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setActiveTab("sports")}
+                          className="px-3.5 py-1.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          {isBn ? "পূর্ণ রিপোর্ট" : "Full Report"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Chips Row (Accuracy, Time, Level equivalent) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
+                      <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-100 flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-xs">
+                          WIN
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase text-purple-600">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
+                          <p className="text-sm font-extrabold text-slate-900">{isBn ? "৬ উইকেটে জয়ী" : "Won by 6 Wkts"}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-xs">
+                          MOM
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase text-blue-600">{isBn ? "সেরা পারফরমার" : "Top Performer"}</p>
+                          <p className="text-xs font-extrabold text-slate-900 truncate">{isBn ? "রাকিবুল ইসলাম" : "Rakibul Islam"}</p>
+                        </div>
+                      </div>
+
+                      <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-xs">
+                          #1
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase text-emerald-600">{isBn ? "পয়েন্ট টেবিল" : "Table Rank"}</p>
+                          <p className="text-xs font-extrabold text-slate-900">{isBn ? "শীর্ষস্থান (১০ পয়েন্ট)" : "1st Place (10 pts)"}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Recommendation / Directive Box */}
+                    <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 leading-relaxed">
+                      <p className="font-bold text-slate-800 flex items-center gap-1.5 mb-1">
+                        <span>📢</span>
+                        <span>{isBn ? "কমিটি ও কোচিং স্টাফদের নির্দেশনা:" : "Club Committee Directive:"}</span>
+                      </p>
+                      <p>
+                        {isBn
+                          ? "আগামী শুক্রবার সকাল ৮:৩০ মিনিটে সাভারচালা হাই স্কুল মাঠে এসপিএল টুর্নামেন্টের সেমিফাইনাল ম্যাচ অনুষ্ঠিত হবে। সকল খেলোয়াড় ও শুভানুধ্যায়ী সদস্যদের নির্ধারিত সময়ের পূর্বেই মাঠে উপস্থিত হওয়ার আহ্বান জানানো হচ্ছে।"
+                          : "Semi-final match scheduled for this Friday at 8:30 AM at Shavarchala High School Ground. All members and supporters are requested to be present on time."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* BOTTOM SECTION: ACTIVITY HISTORY & ATTEMPTS (Matching table in reference image) */}
+              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                  <div>
+                    <h3 className="text-base sm:text-lg font-black text-slate-900">
+                      {isBn ? "ক্লাবের সাম্প্রতিক ইভেন্ট ও কার্যক্রম রেকর্ড" : "Recent Events & Activity History"}
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      {isBn ? "টুর্নামেন্ট, ম্যাচ ও সামাজিক উন্নয়নমূলক কাজের বিবরণী" : "Track match records, tournament updates, and club milestones"}
+                    </p>
+                  </div>
+
+                  {/* Filter Tabs */}
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      type="button"
+                      onClick={() => setHistoryCategory("all")}
+                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
+                        historyCategory === "all"
+                          ? "bg-slate-900 text-white"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {isBn ? "সকল (৪)" : "All (4)"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHistoryCategory("spl")}
+                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
+                        historyCategory === "spl"
+                          ? "bg-purple-600 text-white"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {isBn ? "এসপিএল ক্রিকেট" : "SPL Cricket"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setHistoryCategory("football")}
+                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
+                        historyCategory === "football"
+                          ? "bg-emerald-600 text-white"
+                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                      }`}
+                    >
+                      {isBn ? "ফুটবল" : "Football"}
+                    </button>
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("admin_members")}
+                        className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-2xs transition-colors cursor-pointer"
+                      >
+                        {isBn ? "+ অ্যাডমিন টুলস" : "+ Admin Tools"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs sm:text-sm">
+                    <thead>
+                      <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase">
+                        <th className="py-3 px-3">{isBn ? "ইভেন্ট / ম্যাচ" : "Event / Match"}</th>
+                        <th className="py-3 px-3">{isBn ? "ক্যাটাগরি" : "Category"}</th>
+                        <th className="py-3 px-3">{isBn ? "তারিখ" : "Date"}</th>
+                        <th className="py-3 px-3">{isBn ? "ফলাফল / অবস্থা" : "Status / Result"}</th>
+                        <th className="py-3 px-3 text-right">{isBn ? "অ্যাকশন" : "Action"}</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 font-medium">
+                      <tr className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3.5 px-3">
+                          <p className="font-bold text-slate-900">{isBn ? "এসপিএল সিজন ৫ - গ্রুপ ম্যাচ ৪" : "SPL Season 5 - Group Match 4"}</p>
+                          <p className="text-[11px] text-slate-400">সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ</p>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-block bg-purple-50 text-purple-700 px-2 py-0.5 rounded-md text-xs font-bold">
+                            Cricket
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-slate-600">Nov 8, 2026</td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            {isBn ? "জয়ী (৬ উইকেটে)" : "Won by 6 wkts"}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("sports")}
+                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                          >
+                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3.5 px-3">
+                          <p className="font-bold text-slate-900">{isBn ? "বিজয় দিবস প্রীতি ফুটবল ম্যাচ" : "Victory Day Football Match"}</p>
+                          <p className="text-[11px] text-slate-400">সাভারচালা একাদশ বনাম সখিপুর একাদশ</p>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-block bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md text-xs font-bold">
+                            Football
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-slate-600">Nov 1, 2026</td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-flex items-center gap-1 text-blue-600 font-bold text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                            {isBn ? "ড্র (১ - ১)" : "Draw (1 - 1)"}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("sports")}
+                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                          >
+                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
+                          </button>
+                        </td>
+                      </tr>
+
+                      <tr className="hover:bg-slate-50/80 transition-colors">
+                        <td className="py-3.5 px-3">
+                          <p className="font-bold text-slate-900">{isBn ? "ক্লাবের বার্ষিক সাধারণ সভা ও রক্তদান কর্মসূচি" : "Annual General Meeting & Blood Drive"}</p>
+                          <p className="text-[11px] text-slate-400">সাভারচালা শান্তি সংঘ প্রাঙ্গণ</p>
+                        </td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-block bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md text-xs font-bold">
+                            Community
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-slate-600">Oct 25, 2026</td>
+                        <td className="py-3.5 px-3">
+                          <span className="inline-flex items-center gap-1 text-slate-600 font-bold text-xs">
+                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                            {isBn ? "সম্পন্ন" : "Completed"}
+                          </span>
+                        </td>
+                        <td className="py-3.5 px-3 text-right">
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab("sports")}
+                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                          >
+                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 2: PROFILE & SETTINGS                             */}
+          {/* ===================================================== */}
+          {activeTab === "profile" && (
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+                <div className="flex items-center gap-4">
+                  <div className="relative shrink-0">
+                    {user?.picture ? (
+                      <div className="relative h-16 w-16 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20">
+                        <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
+                      </div>
+                    ) : (
+                      <div className="h-16 w-16 rounded-full bg-[#006a4e] text-white font-black text-2xl flex items-center justify-center">
+                        {displayName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-900">{displayName}</h3>
+                    <p className="text-xs text-slate-400">{displayEmail}</p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-md">
+                        {isAdmin ? (isBn ? "ক্লাব অ্যাডমিন" : "Club Admin") : (isBn ? "রেজিস্টার্ড মেম্বার" : "Club Member")}
+                      </span>
+                      {user?.provider === "google" && (
+                        <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
+                          <span>✓ Google Connected</span>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowMemberIdModal(true)}
+                  className="px-4 py-2 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white text-xs font-bold shadow-sm transition-colors cursor-pointer"
+                >
+                  {isBn ? "🪪 সদস্য আইডি কার্ড দেখুন" : "View Member ID Card"}
                 </button>
               </div>
+
+              {/* Form Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "পুরো নাম" : "Full Name"}</label>
+                  <input
+                    type="text"
+                    defaultValue={displayName}
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "ইমেইল ঠিকানা" : "Email Address"}</label>
+                  <input
+                    type="email"
+                    defaultValue={displayEmail}
+                    disabled
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "গ্রাম / এলাকা" : "Village / Area"}</label>
+                  <input
+                    type="text"
+                    defaultValue="সাভারচালা, সখিপুর, টাঙ্গাইল"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "রক্তের গ্রুপ" : "Blood Group"}</label>
+                  <input
+                    type="text"
+                    defaultValue="B+"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end">
+                <button
+                  type="button"
+                  className="px-6 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
+                >
+                  {isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 3: SPORTS & SPL                                  */}
+          {/* ===================================================== */}
+          {activeTab === "sports" && (
+            <div className="space-y-6">
+              <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-[#0A3123] text-white rounded-3xl p-6 sm:p-8 shadow-md">
+                <span className="bg-white/20 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest border border-white/25">
+                  SPL SEASON 5 • 2026
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-black mt-2">
+                  {isBn ? "সাভারচালা প্রিমিয়ার লিগ (এসপিএল)" : "Shavarchala Premier League (SPL)"}
+                </h2>
+                <p className="text-xs sm:text-sm text-purple-200 mt-1 max-w-xl">
+                  {isBn
+                    ? "শান্তি সংঘ আয়োজিত ঐতিহাসিক গ্রামীণ ক্রিকেট উৎসব। আগামী ম্যাচ ও দলগুলোর অবস্থান।"
+                    : "Official village cricket championship organized by Shanti Sangha. Track schedules and team rosters."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs">
+                  <h4 className="font-extrabold text-base text-slate-900 mb-3">
+                    {isBn ? "আগামী সেমিফাইনাল ফিক্সচার" : "Upcoming Semi-Final Fixture"}
+                  </h4>
+                  <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 text-center space-y-2">
+                    <p className="text-xs text-purple-600 font-bold uppercase">{isBn ? "শুক্রবার • সকাল ৮:৩০" : "Friday • 8:30 AM"}</p>
+                    <div className="flex items-center justify-center gap-4 text-sm sm:text-base font-black text-slate-900">
+                      <span>সাভারচালা রয়্যালস</span>
+                      <span className="text-red-500 font-extrabold">VS</span>
+                      <span>সাভারচালা কিংস</span>
+                    </div>
+                    <p className="text-xs text-slate-500">{isBn ? "ভেন্যু: সাভারচালা হাই স্কুল মাঠ" : "Venue: High School Ground"}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs">
+                  <h4 className="font-extrabold text-base text-slate-900 mb-3">
+                    {isBn ? "টুর্নামেন্ট লিডারবোর্ড" : "Tournament Leaderboard"}
+                  </h4>
+                  <div className="space-y-2 text-xs">
+                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
+                      <span>১. সাভারচালা রয়্যালস</span>
+                      <span className="text-emerald-600">১০ পয়েন্ট (NRR +1.42)</span>
+                    </div>
+                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
+                      <span>২. সাভারচালা কিংস</span>
+                      <span className="text-emerald-600">৮ পয়েন্ট (NRR +0.85)</span>
+                    </div>
+                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
+                      <span>৩. ভাইকিংস একাদশ</span>
+                      <span className="text-slate-600">৬ পয়েন্ট (NRR -0.21)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 4: ADMIN: MEMBER APPROVALS (Admin Only)          */}
+          {/* ===================================================== */}
+          {activeTab === "admin_members" && isAdmin && (
+            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full mb-1">
+                    <span>👑</span>
+                    <span>{isBn ? "অ্যাডমিন ম্যানেজমেন্ট" : "Admin Management"}</span>
+                  </div>
+                  <h3 className="text-lg font-black text-slate-900">
+                    {isBn ? "নতুন সদস্য রেজিস্ট্রেশন অনুমোদন" : "Pending Member Registrations"}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {isBn ? "আবেদনকারীদের যাচাই করে ক্লাবের সদস্য তালিকায় যুক্ত করুন" : "Review and approve new club membership registrations"}
+                  </p>
+                </div>
+
+                <span className="bg-amber-100 text-amber-800 text-xs font-black px-3 py-1 rounded-full self-start sm:self-auto">
+                  {pendingMembers.length} {isBn ? "টি আবেদন অপেক্ষমাণ" : "Pending Applications"}
+                </span>
+              </div>
+
+              {pendingMembers.length === 0 ? (
+                <div className="py-12 text-center text-slate-400 text-sm">
+                  <p className="text-3xl mb-2">🎉</p>
+                  <p>{isBn ? "কোনো নতুন আবেদন অপেক্ষমাণ নেই!" : "No pending registration requests!"}</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100">
+                  {pendingMembers.map((member) => (
+                    <div key={member.id} className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <h4 className="font-bold text-sm text-slate-900">{member.name}</h4>
+                        <p className="text-xs text-slate-500">{member.email} • {member.phone}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">{isBn ? "আবেদনের তারিখ:" : "Date:"} {member.date}</p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleApprove(member.id)}
+                          className="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                        >
+                          {isBn ? "✓ অনুমোদন করুন" : "Approve"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleApprove(member.id)}
+                          className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-600 text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          {isBn ? "বাতিল" : "Decline"}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 5: ADMIN: LIVE SCORE CONTROLLER (Admin Only)     */}
+          {/* ===================================================== */}
+          {activeTab === "admin_live" && isAdmin && (
+            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-5">
+              <div className="pb-4 border-b border-slate-100">
+                <span className="text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full">
+                  LIVE SCOREBOARD CONTROLLER
+                </span>
+                <h3 className="text-lg font-black text-slate-900 mt-1">
+                  {isBn ? "চলমান এসপিএল ম্যাচের লাইভ স্কোরবোর্ড আপডেট" : "Live Match Scoreboard Updater"}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "দল ১" : "Team 1"}</label>
+                  <input
+                    type="text"
+                    value={liveScore.teamA}
+                    onChange={(e) => setLiveScore({ ...liveScore, teamA: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "দল ২" : "Team 2"}</label>
+                  <input
+                    type="text"
+                    value={liveScore.teamB}
+                    onChange={(e) => setLiveScore({ ...liveScore, teamB: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "বর্তমান রান / উইকেট" : "Current Score"}</label>
+                  <input
+                    type="text"
+                    value={liveScore.score}
+                    onChange={(e) => setLiveScore({ ...liveScore, score: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-purple-700"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "ওভার" : "Overs"}</label>
+                  <input
+                    type="text"
+                    value={liveScore.overs}
+                    onChange={(e) => setLiveScore({ ...liveScore, overs: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-2">
+                <button
+                  type="button"
+                  onClick={() => alert(isBn ? "লাইভ স্কোর আপডেট সফল হয়েছে!" : "Live score updated!")}
+                  className="px-6 py-2.5 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
+                >
+                  {isBn ? "স্কোরবোর্ড ব্রডকাস্ট করুন" : "Broadcast Live Score"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 6: ADMIN: CLUB FINANCE & ACCOUNTS (Admin Only)   */}
+          {/* ===================================================== */}
+          {activeTab === "admin_finance" && isAdmin && (
+            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-6">
+              <div className="pb-4 border-b border-slate-100">
+                <span className="text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full">
+                  FINANCIAL LEDGER
+                </span>
+                <h3 className="text-lg font-black text-slate-900 mt-1">
+                  {isBn ? "ক্লাব ফান্ড, ডোনেশন ও টুর্নামেন্ট বাজেট" : "Club Funds, Donations & Budget"}
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                  <p className="text-xs font-bold text-emerald-800 uppercase">{isBn ? "মোট তহবিল ব্যালেন্স" : "Current Fund Balance"}</p>
+                  <p className="text-2xl font-black text-emerald-700 mt-1">৳ ৪৮,৫০০</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100">
+                  <p className="text-xs font-bold text-blue-800 uppercase">{isBn ? "এসপিএল স্পন্সরশিপ সংগ্রহ" : "SPL Sponsorship Collected"}</p>
+                  <p className="text-2xl font-black text-blue-700 mt-1">৳ ৩২,০০০</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100">
+                  <p className="text-xs font-bold text-amber-800 uppercase">{isBn ? "চলতি মাসের খরচ" : "Monthly Expenses"}</p>
+                  <p className="text-2xl font-black text-amber-700 mt-1">৳ ১৪,২০০</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* ===================================================== */}
+      {/* DIGITAL MEMBER ID CARD MODAL                          */}
+      {/* ===================================================== */}
+      {showMemberIdModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative border border-slate-100">
+            <button
+              type="button"
+              onClick={() => setShowMemberIdModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* ID Card Front */}
+            <div className="bg-gradient-to-tr from-[#006a4e] via-[#059669] to-[#1877F2] text-white p-6 rounded-2xl shadow-md space-y-4">
+              <div className="flex items-center justify-between border-b border-white/20 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="relative h-7 w-7">
+                    <Image src="/logo.png" alt="Logo" fill className="object-contain" />
+                  </div>
+                  <div>
+                    <h5 className="font-black text-xs uppercase tracking-wider">সাভারচালা শান্তি সংঘ</h5>
+                    <p className="text-[9px] text-emerald-200">OFFICIAL MEMBER CARD</p>
+                  </div>
+                </div>
+                <span className="text-[10px] font-black bg-white/20 px-2 py-0.5 rounded">2026</span>
+              </div>
+
+              <div className="flex items-center gap-3.5">
+                <div className="relative h-14 w-14 rounded-xl overflow-hidden ring-2 ring-white/60 shrink-0 bg-white">
+                  {user?.picture ? (
+                    <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center font-black text-lg text-[#006a4e]">
+                      {displayName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-sm truncate">{displayName}</h4>
+                  <p className="text-[10px] text-emerald-200 font-mono mt-0.5">ID: SS-2026-089</p>
+                  <p className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold inline-block mt-1">
+                    {isAdmin ? "👑 ADMIN EXECUTIVE" : "⭐ GENERAL MEMBER"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t border-white/20 pt-2 flex items-center justify-between text-[9px] text-emerald-100">
+                <span>ESTD: 2007 • SHAVARCHALA</span>
+                <span>STATUS: VERIFIED</span>
+              </div>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-colors cursor-pointer"
+              >
+                {isBn ? "প্রিন্ট / ডাউনলোড করুন" : "Print ID Card"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowMemberIdModal(false)}
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                {isBn ? "বন্ধ করুন" : "Close"}
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-3xl font-bold">{title}</h1>
-        <RoleSwitcher dict={dict.role} />
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        {stats.map((label) => (
-          <div key={label} className="rounded-2xl border border-brand-200 bg-white p-5 shadow-xs">
-            <p className="text-sm font-semibold text-brand-700">{label}</p>
-            <p className="mt-2 text-3xl font-bold text-brand-800">0</p>
-          </div>
-        ))}
-      </div>
-    </main>
+    </div>
   );
 }

@@ -23,7 +23,7 @@ export const digitalAdmins: DigitalAdmin[] = [
   {
     id: "asraful",
     nameEn: "Asraful Aopo",
-    nameBn: "আশরাফুল অপো",
+    nameBn: "আশরাফুল অপু",
     adminRoleEn: "Head of Digital Media",
     adminRoleBn: "হেড অব ডিজিটাল মিডিয়া",
     badgeEn: "🎬 Head of Digital Media",
@@ -49,6 +49,16 @@ export const digitalAdmins: DigitalAdmin[] = [
     badgeEn: "📈 Digital Marketing",
     badgeBn: "📈 ডিজিটাল মার্কেটিং",
     image: "/images/admin/alamin.png",
+  },
+  {
+    id: "rishan",
+    nameEn: "Rishan",
+    nameBn: "রিশান",
+    adminRoleEn: "Video Editor & Media Creator",
+    adminRoleBn: "ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর",
+    badgeEn: "🎥 Video Editor & Creator",
+    badgeBn: "🎥 ভিডিও এডিটর ও ক্রিয়েটর",
+    image: "/images/admin/risan.png",
   },
   {
     id: "himel",
@@ -78,7 +88,7 @@ export const digitalAdmins: DigitalAdmin[] = [
     adminRoleBn: "ওয়েবসাইট অ্যাডমিনিস্ট্রেটর এবং সামাজিক ও আন্তর্জাতিক বিষয়ক",
     badgeEn: "💻 Website Admin & Global Affairs",
     badgeBn: "💻 ওয়েবসাইট অ্যাডমিন ও আন্তর্জাতিক বিষয়ক",
-    image: "/images/committee/sourav.png",
+    image: "/images/admin/sourav.jpg",
   },
   {
     id: "jihad",
@@ -90,16 +100,7 @@ export const digitalAdmins: DigitalAdmin[] = [
     badgeBn: "💼 অর্থ ও হিসাব অ্যাডমিন",
     image: "/images/committee/jihad.png",
   },
-  {
-    id: "rishan",
-    nameEn: "Rishan",
-    nameBn: "রিশান",
-    adminRoleEn: "Video Editor & Media Creator",
-    adminRoleBn: "ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর",
-    badgeEn: "🎥 Video Editor & Creator",
-    badgeBn: "🎥 ভিডিও এডিটর ও ক্রিয়েটর",
-    image: "/images/admin/avatar-placeholder.svg",
-  },
+
   {
     id: "shahin",
     nameEn: "Shahin Alam Shuvo",

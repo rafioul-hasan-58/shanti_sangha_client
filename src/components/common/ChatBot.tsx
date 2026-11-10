@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 
 interface Message {
@@ -14,11 +15,16 @@ interface Message {
 }
 
 export default function ChatBot({ locale }: { locale: Locale }) {
+  const pathname = usePathname();
   const isBn = locale === "bn";
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  if (pathname?.includes("/dashboard") || pathname?.includes("/admin")) {
+    return null;
+  }
 
   // Initial welcome message
   const initialMessages: Message[] = [

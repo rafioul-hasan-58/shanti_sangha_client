@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { APP_VERSION } from "@/lib/version";
@@ -11,7 +14,16 @@ export default function Footer({
   dict: Dictionary;
   locale?: Locale;
 }) {
+  const pathname = usePathname();
   const isBn = locale === "bn";
+
+  // Hide footer on dashboard and admin portals
+  const isDashboardRoute =
+    pathname?.includes("/dashboard") || pathname?.includes("/admin");
+
+  if (isDashboardRoute) {
+    return null;
+  }
 
   const quickLinks = [
     { href: `/${locale}#about`, label: isBn ? "আমাদের সম্পর্কে" : "About Us" },
