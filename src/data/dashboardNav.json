@@ -1,0 +1,102 @@
+{
+  "categories": [
+    {
+      "id": "main",
+      "titleBn": "মেইন / MAIN",
+      "titleEn": "MAIN",
+      "items": [
+        {
+          "id": "overview",
+          "labelBn": "ড্যাশবোর্ড",
+          "labelEn": "Dashboard",
+          "icon": "dashboard",
+          "type": "tab"
+        },
+        {
+          "id": "ai_chat",
+          "labelBn": "এআই প্র্যাকটিস চ্যাট",
+          "labelEn": "AI Practice Chat",
+          "icon": "chat",
+          "type": "action",
+          "badge": {
+            "text": "✨",
+            "type": "sparkle"
+          }
+        }
+      ]
+    },
+    {
+      "id": "core_skills",
+      "titleBn": "ক্লাব কার্যক্রম / CORE SKILLS",
+      "titleEn": "CORE SKILLS",
+      "items": [
+        {
+          "id": "sports",
+          "labelBn": "খেলাধুলা ও এসপিএল",
+          "labelEn": "Skills & Sports",
+          "icon": "sports",
+          "type": "tab",
+          "hasChevron": true
+        },
+        {
+          "id": "members",
+          "labelBn": "ক্লাব সদস্য তালিকা",
+          "labelEn": "Club Members",
+          "icon": "members",
+          "type": "link",
+          "href": "/members",
+          "hasChevron": true
+        },
+        {
+          "id": "welfare",
+          "labelBn": "সমাজকল্যাণ ও রক্তদান",
+          "labelEn": "Reading & Welfare",
+          "icon": "welfare",
+          "type": "link",
+          "href": "/#about",
+          "hasChevron": true
+        }
+      ]
+    },
+    {
+      "id": "admin_controls",
+      "titleBn": "অ্যাডমিন টেস্ট ও নিয়ন্ত্রণ",
+      "titleEn": "ASSESSMENT & TEST",
+      "adminOnly": true,
+      "badge": "ADAPTIVE",
+      "items": [
+        {
+          "id": "admin_members",
+          "labelBn": "সদস্য রেজিস্ট্রেশন অনুমোদন",
+          "labelEn": "Member Approvals",
+          "icon": "shield_check",
+          "type": "tab",
+          "showPendingBadge": true
+        },
+        {
+          "id": "admin_live",
+          "labelBn": "লাইভ স্কোর কন্ট্রোল",
+          "labelEn": "Live Match Control",
+          "icon": "live",
+          "type": "tab",
+          "badge": {
+            "text": "LIVE",
+            "type": "danger"
+          }
+        },
+        {
+          "id": "admin_finance",
+          "labelBn": "ক্লাব ফান্ড ও অর্থ",
+          "labelEn": "Club Finance",
+          "icon": "finance",
+          "type": "tab",
+          "badge": {
+            "text": "AUDIT",
+            "type": "success"
+          }
+        }
+      ]
+    }
+  ]
+}
+
