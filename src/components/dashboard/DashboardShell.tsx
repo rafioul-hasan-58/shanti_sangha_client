@@ -111,7 +111,7 @@ export default function DashboardShell({
               <h2 className="font-extrabold text-sm text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight">
                 {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
               </h2>
-              <p className="text-[11px] font-semibold text-purple-600 mt-0.5">
+              <p className="text-[11px] font-semibold text-[#006a4e] mt-0.5">
                 {isBn ? "ক্লাব লার্নিং ও পোর্টাল" : "Club Portal Hub"}
               </p>
             </div>
@@ -145,7 +145,7 @@ export default function DashboardShell({
                 }}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeTab === "overview"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
@@ -163,7 +163,7 @@ export default function DashboardShell({
                 }}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeTab === "profile"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
@@ -182,7 +182,7 @@ export default function DashboardShell({
                 }}
                 className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   activeTab === "sports"
-                    ? "bg-purple-600 text-white shadow-md shadow-purple-500/20"
+                    ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25"
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
@@ -308,7 +308,7 @@ export default function DashboardShell({
               </h5>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className={`inline-block text-[9px] font-extrabold px-1.5 py-0.2 rounded-md ${
-                  isAdmin ? "bg-amber-100 text-amber-800" : "bg-purple-100 text-purple-700"
+                  isAdmin ? "bg-amber-100 text-amber-800" : "bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20"
                 }`}>
                   {isAdmin ? (isBn ? "অ্যাডমিন" : "Admin") : (isBn ? "মেম্বার" : "Member")}
                 </span>
@@ -404,12 +404,12 @@ export default function DashboardShell({
             </div>
           </div>
 
-          {/* Top Quick Actions (Matching Purple/Dark/White pills from reference image) */}
+          {/* Top Quick Actions (Matching Primary Green/Dark/White pills from reference image) */}
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={() => setActiveTab("sports")}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#006a4e] hover:bg-[#005a42] text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
             >
               <span>⚡</span>
               <span>{isBn ? "এসপিএল ম্যাচ সেন্টার" : "Match Center"}</span>
@@ -453,12 +453,12 @@ export default function DashboardShell({
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
                       {isBn ? "মোট ম্যাচ ও সেশন" : "TOTAL CLUB MATCHES"}
                     </span>
-                    <span className="text-purple-600 bg-purple-50 p-1.5 rounded-xl text-xs">🎤</span>
+                    <span className="text-[#006a4e] bg-[#006a4e]/10 p-1.5 rounded-xl text-xs">🎤</span>
                   </div>
                   <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
                     24 {isBn ? "টি" : "Sessions"}
                   </h3>
-                  <p className="text-xs text-purple-600 font-semibold mt-1">
+                  <p className="text-xs text-[#006a4e] font-semibold mt-1">
                     {isBn ? "এসপিএল ও প্রীতি ম্যাচ" : "Matches & Tournaments"}
                   </p>
                 </div>
@@ -603,10 +603,10 @@ export default function DashboardShell({
                   <div className="mt-6 pt-4 border-t border-slate-100">
                     <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-1.5">
                       <span>{isBn ? "পরবর্তী ধাপ: গোল্ড মেম্বার" : "Tier: Gold Member"}</span>
-                      <span className="text-purple-600">80%</span>
+                      <span className="text-[#006a4e]">80%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-amber-500 to-purple-600 rounded-full w-4/5" />
+                      <div className="h-full bg-gradient-to-r from-amber-500 to-[#006a4e] rounded-full w-4/5" />
                     </div>
                   </div>
                 </div>
@@ -630,7 +630,7 @@ export default function DashboardShell({
                         <button
                           type="button"
                           onClick={() => setActiveTab("sports")}
-                          className="px-3.5 py-1.5 rounded-full bg-purple-50 text-purple-700 hover:bg-purple-100 text-xs font-bold transition-colors cursor-pointer"
+                          className="px-3.5 py-1.5 rounded-full bg-[#006a4e]/10 text-[#006a4e] hover:bg-[#006a4e]/20 text-xs font-bold transition-colors cursor-pointer"
                         >
                           {isBn ? "পূর্ণ রিপোর্ট" : "Full Report"}
                         </button>
@@ -639,12 +639,12 @@ export default function DashboardShell({
 
                     {/* Chips Row (Accuracy, Time, Level equivalent) */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
-                      <div className="p-3.5 rounded-2xl bg-purple-50/70 border border-purple-100 flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-xs">
+                      <div className="p-3.5 rounded-2xl bg-[#006a4e]/10 border border-[#006a4e]/20 flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-xl bg-[#006a4e] text-white font-black flex items-center justify-center text-xs">
                           WIN
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-purple-600">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
+                          <p className="text-[10px] font-bold uppercase text-[#006a4e]">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
                           <p className="text-sm font-extrabold text-slate-900">{isBn ? "৬ উইকেটে জয়ী" : "Won by 6 Wkts"}</p>
                         </div>
                       </div>
@@ -716,7 +716,7 @@ export default function DashboardShell({
                       onClick={() => setHistoryCategory("spl")}
                       className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
                         historyCategory === "spl"
-                          ? "bg-purple-600 text-white"
+                          ? "bg-[#006a4e] text-white"
                           : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                       }`}
                     >
@@ -764,7 +764,7 @@ export default function DashboardShell({
                           <p className="text-[11px] text-slate-400">সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ</p>
                         </td>
                         <td className="py-3.5 px-3">
-                          <span className="inline-block bg-purple-50 text-purple-700 px-2 py-0.5 rounded-md text-xs font-bold">
+                          <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] px-2 py-0.5 rounded-md text-xs font-bold">
                             Cricket
                           </span>
                         </td>
@@ -779,7 +779,7 @@ export default function DashboardShell({
                           <button
                             type="button"
                             onClick={() => setActiveTab("sports")}
-                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
                           >
                             {isBn ? "বিস্তারিত দেখুন →" : "View →"}
                           </button>
@@ -807,7 +807,7 @@ export default function DashboardShell({
                           <button
                             type="button"
                             onClick={() => setActiveTab("sports")}
-                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
                           >
                             {isBn ? "বিস্তারিত দেখুন →" : "View →"}
                           </button>
@@ -835,7 +835,7 @@ export default function DashboardShell({
                           <button
                             type="button"
                             onClick={() => setActiveTab("sports")}
-                            className="text-purple-600 hover:text-purple-800 font-bold text-xs"
+                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
                           >
                             {isBn ? "বিস্তারিত দেখুন →" : "View →"}
                           </button>
@@ -870,7 +870,7 @@ export default function DashboardShell({
                     <h3 className="text-xl font-bold text-slate-900">{displayName}</h3>
                     <p className="text-xs text-slate-400">{displayEmail}</p>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-md">
+                      <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2 py-0.5 rounded-md">
                         {isAdmin ? (isBn ? "ক্লাব অ্যাডমিন" : "Club Admin") : (isBn ? "রেজিস্টার্ড মেম্বার" : "Club Member")}
                       </span>
                       {user?.provider === "google" && (
@@ -898,7 +898,7 @@ export default function DashboardShell({
                   <input
                     type="text"
                     defaultValue={displayName}
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
                   />
                 </div>
 
@@ -917,7 +917,7 @@ export default function DashboardShell({
                   <input
                     type="text"
                     defaultValue="সাভারচালা, সখিপুর, টাঙ্গাইল"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
                   />
                 </div>
 
@@ -926,7 +926,7 @@ export default function DashboardShell({
                   <input
                     type="text"
                     defaultValue="B+"
-                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-purple-500"
+                    className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e]"
                   />
                 </div>
               </div>
@@ -934,7 +934,7 @@ export default function DashboardShell({
               <div className="pt-4 flex justify-end">
                 <button
                   type="button"
-                  className="px-6 py-2.5 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
+                  className="px-6 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
                 >
                   {isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}
                 </button>
@@ -947,14 +947,14 @@ export default function DashboardShell({
           {/* ===================================================== */}
           {activeTab === "sports" && (
             <div className="space-y-6">
-              <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-[#0A3123] text-white rounded-3xl p-6 sm:p-8 shadow-md">
+              <div className="bg-gradient-to-r from-[#005a42] via-[#006a4e] to-[#0A3123] text-white rounded-3xl p-6 sm:p-8 shadow-md">
                 <span className="bg-white/20 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest border border-white/25">
                   SPL SEASON 5 • 2026
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black mt-2">
                   {isBn ? "সাভারচালা প্রিমিয়ার লিগ (এসপিএল)" : "Shavarchala Premier League (SPL)"}
                 </h2>
-                <p className="text-xs sm:text-sm text-purple-200 mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-emerald-100 mt-1 max-w-xl">
                   {isBn
                     ? "শান্তি সংঘ আয়োজিত ঐতিহাসিক গ্রামীণ ক্রিকেট উৎসব। আগামী ম্যাচ ও দলগুলোর অবস্থান।"
                     : "Official village cricket championship organized by Shanti Sangha. Track schedules and team rosters."}
@@ -966,8 +966,8 @@ export default function DashboardShell({
                   <h4 className="font-extrabold text-base text-slate-900 mb-3">
                     {isBn ? "আগামী সেমিফাইনাল ফিক্সচার" : "Upcoming Semi-Final Fixture"}
                   </h4>
-                  <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 text-center space-y-2">
-                    <p className="text-xs text-purple-600 font-bold uppercase">{isBn ? "শুক্রবার • সকাল ৮:৩০" : "Friday • 8:30 AM"}</p>
+                  <div className="p-4 rounded-2xl bg-[#006a4e]/5 border border-[#006a4e]/15 text-center space-y-2">
+                    <p className="text-xs text-[#006a4e] font-bold uppercase">{isBn ? "শুক্রবার • সকাল ৮:৩০" : "Friday • 8:30 AM"}</p>
                     <div className="flex items-center justify-center gap-4 text-sm sm:text-base font-black text-slate-900">
                       <span>সাভারচালা রয়্যালস</span>
                       <span className="text-red-500 font-extrabold">VS</span>
@@ -1101,7 +1101,7 @@ export default function DashboardShell({
                     type="text"
                     value={liveScore.score}
                     onChange={(e) => setLiveScore({ ...liveScore, score: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-purple-700"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-[#006a4e]"
                   />
                 </div>
                 <div>
@@ -1221,7 +1221,7 @@ export default function DashboardShell({
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="flex-1 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs transition-colors cursor-pointer"
+                className="flex-1 py-2 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 {isBn ? "প্রিন্ট / ডাউনলোড করুন" : "Print ID Card"}
               </button>
