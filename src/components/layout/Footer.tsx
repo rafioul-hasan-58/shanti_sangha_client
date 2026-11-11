@@ -20,7 +20,8 @@ export default function Footer({
   // Hide footer on dashboard and admin portals; hide on mobile for login/register so auth screens fit cleanly without scrolling
   const isDashboardRoute =
     pathname?.includes("/dashboard") || pathname?.includes("/admin");
-  const isLoginRoute = pathname?.includes("/login");
+  const isAuthRoute =
+    pathname?.includes("/login") || pathname?.includes("/register");
 
   if (isDashboardRoute) {
     return null;
@@ -36,7 +37,7 @@ export default function Footer({
   ];
 
   return (
-    <footer className={`${isLoginRoute ? "hidden md:block " : ""}mt-20 border-t-[3px] border-white bg-[#006a4e] text-white font-sans shadow-lg`}>
+    <footer className={`${isAuthRoute ? "hidden md:block " : ""}mt-20 border-t-[3px] border-white bg-[#006a4e] text-white font-sans shadow-lg`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Brand & Description */}
