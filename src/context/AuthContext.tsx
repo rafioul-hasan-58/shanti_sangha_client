@@ -100,6 +100,11 @@ export function ensureGoogleScript(): Promise<void> {
 const STORAGE_KEY = "shanti_auth_user";
 const TOKEN_KEY = "shanti_token";
 
+/** Normalize API role values (e.g. "ADMIN" | "admin" | "USER") to frontend Role. */
+function normalizeRole(role?: unknown): Role {
+  return String(role || "").trim().toLowerCase() === "admin" ? "admin" : "user";
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,10 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: AuthUser = JSON.parse(saved);
+        parsed.role = normalizeRole(parsed.role);
         setUser(parsed);
-        if (parsed.role) {
-          setRole(parsed.role);
-        }
+        setRole(parsed.role);
       }
     } catch (err) {
       console.error("Failed to restore auth session:", err);
@@ -190,8 +194,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     backendToken = data.token || data.accessToken;
                     if (data.user) {
                       backendUser = data.user;
-                      if (data.user.role) backendRole = data.user.role as Role;
+                      backendRole = normalizeRole(data.user.role ?? data.role);
                       if (data.user.id) backendId = data.user.id;
+                    } else if (data.role) {
+                      backendRole = normalizeRole(data.role);
                     }
                   }
                 }
@@ -274,7 +280,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const data = apiJson.data || {};
             const backendUser = data.user || {};
             const backendToken = data.token || data.accessToken;
-            const backendRole = (backendUser.role as Role) || "user";
+            const backendRole = normalizeRole(backendUser.role ?? data.role);
 
             const authUser: AuthUser = {
               id: backendUser.id || String(Date.now()),
@@ -367,7 +373,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const data = apiJson.data || {};
           const backendUser = data.user || {};
           const backendToken = data.token || data.accessToken;
-          const backendRole = (backendUser.role as Role) || "user";
+          const backendRole = normalizeRole(backendUser.role ?? data.role);
 
           const authUser: AuthUser = {
             id: backendUser.id || String(Date.now()),

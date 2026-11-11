@@ -6,8 +6,14 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
-import { useRole } from "@/context/RoleContext";
+import type { Role } from "@/types";
 import { useAuth } from "@/context/AuthContext";
+
+function getPostLoginRedirect(role: Role | string | undefined, locale: Locale): string {
+  return String(role || "").trim().toLowerCase() === "admin"
+    ? `/${locale}/dashboard`
+    : `/${locale}`;
+}
 
 export default function LoginForm({
   locale,
@@ -17,7 +23,6 @@ export default function LoginForm({
   dict: Dictionary;
 }) {
   const router = useRouter();
-  const { setRole } = useRole();
   const { loginWithGoogle, loginWithCredentials } = useAuth();
   const isBn = locale === "bn";
 
@@ -44,8 +49,8 @@ export default function LoginForm({
 
     setLoading(true);
     try {
-      await loginWithCredentials(email, password);
-      router.push(`/${locale}/dashboard`);
+      const loggedInUser = await loginWithCredentials(email, password);
+      router.push(getPostLoginRedirect(loggedInUser.role, locale));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : null;
       setError(
@@ -60,8 +65,8 @@ export default function LoginForm({
     setError(null);
     setGoogleLoading(true);
     try {
-      await loginWithGoogle();
-      router.push(`/${locale}/dashboard`);
+      const loggedInUser = await loginWithGoogle();
+      router.push(getPostLoginRedirect(loggedInUser.role, locale));
     } catch (err: unknown) {
       console.error("Google sign in error:", err);
       setError(
