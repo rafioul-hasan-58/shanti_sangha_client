@@ -77,12 +77,12 @@ export default function LoginForm({
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Brand Header */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-3 md:mb-8">
         <Link
           href={`/${locale}`}
           className="inline-flex flex-col items-center group focus:outline-none"
         >
-          <div className="relative h-20 w-20 mb-3 drop-shadow-md group-hover:scale-105 transition-transform">
+          <div className="relative h-14 w-14 md:h-20 md:w-20 mb-1.5 md:mb-3 drop-shadow-md group-hover:scale-105 transition-transform">
             <Image
               src="/logo.png"
               alt="Shanti Sangha"
@@ -91,26 +91,26 @@ export default function LoginForm({
               priority
             />
           </div>
-          <span className="text-xs font-bold uppercase tracking-widest text-[#006a4e]">
+          <span className="text-[11px] md:text-xs font-bold uppercase tracking-widest text-[#006a4e]">
             {isBn ? "সাভারচালা শান্তি সংঘ" : "SHAVARCHALA SHANTI SANGHA"}
           </span>
         </Link>
-        <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-pitch mt-2">
+        <h1 className="font-display text-xl md:text-3xl font-extrabold text-pitch mt-0.5 md:mt-2">
           {dict.auth.loginTitle}
         </h1>
-        <p className="text-xs sm:text-sm text-brand-700 mt-1">
+        <p className="text-xs md:text-sm text-brand-700 mt-0.5 md:mt-1">
           {dict.auth.loginSubtitle}
         </p>
       </div>
 
       {/* Card Form */}
-      <div className="rounded-3xl bg-white border border-brand-200/90 p-6 sm:p-8 shadow-md">
+      <div className="rounded-2xl md:rounded-3xl bg-white border border-brand-200/90 p-4 sm:p-5 md:p-8 shadow-md">
         {/* Google Sign In Button */}
         <button
           type="button"
           onClick={handleGoogleSignIn}
           disabled={googleLoading || loading}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border border-brand-300 bg-white hover:bg-brand-50/60 text-pitch font-semibold text-sm transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+          className="w-full flex items-center justify-center gap-3 py-2.5 md:py-3 px-4 rounded-xl border border-brand-300 bg-white hover:bg-brand-50/60 text-pitch font-semibold text-xs md:text-sm transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
         >
           {googleLoading ? (
             <div className="w-5 h-5 border-2 border-[#006a4e] border-t-transparent rounded-full animate-spin" />
@@ -138,7 +138,7 @@ export default function LoginForm({
         </button>
 
         {/* Divider */}
-        <div className="relative my-6 text-center">
+        <div className="relative my-3.5 md:my-6 text-center">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-brand-200" />
           </div>
@@ -149,7 +149,7 @@ export default function LoginForm({
 
         {/* Error message */}
         {error && (
-          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+          <div className="mb-3 md:mb-4 p-2.5 md:p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -162,10 +162,10 @@ export default function LoginForm({
         )}
 
         {/* Email & Password Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-2.5 md:space-y-4">
           {/* Email field */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-pitch mb-1.5">
+            <label className="block text-xs font-bold uppercase tracking-wider text-pitch mb-1 md:mb-1.5">
               {dict.auth.email}
             </label>
             <div className="relative">
@@ -180,14 +180,14 @@ export default function LoginForm({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={dict.auth.emailPlaceholder}
                 required
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full pl-10 pr-4 py-2 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
               />
             </div>
           </div>
 
           {/* Password field */}
           <div>
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center justify-between mb-1 md:mb-1.5">
               <label className="block text-xs font-bold uppercase tracking-wider text-pitch">
                 {dict.auth.password}
               </label>
@@ -218,7 +218,7 @@ export default function LoginForm({
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={dict.auth.passwordPlaceholder}
                 required
-                className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full pl-10 pr-10 py-2 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
               />
               <button
                 type="button"
@@ -258,7 +258,7 @@ export default function LoginForm({
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="w-full py-3 px-4 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-2.5 md:py-3 px-4 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>
@@ -272,7 +272,7 @@ export default function LoginForm({
         </form>
 
         {/* Link to Register */}
-        <div className="mt-6 pt-6 border-t border-brand-100 text-center text-xs text-brand-700">
+        <div className="mt-3.5 pt-3.5 md:mt-6 md:pt-6 border-t border-brand-100 text-center text-xs text-brand-700">
           <span>{dict.auth.noAccount} </span>
           <Link
             href={`/${locale}/register`}
@@ -284,7 +284,7 @@ export default function LoginForm({
       </div>
 
       {/* Return to home */}
-      <div className="mt-6 text-center">
+      <div className="mt-3 md:mt-6 text-center">
         <Link
           href={`/${locale}`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors"
