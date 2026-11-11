@@ -194,3 +194,4 @@ export const MOCK_YEARLY_EXPENSES: YearlyExpense[] = RAW_YEARLY_DATA.map((item) 
     byCategory: item.byCategory,
   };
 });
+

@@ -4,3 +4,4 @@ import { defaultLocale } from "@/i18n/config";
 export default function AdminDashboardRedirect() {
   redirect(`/${defaultLocale}/admin/dashboard`);
 }
+

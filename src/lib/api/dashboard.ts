@@ -167,3 +167,4 @@ export async function getAvailableRangeBounds(): Promise<{
     latestYear: MOCK_YEARLY_EXPENSES[MOCK_YEARLY_EXPENSES.length - 1]?.year ?? 2026,
   };
 }
+

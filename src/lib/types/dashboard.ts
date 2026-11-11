@@ -49,3 +49,4 @@ export interface YearlyExpenseParams extends ExpenseFilterParams {
   endYear: number;
   years: number;
 }
+
