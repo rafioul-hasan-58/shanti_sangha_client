@@ -75,14 +75,14 @@ export default function LoginForm({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md">
       {/* Brand Header */}
-      <div className="text-center mb-3 md:mb-8">
+      <div className="text-center mb-5">
         <Link
           href={`/${locale}`}
           className="inline-flex flex-col items-center group focus:outline-none"
         >
-          <div className="relative h-14 w-14 md:h-20 md:w-20 mb-1.5 md:mb-3 drop-shadow-md group-hover:scale-105 transition-transform">
+          <div className="relative h-16 w-16 md:h-20 md:w-20 drop-shadow-md group-hover:scale-105 transition-transform">
             <Image
               src="/logo.png"
               alt="Shanti Sangha"
@@ -91,26 +91,30 @@ export default function LoginForm({
               priority
             />
           </div>
-          <span className="text-[11px] md:text-xs font-bold uppercase tracking-widest text-[#006a4e]">
+          <span
+            className={`mt-2 text-xs font-bold text-[#006a4e] text-center leading-relaxed ${
+              isBn ? "" : "uppercase tracking-widest"
+            }`}
+          >
             {isBn ? "সাভারচালা শান্তি সংঘ" : "SHAVARCHALA SHANTI SANGHA"}
           </span>
         </Link>
-        <h1 className="font-display text-xl md:text-3xl font-extrabold text-pitch mt-0.5 md:mt-2">
+        <h1 className="font-display text-xl md:text-2xl font-bold text-[#12231d] mt-3 leading-relaxed">
           {dict.auth.loginTitle}
         </h1>
-        <p className="text-xs md:text-sm text-brand-700 mt-0.5 md:mt-1">
+        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
           {dict.auth.loginSubtitle}
         </p>
       </div>
 
       {/* Card Form */}
-      <div className="rounded-2xl md:rounded-3xl bg-white border border-brand-200/90 p-4 sm:p-5 md:p-8 shadow-md">
+      <div className="w-full rounded-2xl bg-white shadow-md border border-gray-100 p-5 sm:p-6">
         {/* Google Sign In Button */}
         <button
           type="button"
           onClick={handleGoogleSignIn}
           disabled={googleLoading || loading}
-          className="w-full flex items-center justify-center gap-3 py-2.5 md:py-3 px-4 rounded-xl border border-brand-300 bg-white hover:bg-brand-50/60 text-pitch font-semibold text-xs md:text-sm transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+          className="w-full h-12 px-4 mb-4 flex items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-[#12231d] font-semibold text-sm leading-relaxed transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
         >
           {googleLoading ? (
             <div className="w-5 h-5 border-2 border-[#006a4e] border-t-transparent rounded-full animate-spin" />
@@ -138,18 +142,21 @@ export default function LoginForm({
         </button>
 
         {/* Divider */}
-        <div className="relative my-3.5 md:my-6 text-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-brand-200" />
-          </div>
-          <span className="relative bg-white px-3 text-xs uppercase tracking-wider text-brand-600 font-medium">
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 min-w-4 border-t border-gray-200" />
+          <span
+            className={`text-xs text-gray-500 font-medium leading-relaxed text-center ${
+              isBn ? "" : "uppercase tracking-wider"
+            }`}
+          >
             {dict.auth.orEmail}
           </span>
+          <div className="flex-1 min-w-4 border-t border-gray-200" />
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-3 md:mb-4 p-2.5 md:p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2 leading-relaxed">
             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -162,14 +169,18 @@ export default function LoginForm({
         )}
 
         {/* Email & Password Form */}
-        <form onSubmit={handleSubmit} className="space-y-2.5 md:space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Email field */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-pitch mb-1 md:mb-1.5">
+            <label
+              className={`block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+                isBn ? "" : "uppercase tracking-wider"
+              }`}
+            >
               {dict.auth.email}
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-500">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                 </svg>
@@ -180,15 +191,19 @@ export default function LoginForm({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={dict.auth.emailPlaceholder}
                 required
-                className="w-full pl-10 pr-4 py-2 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
             </div>
           </div>
 
           {/* Password field */}
           <div>
-            <div className="flex items-center justify-between mb-1 md:mb-1.5">
-              <label className="block text-xs font-bold uppercase tracking-wider text-pitch">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label
+                className={`block text-xs font-bold text-[#12231d] leading-relaxed ${
+                  isBn ? "" : "uppercase tracking-wider"
+                }`}
+              >
                 {dict.auth.password}
               </label>
               <a
@@ -201,13 +216,13 @@ export default function LoginForm({
                       : "Password reset link will be sent to your registered email."
                   );
                 }}
-                className="text-xs text-[#006a4e] font-semibold hover:underline"
+                className="text-xs text-[#006a4e] hover:text-[#004d38] font-semibold hover:underline leading-relaxed"
               >
                 {dict.auth.forgotPassword}
               </a>
             </div>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-500">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -218,12 +233,12 @@ export default function LoginForm({
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={dict.auth.passwordPlaceholder}
                 required
-                className="w-full pl-10 pr-10 py-2 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full h-12 pl-11 pr-11 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-brand-500 hover:text-pitch"
+                className="absolute inset-y-0 right-3.5 flex items-center text-gray-500 hover:text-[#12231d] cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -241,15 +256,18 @@ export default function LoginForm({
           </div>
 
           {/* Remember Me Checkbox */}
-          <div className="flex items-center">
+          <div className="flex items-center gap-2.5 mt-1">
             <input
               id="remember-me"
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded border-brand-300 text-[#006a4e] focus:ring-[#006a4e] accent-[#006a4e]"
+              className="w-4 h-4 shrink-0 rounded border-gray-300 text-[#006a4e] focus:ring-[#00a67e] accent-[#006a4e] cursor-pointer"
             />
-            <label htmlFor="remember-me" className="ml-2 text-xs text-brand-700 font-medium select-none cursor-pointer">
+            <label
+              htmlFor="remember-me"
+              className="text-sm text-gray-700 font-medium select-none cursor-pointer leading-relaxed"
+            >
               {dict.auth.rememberMe}
             </label>
           </div>
@@ -258,7 +276,7 @@ export default function LoginForm({
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="w-full py-2.5 md:py-3 px-4 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            className="h-12 w-full rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white font-semibold text-sm leading-relaxed mt-2 px-4 shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>
@@ -272,11 +290,11 @@ export default function LoginForm({
         </form>
 
         {/* Link to Register */}
-        <div className="mt-3.5 pt-3.5 md:mt-6 md:pt-6 border-t border-brand-100 text-center text-xs text-brand-700">
+        <div className="mt-4 text-center text-sm leading-relaxed text-gray-600">
           <span>{dict.auth.noAccount} </span>
           <Link
             href={`/${locale}/register`}
-            className="font-bold text-[#006a4e] hover:underline"
+            className="font-bold text-[#006a4e] hover:text-[#004d38] hover:underline"
           >
             {dict.auth.registerLink}
           </Link>
@@ -284,10 +302,10 @@ export default function LoginForm({
       </div>
 
       {/* Return to home */}
-      <div className="mt-3 md:mt-6 text-center">
+      <div className="mt-4 md:mt-5 text-center">
         <Link
           href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors leading-relaxed"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />

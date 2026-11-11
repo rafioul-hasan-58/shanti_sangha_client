@@ -32,7 +32,7 @@ export default async function RegisterPage({
   const dict = await getDictionary(locale);
 
   return (
-    <main className="min-h-[calc(100dvh-67px)] md:min-h-[calc(100vh-200px)] flex items-center justify-center py-2 md:py-12 px-4 sm:px-6 lg:px-8 overflow-x-hidden bg-gradient-to-b from-brand-50/40 via-chalk to-brand-50/20">
+    <main className="min-h-dvh flex flex-col items-center pt-6 md:pt-10 pb-8 px-4 sm:px-6 overflow-x-hidden bg-[#f7f4ea]">
       <RegisterForm locale={locale} dict={dict} />
     </main>
   );

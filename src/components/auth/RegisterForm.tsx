@@ -103,14 +103,14 @@ export default function RegisterForm({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-md">
       {/* Brand Header */}
-      <div className="text-center mb-2.5 md:mb-8">
+      <div className="text-center mb-5">
         <Link
           href={`/${locale}`}
           className="inline-flex flex-col items-center group focus:outline-none"
         >
-          <div className="relative h-12 w-12 md:h-20 md:w-20 mb-1 md:mb-3 drop-shadow-md group-hover:scale-105 transition-transform">
+          <div className="relative h-16 w-16 md:h-20 md:w-20 drop-shadow-md group-hover:scale-105 transition-transform">
             <Image
               src="/logo.png"
               alt="Shanti Sangha"
@@ -119,26 +119,30 @@ export default function RegisterForm({
               priority
             />
           </div>
-          <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#006a4e]">
+          <span
+            className={`mt-2 text-xs font-bold text-[#006a4e] text-center leading-relaxed ${
+              isBn ? "" : "uppercase tracking-widest"
+            }`}
+          >
             {isBn ? "সাভারচালা শান্তি সংঘ" : "SHAVARCHALA SHANTI SANGHA"}
           </span>
         </Link>
-        <h1 className="font-display text-lg md:text-3xl font-extrabold text-pitch mt-0.5 md:mt-2">
+        <h1 className="font-display text-xl md:text-2xl font-bold text-[#12231d] mt-3 leading-relaxed">
           {dict.auth.registerTitle}
         </h1>
-        <p className="text-[11px] md:text-sm text-brand-700 mt-0.5 md:mt-1">
+        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
           {dict.auth.registerSubtitle}
         </p>
       </div>
 
       {/* Card Form */}
-      <div className="rounded-2xl md:rounded-3xl bg-white border border-brand-200/90 p-3.5 sm:p-5 md:p-8 shadow-md">
+      <div className="w-full rounded-2xl bg-white shadow-md border border-gray-100 p-5 sm:p-6">
         {/* Google Sign Up Button */}
         <button
           type="button"
           onClick={handleGoogleSignUp}
           disabled={googleLoading || loading}
-          className="w-full flex items-center justify-center gap-3 py-2 md:py-3 px-4 rounded-xl border border-brand-300 bg-white hover:bg-brand-50/60 text-pitch font-semibold text-xs md:text-sm transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
+          className="w-full h-12 px-4 mb-4 flex items-center justify-center gap-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-[#12231d] font-semibold text-sm leading-relaxed transition-all duration-200 shadow-2xs hover:shadow-xs active:scale-[0.99] disabled:opacity-60 cursor-pointer"
         >
           {googleLoading ? (
             <div className="w-5 h-5 border-2 border-[#006a4e] border-t-transparent rounded-full animate-spin" />
@@ -166,18 +170,21 @@ export default function RegisterForm({
         </button>
 
         {/* Divider */}
-        <div className="relative my-2.5 md:my-6 text-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-brand-200" />
-          </div>
-          <span className="relative bg-white px-3 text-[11px] md:text-xs uppercase tracking-wider text-brand-600 font-medium">
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 min-w-4 border-t border-gray-200" />
+          <span
+            className={`text-xs text-gray-500 font-medium leading-relaxed text-center ${
+              isBn ? "" : "uppercase tracking-wider"
+            }`}
+          >
             {dict.auth.orEmail}
           </span>
+          <div className="flex-1 min-w-4 border-t border-gray-200" />
         </div>
 
         {/* Error message */}
         {error && (
-          <div className="mb-2.5 md:mb-4 p-2.5 md:p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2">
+          <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold flex items-center gap-2 leading-relaxed">
             <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -190,14 +197,18 @@ export default function RegisterForm({
         )}
 
         {/* Registration Form: Full Name, Email, Password */}
-        <form onSubmit={handleSubmit} className="space-y-2 md:space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Full Name field */}
           <div>
-            <label className="block text-[11px] md:text-xs font-bold uppercase tracking-wider text-pitch mb-0.5 md:mb-1.5">
+            <label
+              className={`block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+                isBn ? "" : "uppercase tracking-wider"
+              }`}
+            >
               {dict.auth.fullName}
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-500">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
@@ -208,18 +219,22 @@ export default function RegisterForm({
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder={dict.auth.fullNamePlaceholder}
                 required
-                className="w-full pl-10 pr-4 py-1.5 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
             </div>
           </div>
 
           {/* Email field */}
           <div>
-            <label className="block text-[11px] md:text-xs font-bold uppercase tracking-wider text-pitch mb-0.5 md:mb-1.5">
+            <label
+              className={`block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+                isBn ? "" : "uppercase tracking-wider"
+              }`}
+            >
               {dict.auth.email}
             </label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-500">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
                 </svg>
@@ -230,23 +245,27 @@ export default function RegisterForm({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={dict.auth.emailPlaceholder}
                 required
-                className="w-full pl-10 pr-4 py-1.5 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
             </div>
           </div>
 
           {/* Password field */}
           <div>
-            <div className="flex items-center justify-between mb-0.5 md:mb-1.5">
-              <label className="block text-[11px] md:text-xs font-bold uppercase tracking-wider text-pitch">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <label
+                className={`block text-xs font-bold text-[#12231d] leading-relaxed ${
+                  isBn ? "" : "uppercase tracking-wider"
+                }`}
+              >
                 {dict.auth.password}
               </label>
-              <span className="text-[10px] md:hidden text-brand-500 font-medium">
+              <span className="text-xs text-gray-500 font-medium leading-relaxed">
                 {isBn ? "কমপক্ষে ৬ অক্ষর" : "Min 6 chars"}
               </span>
             </div>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-brand-500">
+              <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -258,12 +277,12 @@ export default function RegisterForm({
                 placeholder={dict.auth.passwordPlaceholder}
                 required
                 minLength={6}
-                className="w-full pl-10 pr-10 py-1.5 md:py-2.5 rounded-xl border border-brand-200 bg-brand-50/30 text-pitch text-sm focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                className="w-full h-12 pl-11 pr-11 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-brand-500 hover:text-pitch"
+                className="absolute inset-y-0 right-3.5 flex items-center text-gray-500 hover:text-[#12231d] cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
@@ -278,21 +297,21 @@ export default function RegisterForm({
                 )}
               </button>
             </div>
-            <p className="hidden md:block mt-1 text-[11px] text-brand-500">
-              {isBn ? "কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড ব্যবহার করুন।" : "Use at least 6 characters."}
-            </p>
           </div>
 
           {/* Terms Agreement Checkbox */}
-          <div className="flex items-start pt-0.5 md:pt-1">
+          <div className="flex items-start gap-2.5 mt-1">
             <input
               id="agree-terms"
               type="checkbox"
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded border-brand-300 text-[#006a4e] focus:ring-[#006a4e] accent-[#006a4e]"
+              className="mt-1 w-4 h-4 shrink-0 rounded border-gray-300 text-[#006a4e] focus:ring-[#00a67e] accent-[#006a4e] cursor-pointer"
             />
-            <label htmlFor="agree-terms" className="ml-2 text-xs text-brand-700 font-medium select-none cursor-pointer leading-tight">
+            <label
+              htmlFor="agree-terms"
+              className="text-sm text-gray-700 font-medium select-none cursor-pointer leading-relaxed"
+            >
               {dict.auth.agreeTerms}
             </label>
           </div>
@@ -301,7 +320,7 @@ export default function RegisterForm({
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="w-full py-2 md:py-3 px-4 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-sm tracking-wide shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            className="h-12 w-full rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white font-semibold text-sm leading-relaxed mt-2 px-4 shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>
@@ -315,22 +334,22 @@ export default function RegisterForm({
         </form>
 
         {/* Link to Login */}
-        <div className="mt-2.5 pt-2.5 md:mt-6 md:pt-6 border-t border-brand-100 text-center text-xs text-brand-700">
+        <div className="mt-4 text-center text-sm leading-relaxed text-gray-600">
           <span>{dict.auth.haveAccount} </span>
           <Link
             href={`/${locale}/login`}
-            className="font-bold text-[#006a4e] hover:underline"
+            className="font-bold text-[#006a4e] hover:text-[#004d38] hover:underline"
           >
             {dict.auth.loginLink}
           </Link>
         </div>
       </div>
 
-      {/* Return to home (hidden on mobile so register fits without scrolling) */}
-      <div className="hidden md:block mt-6 text-center">
+      {/* Return to home (hidden on mobile so register fits comfortably) */}
+      <div className="hidden md:block mt-5 text-center">
         <Link
           href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors leading-relaxed"
         >
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
