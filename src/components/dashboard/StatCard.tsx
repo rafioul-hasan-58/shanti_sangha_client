@@ -91,26 +91,26 @@ export default function StatCard({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl p-5 border shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between ${theme.card}`}
+      className={`group relative overflow-hidden rounded-xl sm:rounded-2xl p-3.5 sm:p-5 border shadow-xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between ${theme.card}`}
     >
       {/* Top theme accent bar */}
       <div className={`absolute inset-x-0 top-0 h-1 ${theme.topBar}`} />
       {/* Subtle decorative corner glow */}
       <div
-        className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl ${theme.glow}`}
+        className={`pointer-events-none absolute -right-6 -top-6 h-20 w-20 sm:h-24 sm:w-24 rounded-full blur-2xl ${theme.glow}`}
       />
 
       {/* Top Header: Icon & Optional Badge */}
-      <div className="relative flex items-start justify-between gap-3 mb-4">
+      <div className="relative flex items-start justify-between gap-2 sm:gap-3 mb-2.5 sm:mb-4">
         <div
-          className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 ${theme.iconBox}`}
+          className={`h-9 w-9 sm:h-11 sm:w-11 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 ${theme.iconBox}`}
         >
           {icon}
         </div>
 
         {badge && (
           <span
-            className={`px-2.5 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide border shadow-2xs ${
+            className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[9px] sm:text-[11px] font-extrabold uppercase tracking-wide border shadow-2xs leading-tight text-center ${
               badge.variant === "red"
                 ? "bg-[#f42a41]/10 text-[var(--accent)] border-[#f42a41]/30"
                 : badge.variant === "gold"
@@ -125,31 +125,31 @@ export default function StatCard({
 
       {/* Main Stat Metric */}
       <div className="relative">
-        <p className={`text-xs font-bold uppercase tracking-wider mb-1 ${theme.title}`}>
+        <p className={`text-[11px] sm:text-xs font-bold uppercase tracking-wide sm:tracking-wider mb-0.5 sm:mb-1 leading-snug ${theme.title}`}>
           {title}
         </p>
-        <h3 className="text-2xl sm:text-[26px] font-black text-[var(--text)] tracking-tight leading-tight">
+        <h3 className="text-lg sm:text-[26px] font-black text-[var(--text)] tracking-tight leading-tight">
           {value}
         </h3>
       </div>
 
       {/* Bottom Footer: Trend and / or Review Link */}
-      <div className={`relative mt-4 pt-3 border-t flex items-center justify-between gap-2 flex-wrap ${theme.divider}`}>
+      <div className={`relative mt-2.5 sm:mt-4 pt-2 sm:pt-3 border-t flex items-center justify-between gap-1.5 sm:gap-2 flex-wrap ${theme.divider}`}>
         {trend ? (
-          <div className="flex items-center gap-1.5 text-xs font-bold">
+          <div className="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-xs font-bold">
             <span
-              className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md ${
+              className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 sm:px-2 rounded-md ${
                 isGood
                   ? "bg-[#006a4e]/10 text-[var(--primary)]"
                   : "bg-[#f42a41]/10 text-[var(--accent)]"
               }`}
             >
               {isPositive ? (
-                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               ) : (
-                <svg className="w-3.5 h-3.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
                 </svg>
               )}
@@ -158,7 +158,7 @@ export default function StatCard({
                 {trend.value}%
               </span>
             </span>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium">
               {trend.label || "vs last month"}
             </span>
           </div>
@@ -170,10 +170,10 @@ export default function StatCard({
           <Link
             href={actionLink.href}
             onClick={onActionClick}
-            className={`inline-flex items-center gap-1 text-xs font-extrabold hover:underline transition-colors ${theme.action}`}
+            className={`inline-flex items-center gap-0.5 sm:gap-1 text-[11px] sm:text-xs font-extrabold hover:underline transition-colors ${theme.action}`}
           >
             <span>{actionLink.label}</span>
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </Link>
