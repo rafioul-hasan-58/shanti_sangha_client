@@ -9,6 +9,7 @@ import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserProfileDropdown from "./UserProfileDropdown";
+import UserAvatar from "./UserAvatar";
 
 export default function Navbar({
   locale,
@@ -195,21 +196,11 @@ export default function Navbar({
           {isAuthenticated && user ? (
             <div className="pt-2 border-t border-white/10 space-y-2.5">
               <div className="flex items-center gap-3 p-2.5 rounded-xl bg-white/10 border border-white/15">
-                {user.picture ? (
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-white/40 shrink-0">
-                    <Image
-                      src={user.picture}
-                      alt={user.name}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-white text-[#006a4e] font-extrabold flex items-center justify-center text-sm shrink-0">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  src={user.picture}
+                  name={user.name}
+                  className="w-10 h-10 border border-white/40 shrink-0"
+                />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-white truncate">{user.name}</p>
                   <p className="text-xs text-white/70 truncate">{user.email}</p>

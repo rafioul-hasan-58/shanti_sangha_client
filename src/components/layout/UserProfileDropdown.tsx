@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { AuthUser } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
+import UserAvatar from "./UserAvatar";
 
 interface UserProfileDropdownProps {
   user: AuthUser;
@@ -123,22 +123,12 @@ export default function UserProfileDropdown({
             : "hover:scale-105 transition-transform"
         }`}
       >
-        {/* Profile picture with round circle */}
-        <div className="relative h-9 w-9 sm:h-10 sm:w-10 rounded-full ring-2 ring-white/90 overflow-hidden shadow-xs bg-white">
-          {user.picture ? (
-            <Image
-              src={user.picture}
-              alt={user.name}
-              fill
-              unoptimized
-              className="object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-white font-extrabold text-[#006a4e] text-sm">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-          )}
-        </div>
+        {/* Profile picture with round circle (falls back to club placeholder avatar) */}
+        <UserAvatar
+          src={user.picture}
+          name={user.name}
+          className="h-9 w-9 sm:h-10 sm:w-10 ring-2 ring-white/90 shadow-xs bg-white"
+        />
 
         {/* Green Online Dot */}
         <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
@@ -167,21 +157,11 @@ export default function UserProfileDropdown({
             <div className="flex items-start gap-3.5">
               {/* Profile Avatar */}
               <div className="relative shrink-0">
-                {user.picture ? (
-                  <div className="relative h-12 w-12 rounded-full overflow-hidden">
-                    <Image
-                      src={user.picture}
-                      alt={user.name}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-lg">
-                    {user.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  src={user.picture}
+                  name={user.name}
+                  className="h-12 w-12 ring-2 ring-[#006a4e]/15 shadow-xs"
+                />
               </div>
 
               {/* Name, Email & Micro-Badges */}
