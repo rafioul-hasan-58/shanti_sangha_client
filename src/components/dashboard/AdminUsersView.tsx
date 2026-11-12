@@ -19,9 +19,13 @@ import UserDetailsModal from "./UserDetailsModal";
 import UserEditModal from "./UserEditModal";
 import UserDeleteConfirmModal from "./UserDeleteConfirmModal";
 
+export type UserManagementSubTab = "all" | "pending";
+
 interface AdminUsersViewProps {
   locale?: string;
   currentUserId?: string;
+  subTab?: UserManagementSubTab;
+  onSubTabChange?: (next: UserManagementSubTab) => void;
 }
 
 const DEFAULT_FILTERS: UserFiltersState = {
@@ -48,8 +52,19 @@ const DEFAULT_META: UsersPaginationMeta = {
 export default function AdminUsersView({
   locale = "en",
   currentUserId,
+  subTab: controlledSubTab,
+  onSubTabChange,
 }: AdminUsersViewProps) {
   const isBn = locale === "bn";
+  const [internalSubTab, setInternalSubTab] =
+    useState<UserManagementSubTab>("all");
+  const activeSubTab = controlledSubTab ?? internalSubTab;
+
+  const switchSubTab = (next: UserManagementSubTab) => {
+    setInternalSubTab(next);
+    setPage(1);
+    onSubTabChange?.(next);
+  };
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [meta, setMeta] = useState<UsersPaginationMeta>(DEFAULT_META);
   const [page, setPage] = useState(1);
@@ -76,16 +91,20 @@ export default function AdminUsersView({
     return () => clearTimeout(timer);
   }, [filters.search]);
 
+  const isPendingView = activeSubTab === "pending";
+
   const loadUsers = useCallback(async () => {
     setLoading(true);
     const params: UsersQueryParams = {
-      page,
-      limit: filters.limit,
+      page: isPendingView ? 1 : page,
+      limit: isPendingView ? 50 : filters.limit,
       sortBy: filters.sortBy,
       sortOrder: filters.sortOrder,
     };
     if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
-    if (filters.status !== "ALL") params.status = filters.status;
+    if (!isPendingView && filters.status !== "ALL") {
+      params.status = filters.status;
+    }
     if (filters.role !== "ALL") params.role = filters.role;
     if (filters.membershipType !== "ALL") params.membershipType = filters.membershipType;
     if (filters.bloodGroup !== "ALL") params.bloodGroup = filters.bloodGroup;
@@ -95,8 +114,22 @@ export default function AdminUsersView({
 
     try {
       const res = await fetchUsers(params);
-      setUsers(res.users);
-      setMeta(res.meta);
+      const resultUsers = isPendingView
+        ? res.users.filter((u) => !u.adminVerified || u.status === "INACTIVE")
+        : res.users;
+      setUsers(resultUsers);
+      setMeta(
+        isPendingView
+          ? {
+              total: resultUsers.length,
+              page: 1,
+              limit: resultUsers.length || 50,
+              totalPages: 1,
+              hasNextPage: false,
+              hasPreviousPage: false,
+            }
+          : res.meta
+      );
       setIsMockFallback(Boolean(res.isMockFallback));
       setFeedback((prev) => (prev?.type === "error" ? null : prev));
     } catch (err) {
@@ -115,6 +148,7 @@ export default function AdminUsersView({
       setLoading(false);
     }
   }, [
+    isPendingView,
     page,
     filters.limit,
     filters.sortBy,
@@ -209,6 +243,38 @@ export default function AdminUsersView({
     }
   };
 
+  const handleApproveUser = async (target: ManagedUser) => {
+    const previous = users;
+    setBusyUserId(target.id);
+    setUsers((prev) => prev.filter((u) => u.id !== target.id));
+
+    try {
+      const result = await updateUserById(target.id, {
+        adminVerified: true,
+        status: "ACTIVE",
+      });
+      setFeedback({
+        type: "success",
+        text: isBn
+          ? `${result.user.fullName} অনুমোদিত ও সক্রিয় করা হয়েছে`
+          : `${result.user.fullName} approved & activated`,
+      });
+    } catch (err) {
+      setUsers(previous);
+      setFeedback({
+        type: "error",
+        text:
+          err instanceof Error
+            ? err.message
+            : isBn
+              ? "ব্যবহারকারী অনুমোদন করা যায়নি।"
+              : "Failed to approve user.",
+      });
+    } finally {
+      setBusyUserId(null);
+    }
+  };
+
   const startIndex = meta.total === 0 ? 0 : (meta.page - 1) * meta.limit + 1;
   const endIndex = Math.min(meta.page * meta.limit, meta.total);
 
@@ -232,7 +298,10 @@ export default function AdminUsersView({
 
         <div className="flex items-center gap-2 self-start sm:self-auto">
           <span className="px-3 py-1 rounded-full bg-[#006a4e]/10 text-[var(--primary)] text-xs font-extrabold">
-            {meta.total} {isBn ? "জন ব্যবহারকারী" : "Users"}
+            {meta.total}{" "}
+            {isPendingView
+              ? isBn ? "জন অপেক্ষমাণ" : "Pending"
+              : isBn ? "জন ব্যবহারকারী" : "Users"}
           </span>
           <button
             type="button"
@@ -245,6 +314,32 @@ export default function AdminUsersView({
               : isBn ? "রিফ্রেশ" : "Refresh"}
           </button>
         </div>
+      </div>
+
+      {/* Sub-Tabs Switcher: All Users | Pending Users */}
+      <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15">
+        <button
+          type="button"
+          onClick={() => switchSubTab("all")}
+          className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            !isPendingView
+              ? "bg-[#006a4e] text-white shadow-xs"
+              : "text-[var(--text)] hover:text-[#006a4e]"
+          }`}
+        >
+          {isBn ? "সকল ব্যবহারকারী" : "All Users"}
+        </button>
+        <button
+          type="button"
+          onClick={() => switchSubTab("pending")}
+          className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+            isPendingView
+              ? "bg-[#006a4e] text-white shadow-xs"
+              : "text-[var(--text)] hover:text-[#006a4e]"
+          }`}
+        >
+          {isBn ? "অপেক্ষমাণ ব্যবহারকারী" : "Pending Users"}
+        </button>
       </div>
 
       {isMockFallback && (
@@ -278,6 +373,7 @@ export default function AdminUsersView({
       <UserFilterBar
         filters={filters}
         isBn={isBn}
+        hideStatusFilter={isPendingView}
         onChange={handleFilterChange}
         onReset={handleResetFilters}
       />
@@ -300,6 +396,8 @@ export default function AdminUsersView({
             isBn={isBn}
             currentUserId={currentUserId}
             busyUserId={busyUserId}
+            isPendingView={isPendingView}
+            onApprove={handleApproveUser}
             onRoleChange={handleRoleChange}
             onToggleBlock={handleToggleBlock}
             onView={(u) => setViewingUser(u)}
@@ -311,6 +409,8 @@ export default function AdminUsersView({
             isBn={isBn}
             currentUserId={currentUserId}
             busyUserId={busyUserId}
+            isPendingView={isPendingView}
+            onApprove={handleApproveUser}
             onRoleChange={handleRoleChange}
             onToggleBlock={handleToggleBlock}
             onView={(u) => setViewingUser(u)}

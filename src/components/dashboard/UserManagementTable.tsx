@@ -17,6 +17,8 @@ interface UserManagementTableProps {
   isBn: boolean;
   currentUserId?: string;
   busyUserId?: string | null;
+  isPendingView?: boolean;
+  onApprove?: (user: ManagedUser) => void;
   onRoleChange: (userId: string, role: Role) => void;
   onToggleBlock: (user: ManagedUser) => void;
   onView: (user: ManagedUser) => void;
@@ -30,6 +32,8 @@ export default function UserManagementTable({
   isBn,
   currentUserId,
   busyUserId,
+  isPendingView = false,
+  onApprove,
   onRoleChange,
   onToggleBlock,
   onView,
@@ -146,6 +150,16 @@ export default function UserManagementTable({
 
                 <td className="py-3.5 px-4 text-right">
                   <div className="inline-flex items-center justify-end gap-1.5">
+                    {isPendingView && onApprove && (
+                      <button
+                        type="button"
+                        disabled={isBusy}
+                        onClick={() => onApprove(u)}
+                        className="px-2.5 py-1.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors disabled:opacity-45 cursor-pointer"
+                      >
+                        {isBn ? "✓ অনুমোদন" : "✓ Approve"}
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => onView(u)}

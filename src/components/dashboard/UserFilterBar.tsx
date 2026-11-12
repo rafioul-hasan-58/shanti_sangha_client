@@ -36,6 +36,7 @@ export interface UserFiltersState {
 interface UserFilterBarProps {
   filters: UserFiltersState;
   isBn: boolean;
+  hideStatusFilter?: boolean;
   onChange: <K extends keyof UserFiltersState>(
     key: K,
     value: UserFiltersState[K]
@@ -46,6 +47,7 @@ interface UserFilterBarProps {
 export default function UserFilterBar({
   filters,
   isBn,
+  hideStatusFilter = false,
   onChange,
   onReset,
 }: UserFilterBarProps) {
@@ -88,25 +90,27 @@ export default function UserFilterBar({
           />
         </div>
 
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {STATUS_FILTERS.map((f) => {
-            const active = filters.status === f.key;
-            return (
-              <button
-                key={f.key}
-                type="button"
-                onClick={() => onChange("status", f.key)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
-                  active
-                    ? "bg-[#006a4e] text-white shadow-2xs"
-                    : "bg-[#f7f4ea] text-[var(--text)] hover:bg-[#006a4e]/10 hover:text-[#006a4e]"
-                }`}
-              >
-                {isBn ? f.labelBn : f.labelEn}
-              </button>
-            );
-          })}
-        </div>
+        {!hideStatusFilter && (
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {STATUS_FILTERS.map((f) => {
+              const active = filters.status === f.key;
+              return (
+                <button
+                  key={f.key}
+                  type="button"
+                  onClick={() => onChange("status", f.key)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
+                    active
+                      ? "bg-[#006a4e] text-white shadow-2xs"
+                      : "bg-[#f7f4ea] text-[var(--text)] hover:bg-[#006a4e]/10 hover:text-[#006a4e]"
+                  }`}
+                >
+                  {isBn ? f.labelBn : f.labelEn}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Row 2: Role, Membership, Blood Group, Email Verified, Sort & Page Size */}

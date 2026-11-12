@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
@@ -9,6 +10,16 @@ import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
 import { hasDashboardAccess, normalizeRole } from "@/lib/authRole";
 import { BRAND_NAME_EN } from "@/lib/constants/site";
+
+export interface NavSubItemConfig {
+  id: string;
+  labelBn: string;
+  labelEn: string;
+  type?: "tab" | "link";
+  href?: string;
+  adminOnly?: boolean;
+  showPendingBadge?: boolean;
+}
 
 export interface NavItemConfig {
   id: string;
@@ -20,6 +31,7 @@ export interface NavItemConfig {
   hasChevron?: boolean;
   adminOnly?: boolean;
   showPendingBadge?: boolean;
+  subItems?: NavSubItemConfig[];
   // badge?: {
   //   text: string;
   //   type?: string;
@@ -137,6 +149,9 @@ export default function DashboardSidebar({
       : "USER";
   const resolvedIsAdmin = hasDashboardAccess(resolvedRole);
   const categories = navConfig.categories as unknown as NavCategoryConfig[];
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    admin_users: true,
+  });
 
   const handleAction = (item: NavItemConfig) => {
     if (item.id === "ai_chat") {
@@ -229,7 +244,113 @@ export default function DashboardSidebar({
                     if (item.adminOnly && !resolvedIsAdmin) return null;
 
                     const label = isBn ? item.labelBn : item.labelEn;
-                    const isActive = activeTab === item.id;
+                    const visibleSubItems = (item.subItems ?? []).filter(
+                      (sub) => !(sub.adminOnly && !resolvedIsAdmin)
+                    );
+                    const hasSubItems = visibleSubItems.length > 0;
+                    const isSubItemActive = visibleSubItems.some(
+                      (sub) => sub.id === activeTab
+                    );
+                    const isActive = activeTab === item.id || isSubItemActive;
+                    const isExpanded =
+                      Boolean(expandedGroups[item.id]) || isSubItemActive;
+
+                    // Parent Item with Collapsible Sub-tabs (e.g., User Management -> All Users / Pending Users)
+                    if (item.type === "tab" && hasSubItems) {
+                      return (
+                        <div key={item.id} className="space-y-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setExpandedGroups((prev) => ({
+                                ...prev,
+                                [item.id]: !isExpanded,
+                              }));
+                              if (!isActive && visibleSubItems[0]) {
+                                setActiveTab(visibleSubItems[0].id);
+                              }
+                            }}
+                            aria-expanded={isExpanded}
+                            className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                              isActive
+                                ? "bg-[#006a4e] text-white shadow-md shadow-[#006a4e]/25 font-bold"
+                                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <NavIcon
+                                name={item.icon}
+                                className={`w-5 h-5 shrink-0 ${
+                                  isActive ? "text-white" : "text-slate-500"
+                                }`}
+                              />
+                              <span className="truncate">{label}</span>
+                            </div>
+
+                            <svg
+                              className={`w-4 h-4 shrink-0 transition-transform duration-200 ${
+                                isExpanded ? "rotate-180" : ""
+                              } ${isActive ? "text-white" : "text-slate-400"}`}
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={2}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </button>
+
+                          {isExpanded && (
+                            <div className="ml-5 pl-3 border-l-2 border-[#006a4e]/20 space-y-1 py-0.5">
+                              {visibleSubItems.map((sub) => {
+                                const subLabel = isBn ? sub.labelBn : sub.labelEn;
+                                const subActive =
+                                  activeTab === sub.id ||
+                                  (activeTab === item.id &&
+                                    sub.id === visibleSubItems[0]?.id);
+
+                                return (
+                                  <button
+                                    key={sub.id}
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveTab(sub.id);
+                                      setMobileOpen(false);
+                                    }}
+                                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer ${
+                                      subActive
+                                        ? "bg-[#006a4e]/10 text-[#006a4e] font-extrabold"
+                                        : "text-slate-600 font-semibold hover:bg-[#f7f4ea] hover:text-[#006a4e]"
+                                    }`}
+                                  >
+                                    <span className="flex items-center gap-2 truncate">
+                                      <span
+                                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                          subActive
+                                            ? "bg-[#006a4e]"
+                                            : "bg-slate-300"
+                                        }`}
+                                      />
+                                      <span className="truncate">{subLabel}</span>
+                                    </span>
+
+                                    {sub.showPendingBadge && pendingCount > 0 && (
+                                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                                        {pendingCount}
+                                      </span>
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
 
                     // Tab Item (Switches Dashboard View)
                     if (item.type === "tab") {

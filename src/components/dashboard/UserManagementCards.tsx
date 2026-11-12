@@ -17,6 +17,8 @@ interface UserManagementCardsProps {
   isBn: boolean;
   currentUserId?: string;
   busyUserId?: string | null;
+  isPendingView?: boolean;
+  onApprove?: (user: ManagedUser) => void;
   onRoleChange: (userId: string, role: Role) => void;
   onToggleBlock: (user: ManagedUser) => void;
   onView: (user: ManagedUser) => void;
@@ -30,6 +32,8 @@ export default function UserManagementCards({
   isBn,
   currentUserId,
   busyUserId,
+  isPendingView = false,
+  onApprove,
   onRoleChange,
   onToggleBlock,
   onView,
@@ -138,6 +142,17 @@ export default function UserManagementCards({
             </div>
 
             {/* Card Action Row */}
+            {isPendingView && onApprove && (
+              <button
+                type="button"
+                disabled={isBusy}
+                onClick={() => onApprove(u)}
+                className="w-full py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors disabled:opacity-45 cursor-pointer"
+              >
+                {isBn ? "✓ অনুমোদন করুন (Approve)" : "✓ Approve User"}
+              </button>
+            )}
+
             <div className="grid grid-cols-3 gap-2 pt-1 border-t border-slate-100">
               <button
                 type="button"

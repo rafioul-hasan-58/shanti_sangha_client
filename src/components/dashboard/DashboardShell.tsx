@@ -34,6 +34,8 @@ type TabType =
   | "members"
   | "notices"
   | "admin_users"
+  | "admin_users_all"
+  | "admin_users_pending"
   | "admin_members"
   | "admin_live"
   | "admin_finance";
@@ -103,6 +105,8 @@ export default function DashboardShell({
           "profile",
           "sports",
           "admin_users",
+          "admin_users_all",
+          "admin_users_pending",
           "admin_members",
           "admin_live",
           "admin_finance",
@@ -1109,11 +1113,27 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB 4A: ADMIN: USER MANAGEMENT (Admin Only)          */}
+          {/* TAB 4A: ADMIN: USER MANAGEMENT (All & Pending Sub-tabs) */}
           {/* ===================================================== */}
-          {activeTab === "admin_users" && isAdmin && (
-            <AdminUsersView locale={locale} currentUserId={user?.id} />
-          )}
+          {(activeTab === "admin_users" ||
+            activeTab === "admin_users_all" ||
+            activeTab === "admin_users_pending") &&
+            isAdmin && (
+              <AdminUsersView
+                locale={locale}
+                currentUserId={user?.id}
+                subTab={
+                  activeTab === "admin_users_pending" ? "pending" : "all"
+                }
+                onSubTabChange={(next) =>
+                  setActiveTab(
+                    next === "pending"
+                      ? "admin_users_pending"
+                      : "admin_users_all"
+                  )
+                }
+              />
+            )}
 
           {/* ===================================================== */}
           {/* TAB 4: ADMIN: MEMBER APPROVALS (Admin Only)          */}
