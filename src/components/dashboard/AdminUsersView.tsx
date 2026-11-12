@@ -317,28 +317,34 @@ export default function AdminUsersView({
       </div>
 
       {/* Sub-Tabs Switcher: All Users | Pending Users */}
-      <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15">
+      <div className="grid grid-cols-2 sm:inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15 w-full sm:w-auto">
         <button
           type="button"
           onClick={() => switchSubTab("all")}
-          className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+          className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
             !isPendingView
               ? "bg-[#006a4e] text-white shadow-xs"
               : "text-[var(--text)] hover:text-[#006a4e]"
           }`}
         >
-          {isBn ? "সকল ব্যবহারকারী" : "All Users"}
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          <span className="truncate">{isBn ? "সকল ব্যবহারকারী" : "All Users"}</span>
         </button>
         <button
           type="button"
           onClick={() => switchSubTab("pending")}
-          className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+          className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
             isPendingView
               ? "bg-[#006a4e] text-white shadow-xs"
               : "text-[var(--text)] hover:text-[#006a4e]"
           }`}
         >
-          {isBn ? "অপেক্ষমাণ ব্যবহারকারী" : "Pending Users"}
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="truncate">{isBn ? "অপেক্ষমাণ ব্যবহারকারী" : "Pending Users"}</span>
         </button>
       </div>
 

@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type KeyboardEvent,
+  type ReactNode,
 } from "react";
 import { createPortal } from "react-dom";
 
@@ -22,6 +23,7 @@ interface ThemedSelectProps<T extends string = string> {
   ariaLabel?: string;
   disabled?: boolean;
   isFiltered?: boolean;
+  icon?: ReactNode;
   size?: "xs" | "sm" | "md";
   align?: "left" | "right";
   className?: string;
@@ -38,6 +40,7 @@ export default function ThemedSelect<T extends string = string>({
   ariaLabel,
   disabled = false,
   isFiltered = false,
+  icon,
   size = "sm",
   align = "left",
   className = "",
@@ -145,7 +148,14 @@ export default function ThemedSelect<T extends string = string>({
         onKeyDown={handleTriggerKeyDown}
         className={`inline-flex items-center justify-between gap-2 border font-bold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${sizeClass} ${triggerStateClass} ${className}`}
       >
-        <span className="truncate">{selectedOption?.label ?? value}</span>
+        <span className="flex items-center gap-2 min-w-0">
+          {icon && (
+            <span className="shrink-0 text-[#006a4e]/80 flex items-center">
+              {icon}
+            </span>
+          )}
+          <span className="truncate">{selectedOption?.label ?? value}</span>
+        </span>
         <svg
           className={`w-3.5 h-3.5 shrink-0 transition-transform duration-200 ${
             open ? "rotate-180 text-[#006a4e]" : "text-[#006a4e]/75"
