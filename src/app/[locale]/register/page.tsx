@@ -33,7 +33,7 @@ export default async function RegisterPage({
   const dict = await getDictionary(locale);
 
   return (
-    <main className="min-h-dvh flex flex-col items-center pt-6 md:pt-10 pb-8 px-4 sm:px-6 overflow-x-hidden bg-[#f7f4ea]">
+    <main className="h-[calc(100dvh-67px)] overflow-y-auto flex flex-col items-center justify-start pt-3 pb-3 px-4 sm:px-6 md:h-auto md:min-h-[calc(100dvh-71px)] md:overflow-visible md:pt-10 md:pb-8 bg-[#f7f4ea]">
       <RegisterForm locale={locale} dict={dict} />
     </main>
   );

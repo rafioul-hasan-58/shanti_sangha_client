@@ -93,12 +93,12 @@ export default function RegisterForm({
   return (
     <div className="w-full max-w-md">
       {/* Brand Header */}
-      <div className="text-center mb-5">
+      <div className="text-center mb-3 md:mb-5">
         <Link
           href={`/${locale}`}
           className="inline-flex flex-col items-center group focus:outline-none"
         >
-          <div className="relative h-16 w-16 md:h-20 md:w-20 drop-shadow-md group-hover:scale-105 transition-transform">
+          <div className="relative h-12 w-12 md:h-20 md:w-20 drop-shadow-md group-hover:scale-105 transition-transform">
             <Image
               src="/logo.png"
               alt={BRAND_NAME_EN}
@@ -108,23 +108,23 @@ export default function RegisterForm({
             />
           </div>
           <span
-            className={`mt-2 text-xs font-bold text-[#006a4e] text-center leading-relaxed ${
+            className={`mt-1 md:mt-2 text-[11px] md:text-xs font-bold text-[#006a4e] text-center leading-snug md:leading-relaxed ${
               isBn ? "" : "uppercase tracking-widest"
             }`}
           >
             {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_UPPER_EN}
           </span>
         </Link>
-        <h1 className="font-display text-xl md:text-2xl font-bold text-[#12231d] mt-3 leading-relaxed">
+        <h1 className="font-display text-lg md:text-2xl font-bold text-[#12231d] mt-1.5 md:mt-3 leading-snug md:leading-relaxed">
           {dict.auth.registerTitle}
         </h1>
-        <p className="text-sm text-gray-500 mt-1 leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-500 mt-0.5 md:mt-1 leading-snug md:leading-relaxed">
           {dict.auth.registerSubtitle}
         </p>
       </div>
 
       {/* Card Form */}
-      <div className="w-full rounded-2xl bg-white shadow-md border border-gray-100 p-5 sm:p-6">
+      <div className="w-full rounded-2xl bg-white shadow-md border border-gray-100 p-4 sm:p-6">
         {/* Google Sign Up Button (returns GIS eyJ... ID Token) */}
         <GoogleAuthButton
           locale={locale}
@@ -141,7 +141,7 @@ export default function RegisterForm({
         />
 
         {/* Divider */}
-        <div className="flex items-center gap-3 my-4">
+        <div className="flex items-center gap-3 my-2.5 md:my-4">
           <div className="flex-1 min-w-4 border-t border-gray-200" />
           <span
             className={`text-xs text-gray-500 font-medium leading-relaxed text-center ${
@@ -168,11 +168,11 @@ export default function RegisterForm({
         )}
 
         {/* Registration Form: Full Name, Email, Password */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3 md:gap-4">
           {/* Full Name field */}
           <div>
             <label
-              className={`block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+              className={`block text-xs font-bold text-[#12231d] mb-1 md:mb-1.5 leading-relaxed ${
                 isBn ? "" : "uppercase tracking-wider"
               }`}
             >
@@ -190,7 +190,7 @@ export default function RegisterForm({
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder={dict.auth.fullNamePlaceholder}
                 required
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
+                className="w-full h-10 md:h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function RegisterForm({
           {/* Email field */}
           <div>
             <label
-              className={`block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+              className={`block text-xs font-bold text-[#12231d] mb-1 md:mb-1.5 leading-relaxed ${
                 isBn ? "" : "uppercase tracking-wider"
               }`}
             >
@@ -216,14 +216,14 @@ export default function RegisterForm({
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={dict.auth.emailPlaceholder}
                 required
-                className="w-full h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
+                className="w-full h-10 md:h-12 pl-11 pr-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
             </div>
           </div>
 
           {/* Password field */}
           <div>
-            <div className="flex items-center justify-between gap-2 mb-1.5">
+            <div className="flex items-center justify-between gap-2 mb-1 md:mb-1.5">
               <label
                 className={`block text-xs font-bold text-[#12231d] leading-relaxed ${
                   isBn ? "" : "uppercase tracking-wider"
@@ -248,7 +248,7 @@ export default function RegisterForm({
                 placeholder={dict.auth.passwordPlaceholder}
                 required
                 minLength={6}
-                className="w-full h-12 pl-11 pr-11 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
+                className="w-full h-10 md:h-12 pl-11 pr-11 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
               />
               <button
                 type="button"
@@ -271,17 +271,17 @@ export default function RegisterForm({
           </div>
 
           {/* Terms Agreement Checkbox */}
-          <div className="flex items-start gap-2.5 mt-1">
+          <div className="flex items-center gap-2.5 mt-0.5 md:mt-1">
             <input
               id="agree-terms"
               type="checkbox"
               checked={agreeTerms}
               onChange={(e) => setAgreeTerms(e.target.checked)}
-              className="mt-1 w-4 h-4 shrink-0 rounded border-gray-300 text-[#006a4e] focus:ring-[#00a67e] accent-[#006a4e] cursor-pointer"
+              className="w-4 h-4 shrink-0 rounded border-gray-300 text-[#006a4e] focus:ring-[#00a67e] accent-[#006a4e] cursor-pointer"
             />
             <label
               htmlFor="agree-terms"
-              className="text-sm text-gray-700 font-medium select-none cursor-pointer leading-relaxed"
+              className="text-xs sm:text-sm text-gray-700 font-medium select-none cursor-pointer leading-snug sm:leading-relaxed"
             >
               {dict.auth.agreeTerms}
             </label>
@@ -291,7 +291,7 @@ export default function RegisterForm({
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="h-12 w-full rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white font-semibold text-sm leading-relaxed mt-2 px-4 shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            className="h-11 md:h-12 w-full rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white font-semibold text-sm leading-relaxed mt-1 md:mt-2 px-4 shadow-md hover:shadow-lg transition-all duration-200 active:scale-[0.99] disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? (
               <>
@@ -305,7 +305,7 @@ export default function RegisterForm({
         </form>
 
         {/* Link to Login */}
-        <div className="mt-4 text-center text-sm leading-relaxed text-gray-600">
+        <div className="mt-3 md:mt-4 text-center text-xs sm:text-sm leading-relaxed text-gray-600">
           <span>{dict.auth.haveAccount} </span>
           <Link
             href={`/${locale}/login`}
@@ -314,19 +314,6 @@ export default function RegisterForm({
             {dict.auth.loginLink}
           </Link>
         </div>
-      </div>
-
-      {/* Return to home (hidden on mobile so register fits comfortably) */}
-      <div className="hidden md:block mt-5 text-center">
-        <Link
-          href={`/${locale}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-brand-600 hover:text-[#006a4e] transition-colors leading-relaxed"
-        >
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          <span>{dict.auth.backToHome}</span>
-        </Link>
       </div>
     </div>
   );
