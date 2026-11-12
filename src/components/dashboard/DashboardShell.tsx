@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
@@ -35,6 +35,7 @@ export default function DashboardShell({
   locale = "bn",
 }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const { user, logout, updateProfile } = useAuth();
   const { role, setRole } = useRole();
   const isBn = locale === "bn";
@@ -134,13 +135,14 @@ export default function DashboardShell({
   };
 
   // Admin logic:
-  // All admins are users, but only users with admin authorization have admin features.
-  const isAdmin =
-    role === "admin" ||
-    user?.role === "admin" ||
-    user?.email === "rafioulhasan2@gmail.com" ||
-    user?.email?.toLowerCase().includes("admin") ||
-    user?.email?.toLowerCase().includes("sourav");
+  // Trust normalized backend user.role when authenticated; fall back to route/role preview when unauthenticated.
+  const isAdminRoute = pathname?.includes("/admin");
+  const resolvedRole = user
+    ? String(user.role || "").trim().toLowerCase()
+    : isAdminRoute
+      ? "admin"
+      : String(role || "").trim().toLowerCase();
+  const isAdmin = resolvedRole === "admin";
 
   const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";

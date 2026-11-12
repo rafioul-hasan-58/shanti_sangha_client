@@ -7,6 +7,7 @@ import type { AuthUser } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import UserAvatar from "./UserAvatar";
+import RoleBadge from "./RoleBadge";
 
 interface UserProfileDropdownProps {
   user: AuthUser;
@@ -29,6 +30,10 @@ export default function UserProfileDropdown({
   const { logout } = useAuth();
   const { role } = useRole();
   const isBn = locale === "bn";
+  const isAdmin =
+    String(user.role || role || "user")
+      .trim()
+      .toLowerCase() === "admin";
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
@@ -164,7 +169,7 @@ export default function UserProfileDropdown({
                 />
               </div>
 
-              {/* Name, Email & Micro-Badges */}
+              {/* Name, Email & Role / Micro-Badges */}
               <div className="min-w-0 flex-1 text-left">
                 <h4 className="text-sm font-bold text-slate-800 truncate leading-snug">
                   {user.name}
@@ -172,14 +177,16 @@ export default function UserProfileDropdown({
                 <p className="text-xs text-slate-400 truncate mt-0.5">
                   {user.email || (isBn ? "ক্লাব মেম্বার" : "Club Member")}
                 </p>
-                <div className="flex items-center gap-1.5 mt-1 flex-wrap">
+                <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                  <RoleBadge isAdmin={isAdmin} isBn={isBn} />
+
                   {user.bloodGroup && user.bloodGroup !== "UNKNOWN" && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 border border-rose-200">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 leading-relaxed">
                       🩸 {user.bloodGroup}
                     </span>
                   )}
                   {user.profession && (
-                    <span className="text-[10px] text-slate-500 font-medium truncate max-w-[120px]">
+                    <span className="text-[10px] text-slate-500 font-medium truncate max-w-[120px] leading-relaxed">
                       {user.profession}
                     </span>
                   )}

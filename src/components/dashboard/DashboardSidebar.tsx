@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import RoleBadge from "@/components/layout/RoleBadge";
+import UserAvatar from "@/components/layout/UserAvatar";
 import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
 
@@ -120,6 +122,9 @@ export default function DashboardSidebar({
   onLogout,
 }: DashboardSidebarProps) {
   const isBn = locale === "bn";
+  const resolvedIsAdmin = user
+    ? String(user.role || "").trim().toLowerCase() === "admin"
+    : isAdmin;
   const categories = navConfig.categories as unknown as NavCategoryConfig[];
 
   const handleAction = (item: NavItemConfig) => {
@@ -192,7 +197,7 @@ export default function DashboardSidebar({
         <div className="flex-1 overflow-y-auto p-4 space-y-5">
           {categories.map((category, catIdx) => {
             // Filter admin only categories
-            if (category.adminOnly && !isAdmin) return null;
+            if (category.adminOnly && !resolvedIsAdmin) return null;
 
             return (
               <div
@@ -210,7 +215,7 @@ export default function DashboardSidebar({
                 {/* Category Items */}
                 <nav className="space-y-1.5">
                   {category.items.map((item) => {
-                    if (item.adminOnly && !isAdmin) return null;
+                    if (item.adminOnly && !resolvedIsAdmin) return null;
 
                     const label = isBn ? item.labelBn : item.labelEn;
                     const isActive = activeTab === item.id;
