@@ -1233,34 +1233,15 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB 6: ADMIN: CLUB FINANCE & ACCOUNTS (Admin Only)   */}
+          {/* TAB 6: ADMIN: CLUB FINANCE (Cooking)                  */}
           {/* ===================================================== */}
           {activeTab === "admin_finance" && isAdmin && (
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-6">
-              <div className="pb-4 border-b border-slate-100">
-                <span className="text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full">
-                  FINANCIAL LEDGER
-                </span>
-                <h3 className="text-lg font-black text-slate-900 mt-1">
-                  {isBn ? "ক্লাব ফান্ড, ডোনেশন ও টুর্নামেন্ট বাজেট" : "Club Funds, Donations & Budget"}
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
-                  <p className="text-xs font-bold text-emerald-800 uppercase">{isBn ? "মোট তহবিল ব্যালেন্স" : "Current Fund Balance"}</p>
-                  <p className="text-2xl font-black text-emerald-700 mt-1">৳ ৪৮,৫০০</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-blue-50 border border-blue-100">
-                  <p className="text-xs font-bold text-blue-800 uppercase">{isBn ? "এসপিএল স্পন্সরশিপ সংগ্রহ" : "SPL Sponsorship Collected"}</p>
-                  <p className="text-2xl font-black text-blue-700 mt-1">৳ ৩২,০০০</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-amber-50 border border-amber-100">
-                  <p className="text-xs font-bold text-amber-800 uppercase">{isBn ? "চলতি মাসের খরচ" : "Monthly Expenses"}</p>
-                  <p className="text-2xl font-black text-amber-700 mt-1">৳ ১৪,২০০</p>
-                </div>
-              </div>
-            </div>
+            <FeatureCooking
+              featureNameEn="Club Finance"
+              featureNameBn="তহবিল ও হিসাব"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
 
           {/* ===================================================== */}

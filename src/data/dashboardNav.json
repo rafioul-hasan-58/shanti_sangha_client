@@ -22,38 +22,30 @@
           "status": "ready"
         },
         {
-          "id": "members_directory",
-          "labelBn": "সদস্য তালিকা",
-          "labelEn": "Members Directory",
-          "icon": "members",
-          "type": "link",
-          "href": "/members",
-          "hasChevron": true,
-          "status": "ready"
-        },
-        {
           "id": "notices",
           "labelBn": "নোটিশ ও কল্যাণ",
           "labelEn": "Notices & Welfare",
           "icon": "welfare",
           "type": "tab",
           "status": "cooking"
-        },
-        {
-          "id": "profile",
-          "labelBn": "আমার প্রোফাইল",
-          "labelEn": "My Profile",
-          "icon": "user",
-          "type": "tab",
-          "status": "ready"
         }
       ]
     },
     {
-      "id": "leadership_section",
-      "titleBn": "নেতৃত্ব ও সংগঠন",
-      "titleEn": "LEADERSHIP",
+      "id": "admin_controls",
+      "titleBn": "অ্যাডমিন নিয়ন্ত্রণ",
+      "titleEn": "ADMIN CONTROLS",
+      "adminOnly": true,
+      "badge": "ADAPTIVE",
       "items": [
+        {
+          "id": "admin_users",
+          "labelBn": "ইউজার ম্যানেজমেন্ট",
+          "labelEn": "User Management",
+          "icon": "users_cog",
+          "type": "tab",
+          "status": "ready"
+        },
         {
           "id": "leadership",
           "labelBn": "নেতৃত্ব",
@@ -86,23 +78,6 @@
               "status": "cooking"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": "admin_controls",
-      "titleBn": "অ্যাডমিন নিয়ন্ত্রণ",
-      "titleEn": "ADMIN CONTROLS",
-      "adminOnly": true,
-      "badge": "ADAPTIVE",
-      "items": [
-        {
-          "id": "admin_users",
-          "labelBn": "ইউজার ম্যানেজমেন্ট",
-          "labelEn": "User Management",
-          "icon": "users_cog",
-          "type": "tab",
-          "status": "ready"
         },
         {
           "id": "admin_live",
@@ -117,14 +92,6 @@
           "labelBn": "তহবিল ও হিসাব",
           "labelEn": "Club Finance",
           "icon": "finance",
-          "type": "tab",
-          "status": "ready"
-        },
-        {
-          "id": "admin_expenses",
-          "labelBn": "ব্যয় হিসাব",
-          "labelEn": "Expenses",
-          "icon": "wallet",
           "type": "tab",
           "status": "cooking"
         }
