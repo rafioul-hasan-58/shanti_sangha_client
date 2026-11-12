@@ -14,7 +14,7 @@ interface OtpInputProps {
 
 /** Multi-box numeric OTP input with paste, keyboard nav, and error shake support. */
 export default function OtpInput({
-  length = 5,
+  length = 6,
   value,
   onChange,
   hasError = false,
@@ -94,7 +94,7 @@ export default function OtpInput({
   return (
     <div
       key={shakeKey}
-      className={`flex items-center justify-center gap-2 sm:gap-3 ${
+      className={`flex items-center justify-center gap-1.5 sm:gap-2.5 ${
         shakeKey > 0 ? "animate-otp-shake" : ""
       }`}
     >
@@ -116,7 +116,7 @@ export default function OtpInput({
           onKeyDown={(e) => handleKeyDown(index, e)}
           onPaste={handlePaste}
           onFocus={(e) => e.currentTarget.select()}
-          className={`w-11 h-12 sm:w-12 sm:h-13 rounded-xl border-2 text-center text-lg sm:text-xl font-extrabold transition-all duration-150 outline-none ${
+          className={`w-10 h-11 sm:w-12 sm:h-13 rounded-xl border-2 text-center text-base sm:text-xl font-extrabold transition-all duration-150 outline-none ${
             hasError
               ? "border-red-400 bg-red-50/70 text-red-600 focus:border-red-500 focus:ring-2 focus:ring-red-200"
               : digit

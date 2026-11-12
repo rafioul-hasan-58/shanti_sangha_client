@@ -9,7 +9,7 @@ import { requestPasswordReset, verifyPasswordResetOtp } from "@/lib/api";
 import AuthBrandHeader from "./AuthBrandHeader";
 import OtpInput from "./OtpInput";
 
-const OTP_LENGTH = 5;
+const OTP_LENGTH = 6;
 
 export default function VerifyOtpForm({
   locale,

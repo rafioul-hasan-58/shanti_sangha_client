@@ -120,7 +120,7 @@
     "resendOtpBtn": "আবার ওটিপি পাঠান",
     "resendingOtp": "পাঠানো হচ্ছে...",
     "otpResentMsg": "আপনার ইমেইলে নতুন ওটিপি পাঠানো হয়েছে।",
-    "otpRequiredError": "অনুগ্রহ করে ৫ সংখ্যার ওটিপি কোডটি লিখুন।",
+    "otpRequiredError": "অনুগ্রহ করে ৬ সংখ্যার ওটিপি কোডটি লিখুন।",
     "resetPasswordTitle": "পাসওয়ার্ড রিসেট করুন",
     "resetPasswordSubtitle": "আপনার একাউন্টের জন্য নতুন পাসওয়ার্ড দিন",
     "newPassword": "নতুন পাসওয়ার্ড",

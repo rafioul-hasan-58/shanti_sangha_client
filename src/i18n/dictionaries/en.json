@@ -120,7 +120,7 @@
     "resendOtpBtn": "Resend OTP",
     "resendingOtp": "Resending...",
     "otpResentMsg": "A new OTP has been sent to your email.",
-    "otpRequiredError": "Please enter the 5-digit OTP code.",
+    "otpRequiredError": "Please enter the 6-digit OTP code.",
     "resetPasswordTitle": "Reset Password",
     "resetPasswordSubtitle": "Choose a new password for your account",
     "newPassword": "New Password",
