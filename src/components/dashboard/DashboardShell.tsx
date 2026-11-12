@@ -48,6 +48,34 @@ type TabType =
   | "admin_finance"
   | "admin_expenses";
 
+/** Pixel-perfect IoIosArrowForward icon matching react-icons/io */
+function IoIosArrowForward({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M186.3 110.5c-6.2 6.2-6.2 16.4 0 22.6l122.9 122.9-122.9 122.9c-6.2 6.2-6.2 16.4 0 22.6 6.2 6.2 16.4 6.2 22.6 0l134.2-134.2c6.2-6.2 6.2-16.4 0-22.6L208.9 110.5c-6.2-6.2-16.4-6.2-22.6 0z" />
+    </svg>
+  );
+}
+
+/** Pixel-perfect IoIosArrowBack icon matching react-icons/io */
+function IoIosArrowBack({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M325.7 110.5c6.2 6.2 6.2 16.4 0 22.6L202.8 256l122.9 122.9c6.2 6.2 6.2 16.4 0 22.6-6.2 6.2-16.4 6.2-22.6 0L168.9 267.3c-6.2-6.2-6.2-16.4 0-22.6l134.2-134.2c6.2-6.2 16.4-6.2 22.6 0z" />
+    </svg>
+  );
+}
+
 export default function DashboardShell({
   dict,
   locale = "bn",
@@ -921,10 +949,10 @@ export default function DashboardShell({
                       <button
                         type="button"
                         onClick={() => setProfileSectionTab("profession")}
-                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer group"
                       >
                         <span>{isBn ? "পরবর্তী: পেশা ও বায়ো" : "Next: Profession & Bio"}</span>
-                        <span>→</span>
+                        <IoIosArrowForward className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                       </button>
                     </div>
                   </div>
@@ -996,19 +1024,19 @@ export default function DashboardShell({
                       <button
                         type="button"
                         onClick={() => setProfileSectionTab("personal")}
-                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer group"
                       >
-                        <span>←</span>
+                        <IoIosArrowBack className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
                         <span>{isBn ? "ব্যক্তিগত তথ্য" : "Personal Info"}</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => setProfileSectionTab("location")}
-                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer group"
                       >
                         <span>{isBn ? "পরবর্তী: ঠিকানা ও যোগাযোগ" : "Next: Location & Contact"}</span>
-                        <span>→</span>
+                        <IoIosArrowForward className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                       </button>
                     </div>
                   </div>
@@ -1114,9 +1142,9 @@ export default function DashboardShell({
                       <button
                         type="button"
                         onClick={() => setProfileSectionTab("profession")}
-                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer group"
                       >
-                        <span>←</span>
+                        <IoIosArrowBack className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-0.5" />
                         <span>{isBn ? "পেশা ও বায়ো" : "Profession & Bio"}</span>
                       </button>
                     </div>

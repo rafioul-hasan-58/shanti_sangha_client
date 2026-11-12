@@ -192,3 +192,40 @@ export function MemberAuthProviderIcon({
   );
 }
 
+/** Pixel-perfect IoIosArrowForward icon matching react-icons/io */
+export function IoIosArrowForward({
+  className = "w-4 h-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M186.3 110.5c-6.2 6.2-6.2 16.4 0 22.6l122.9 122.9-122.9 122.9c-6.2 6.2-6.2 16.4 0 22.6 6.2 6.2 16.4 6.2 22.6 0l134.2-134.2c6.2-6.2 6.2-16.4 0-22.6L208.9 110.5c-6.2-6.2-16.4-6.2-22.6 0z" />
+    </svg>
+  );
+}
+
+/** Pixel-perfect IoIosArrowBack icon matching react-icons/io */
+export function IoIosArrowBack({
+  className = "w-4 h-4",
+}: {
+  className?: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 512 512"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M325.7 110.5c6.2 6.2 6.2 16.4 0 22.6L202.8 256l122.9 122.9c6.2 6.2 6.2 16.4 0 22.6-6.2 6.2-16.4 6.2-22.6 0L168.9 267.3c-6.2-6.2-6.2-16.4 0-22.6l134.2-134.2c6.2-6.2 16.4-6.2 22.6 0z" />
+    </svg>
+  );
+}
+
+

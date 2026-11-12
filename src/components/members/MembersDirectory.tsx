@@ -32,6 +32,7 @@ import {
   formatMemberJoinDate,
   getMemberBloodLabel,
   isMemberGoogleLogin,
+  IoIosArrowForward,
 } from "./MemberCardShared";
 import MemberDetailsModal from "./MemberDetailsModal";
 
@@ -709,10 +710,10 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
                         e.stopPropagation();
                         setSelectedMember({ user: u, paletteIndex: idx });
                       }}
-                      className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer"
+                      className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold shadow-2xs transition-colors cursor-pointer group"
                     >
                       <span>{isBn ? "বিস্তারিত দেখুন" : "View Details"}</span>
-                      <span>→</span>
+                      <IoIosArrowForward className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
                     </button>
                   </div>
                 </article>
