@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface WelcomeCardProps {
   adminName?: string;
@@ -49,7 +50,7 @@ export default function WelcomeCard({
           <p className="text-xs sm:text-sm text-emerald-50/90 leading-relaxed font-medium">
             {isBn
               ? "সাভারচালা শান্তি সংঘের আর্থিক আয়-ব্যয় হিসাব, টুর্নামেন্ট বাজেট ও ক্লাব পরিচালনা নিয়ন্ত্রণ কেন্দ্র।"
-              : "Shavarchala Shanti Sangha financial oversight, tournament budget allocation & operations command."}
+              : `${FULL_BRAND_NAME_EN} financial oversight, tournament budget allocation & operations command.`}
           </p>
         </div>
 

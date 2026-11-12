@@ -6,6 +6,11 @@ import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { APP_VERSION } from "@/lib/version";
+import {
+  BRAND_NAME_EN,
+  BRAND_NAME_UPPER_EN,
+  FULL_BRAND_NAME_EN,
+} from "@/lib/constants/site";
 
 export default function Footer({
   dict,
@@ -53,7 +58,7 @@ export default function Footer({
                   <div className="absolute inset-0 backface-hidden flex items-center justify-center">
                     <Image
                       src="/logo.png"
-                      alt="Shanti Sangha Logo"
+                      alt={`${BRAND_NAME_EN} Logo`}
                       width={64}
                       height={64}
                       className="h-full w-full object-contain drop-shadow-md"
@@ -63,7 +68,7 @@ export default function Footer({
                   <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center">
                     <Image
                       src="/logo.png"
-                      alt="Shanti Sangha Logo"
+                      alt={`${BRAND_NAME_EN} Logo`}
                       width={64}
                       height={64}
                       className="h-full w-full object-contain drop-shadow-md"
@@ -76,7 +81,7 @@ export default function Footer({
                   {isBn ? "সাভারচালা" : "SHAVARCHALA"}
                 </span>
                 <span className="font-extrabold text-sm sm:text-base tracking-wider text-white uppercase font-sans">
-                  {isBn ? "শান্তি সংঘ" : "SHANTI SANGHA"}
+                  {isBn ? "শান্তি সংঘ" : BRAND_NAME_UPPER_EN}
                 </span>
               </div>
             </Link>
@@ -84,7 +89,7 @@ export default function Footer({
             <p className="text-xs sm:text-sm text-white/85 leading-relaxed max-w-md">
               {isBn
                 ? "২০০৭ সাল থেকে বিগত ১৯+ বছর ধরে সাভারচালা শান্তি সংঘ নিয়মিত আয়োজন করে আসছে এসপিএল (SPL), বাৎসরিক ক্রীড়া প্রতিযোগিতা এবং বাৎসরিক ওয়াজ মাহফিল। সুস্থ খেলাধুলা ও সামাজিক ঐক্যের মাধ্যমে যুব সমাজকে এগিয়ে নেওয়াই আমাদের লক্ষ্য।"
-                : "Founded in 2007 with over 19+ years of proud community heritage, Shavarchala Shanti Sangha annually organizes SPL (Premier League), Annual Sports Program, and Waz Mahfil — uniting our community through sports and service."}
+                : `Founded in 2007 with over 19+ years of proud community heritage, ${FULL_BRAND_NAME_EN} annually organizes SPL (Premier League), Annual Sports Program, and Waz Mahfil — uniting our community through sports and service.`}
             </p>
 
             {/* Official Facebook Page Link */}
@@ -94,7 +99,7 @@ export default function Footer({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white text-white hover:text-[#1877F2] border border-white/20 hover:border-white text-xs font-bold transition-all duration-200 shadow-2xs group"
-                title="Shavarchala Shanti Sangha Facebook Page"
+                title={`${FULL_BRAND_NAME_EN} Facebook Page`}
               >
                 <span className="w-5 h-5 rounded-full bg-[#1877F2] text-white flex items-center justify-center shrink-0">
                   <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
@@ -204,7 +209,7 @@ export default function Footer({
           <p className="text-center sm:text-left">
             © {new Date().getFullYear()}{" "}
             <span className="font-bold text-white">
-              {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
+              {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_EN}
             </span>
             . Developed with passion by{" "}
             <span className="font-bold text-white underline decoration-white/40 underline-offset-2">

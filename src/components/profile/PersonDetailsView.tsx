@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { PersonDetail } from "@/data/people";
 import { allPeople } from "@/data/people";
+import { BRAND_NAME_EN, FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface Props {
   person: PersonDetail;
@@ -148,7 +149,7 @@ export default function PersonDetailsView({ person, locale }: Props) {
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-y-1 gap-x-3 text-xs sm:text-sm text-white/90">
                 <span className="font-bold flex items-center gap-1">
                   <span>⚽</span>
-                  <span>{isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}</span>
+                  <span>{isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_EN}</span>
                 </span>
                 <span className="opacity-50">•</span>
                 <span className="flex items-center gap-1">
@@ -247,7 +248,7 @@ export default function PersonDetailsView({ person, locale }: Props) {
               <p className="text-xs text-brand-600">
                 {isBn
                   ? `সাভারচালা শান্তি সংঘে ${name}-এর অবদান`
-                  : `Contributions of ${name} to Shanti Sangha`}
+                  : `Contributions of ${name} to ${BRAND_NAME_EN}`}
               </p>
             </div>
           </div>

@@ -1,9 +1,9 @@
 {
   "meta": {
-    "title": "Shavarchala Shanti Sangha",
+    "title": "Shavarchala Shanti Sangho",
     "description": "Football, cricket, badminton and more. Join our club."
   },
-  "brand": "Shavarchala Shanti Sangha",
+  "brand": "Shavarchala Shanti Sangho",
   "nav": {
     "home": "Home",
     "about": "About Us",
@@ -82,9 +82,9 @@
   },
   "auth": {
     "loginTitle": "Welcome Back",
-    "loginSubtitle": "Sign in to your Shavarchala Shanti Sangha account",
+    "loginSubtitle": "Sign in to your Shavarchala Shanti Sangho account",
     "registerTitle": "Create an Account",
-    "registerSubtitle": "Join the Shavarchala Shanti Sangha family",
+    "registerSubtitle": "Join the Shavarchala Shanti Sangho family",
     "continueWithGoogle": "Continue with Google",
     "orEmail": "or continue with email",
     "fullName": "Full Name",

@@ -9,6 +9,10 @@ import type { Dictionary } from "@/i18n/getDictionary";
 import { useRole } from "@/context/RoleContext";
 import { useAuth } from "@/context/AuthContext";
 import { getPostLoginRedirect } from "@/lib/authRole";
+import {
+  BRAND_NAME_EN,
+  FULL_BRAND_NAME_UPPER_EN,
+} from "@/lib/constants/site";
 import GoogleAuthButton from "./GoogleAuthButton";
 
 export default function RegisterForm({
@@ -97,7 +101,7 @@ export default function RegisterForm({
           <div className="relative h-16 w-16 md:h-20 md:w-20 drop-shadow-md group-hover:scale-105 transition-transform">
             <Image
               src="/logo.png"
-              alt="Shanti Sangha"
+              alt={BRAND_NAME_EN}
               fill
               className="object-contain"
               priority
@@ -108,7 +112,7 @@ export default function RegisterForm({
               isBn ? "" : "uppercase tracking-widest"
             }`}
           >
-            {isBn ? "সাভারচালা শান্তি সংঘ" : "SHAVARCHALA SHANTI SANGHA"}
+            {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_UPPER_EN}
           </span>
         </Link>
         <h1 className="font-display text-xl md:text-2xl font-bold text-[#12231d] mt-3 leading-relaxed">

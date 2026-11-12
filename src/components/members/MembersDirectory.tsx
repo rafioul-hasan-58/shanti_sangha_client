@@ -6,6 +6,11 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import { allClubMembers, type MemberCategory, type ClubMember } from "@/data/members";
 import { getPersonBySlug } from "@/data/people";
+import {
+  BRAND_NAME_EN,
+  BRAND_NAME_UPPER_EN,
+  FULL_BRAND_NAME_EN,
+} from "@/lib/constants/site";
 
 export default function MembersDirectory({ locale }: { locale: Locale }) {
   const isBn = locale === "bn";
@@ -52,7 +57,9 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
       {/* Page Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
         <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-widest border border-[#006a4e]/20">
-          {isBn ? "সাভারচালা শান্তি সংঘ সদস্য ডিরেক্টরি" : "SHANTI SANGHA MEMBER DIRECTORY"}
+          {isBn
+            ? "সাভারচালা শান্তি সংঘ সদস্য ডিরেক্টরি"
+            : `${BRAND_NAME_UPPER_EN} MEMBER DIRECTORY`}
         </span>
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-pitch tracking-tight">
           {isBn ? "আমাদের সম্মানিত সদস্যবৃন্দ" : "Our Respected Members"}
@@ -60,7 +67,7 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
         <p className="text-sm sm:text-base text-brand-700 leading-relaxed font-sans">
           {isBn
             ? "২০০৭ সাল থেকে সাভারচালা শান্তি সংঘের অগ্রযাত্রায় নিবেদিত সকল সম্মানিত উপদেষ্টা, কার্যনির্বাহী সদস্য, সাধারণ সদস্য ও ক্রীড়াবিদদের তালিকা।"
-            : "The dedicated advisors, executive committee members, general members, and athletes powering Shavarchala Shanti Sangha since 2007."}
+            : `The dedicated advisors, executive committee members, general members, and athletes powering ${FULL_BRAND_NAME_EN} since 2007.`}
         </p>
       </div>
 
@@ -171,7 +178,9 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
       <div className="mt-16 rounded-3xl bg-gradient-to-r from-[#006a4e] to-[#005a42] text-white p-8 sm:p-10 shadow-lg border-b-4 border-white flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-2 text-center md:text-left">
           <h3 className="font-display text-2xl font-bold">
-            {isBn ? "আপনিও কি সাভারচালা শান্তি সংঘের সদস্য হতে চান?" : "Want to Become a Member of Shanti Sangha?"}
+            {isBn
+              ? "আপনিও কি সাভারচালা শান্তি সংঘের সদস্য হতে চান?"
+              : `Want to Become a Member of ${BRAND_NAME_EN}?`}
           </h3>
           <p className="text-white/85 text-xs sm:text-sm max-w-xl">
             {isBn

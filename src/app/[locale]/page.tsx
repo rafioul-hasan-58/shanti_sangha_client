@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
+import { BRAND_NAME_EN, FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 import HeroCarousel from "@/components/home/HeroCarousel";
 import AboutSection from "@/components/home/AboutSection";
 import PioneersSection from "@/components/home/PioneersSection";
@@ -70,7 +71,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
               <p className="mt-2 text-white/90 max-w-2xl text-sm sm:text-base leading-relaxed font-sans">
                 {locale === "bn"
                   ? "সাভারচালা শান্তি সংঘ বিগত ১৯+ বছর ধরে প্রতি বছর নিয়মিত ৩টি প্রধান বাৎসরিক কর্মসূচি উৎসবমুখর পরিবেশে আয়োজন করে থাকে — এসপিএল (SPL), বাৎসরিক ক্রীড়া প্রতিযোগিতা এবং বাৎসরিক ওয়াজ মাহফিল।"
-                  : "For over 19+ years, Shavarchala Shanti Sangha has consistently organized 3 signature annual programs — the SPL Premier League, the Annual Sports Program, and the Annual Waz Mahfil."}
+                  : `For over 19+ years, ${FULL_BRAND_NAME_EN} has consistently organized 3 signature annual programs — the SPL Premier League, the Annual Sports Program, and the Annual Waz Mahfil.`}
               </p>
             </div>
 
@@ -100,7 +101,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
                 <p className="mt-2 text-xs sm:text-sm text-white/85 leading-relaxed">
                   {locale === "bn"
                     ? "শান্তি সংঘের সবচেয়ে রোমাঞ্চকর টুর্নামেন্ট। গ্রীষ্মকালে ফুটবল এবং শীতকালে প্রিমিয়ার ক্রিকেট টুর্নামেন্টে বিভিন্ন এলাকার দল অংশগ্রহণ করে।"
-                    : "Shanti Sangha's premier sporting event. Featuring exciting summer football and winter cricket tournaments with enthusiastic local teams."}
+                    : `${BRAND_NAME_EN}'s premier sporting event. Featuring exciting summer football and winter cricket tournaments with enthusiastic local teams.`}
                 </p>
               </div>
               <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs font-semibold text-white/90">

@@ -32,8 +32,9 @@ import {
 } from "@/lib/authRole";
 
 export const GOOGLE_CLIENT_ID =
+  process.env.OAUTH_CLIENT_ID ||
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
-  "593220422710-ir6bjdt3kj7ue468pcsqc0213cd9hgum.apps.googleusercontent.com";
+  "";
 
 interface AuthContextType {
   user: AuthUser | null;

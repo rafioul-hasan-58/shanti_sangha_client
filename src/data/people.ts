@@ -1,3 +1,5 @@
+import { BRAND_NAME_EN, FULL_BRAND_NAME_EN } from "@/lib/constants/site";
+
 export interface PersonDetail {
   id: string;
   slug: string;
@@ -59,13 +61,13 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Mr. Harun Sheikh** is the Founder President of Shavarchala Shanti Sangha. It was under his visionary leadership that the organization began its journey. For nearly two decades since 2007, he has played an indispensable role as the guardian, guiding beacon, and sheltering banyan tree of Shavarchala Shanti Sangha, having served as President for three terms.\n\nHis contribution to unifying and empowering an entire generation across Shavarchala and neighboring villages is undeniable. He is, in essence, the mentor and source of inspiration for an entire generation. Through his forward-thinking vision, courageous decisions, and extraordinary initiatives, Shavarchala Shanti Sangha has arrived at the respected stature it holds today.\n\nFrom organizing diverse sports, athletic championships, and premier tournaments to shaping crucial organizational policies—his creativity, courage, and leadership leave an indelible mark across every sphere. He consistently encourages club members to nurture their individual talents and skills, praising their dedication while providing resourceful support and continuous inspiration.\n\nThe individual who has contributed the most to building the present stature and organizational foundation of Shavarchala Shanti Sangha is its Founder President, Mr. Harun Sheikh. Calling him the **'Pied Piper of Hamelin'** of Shavarchala Shanti Sangha would hardly be an exaggeration. At his call, local youth, respected elders, and people from all walks of life still unite in fellowship. This profound public trust in his leadership and personality remains the bedrock of the club's unity and harmony.\n\nHe works tirelessly for the development of the organization, the welfare of the community, and the establishment of social harmony. His legacy and monumental contributions will remain forever etched in the history and progress of Shavarchala Shanti Sangha.",
+      `**Mr. Harun Sheikh** is the Founder President of ${FULL_BRAND_NAME_EN}. It was under his visionary leadership that the organization began its journey. For nearly two decades since 2007, he has played an indispensable role as the guardian, guiding beacon, and sheltering banyan tree of ${FULL_BRAND_NAME_EN}, having served as President for three terms.\n\nHis contribution to unifying and empowering an entire generation across Shavarchala and neighboring villages is undeniable. He is, in essence, the mentor and source of inspiration for an entire generation. Through his forward-thinking vision, courageous decisions, and extraordinary initiatives, ${FULL_BRAND_NAME_EN} has arrived at the respected stature it holds today.\n\nFrom organizing diverse sports, athletic championships, and premier tournaments to shaping crucial organizational policies—his creativity, courage, and leadership leave an indelible mark across every sphere. He consistently encourages club members to nurture their individual talents and skills, praising their dedication while providing resourceful support and continuous inspiration.\n\nThe individual who has contributed the most to building the present stature and organizational foundation of ${FULL_BRAND_NAME_EN} is its Founder President, Mr. Harun Sheikh. Calling him the **'Pied Piper of Hamelin'** of ${FULL_BRAND_NAME_EN} would hardly be an exaggeration. At his call, local youth, respected elders, and people from all walks of life still unite in fellowship. This profound public trust in his leadership and personality remains the bedrock of the club's unity and harmony.\n\nHe works tirelessly for the development of the organization, the welfare of the community, and the establishment of social harmony. His legacy and monumental contributions will remain forever etched in the history and progress of ${FULL_BRAND_NAME_EN}.`,
     bioBn:
       "**জনাব হারুন শেখ** সাভারচালা শান্তি সংঘের প্রতিষ্ঠাতা সভাপতি। তাঁর হাত ধরেই সংগঠনটির যাত্রা শুরু হয়। ২০০৭ সাল থেকে দীর্ঘ প্রায় দুই দশক ধরে তিনি সাভারচালা শান্তি সংঘের অভিভাবক, পথপ্রদর্শক ও বটবৃক্ষ হিসেবে গুরুত্বপূর্ণ ভূমিকা পালন করে আসছেন। তিনি তিন মেয়াদে সংগঠনের সভাপতির দায়িত্ব পালন করেছেন।\n\nসাভারচালা ও আশপাশের গ্রামের একটি প্রজন্মকে সুসংগঠিত করার পেছনে তাঁর অবদান অনস্বীকার্য। বলতে গেলে, তিনি একটি প্রজন্মের অভিভাবক ও অনুপ্রেরণার উৎস। তাঁর দূরদর্শী চিন্তাভাবনা, সাহসী সিদ্ধান্ত এবং ব্যতিক্রমী উদ্যোগের মাধ্যমে সাভারচালা শান্তি সংঘ আজকের অবস্থানে পৌঁছেছে।\n\nবিভিন্ন খেলাধুলা, ক্রীড়া প্রতিযোগিতা ও টুর্নামেন্ট আয়োজন থেকে শুরু করে সংগঠনের গুরুত্বপূর্ণ সিদ্ধান্ত গ্রহণ—প্রতিটি ক্ষেত্রেই তাঁর সৃজনশীলতা, সাহসিকতা ও নেতৃত্বের স্বাক্ষর রয়েছে। তিনি সবসময় সংগঠনের সদস্যদের নিজ নিজ দক্ষতা ও প্রতিভা বিকাশে উৎসাহিত করেন। সদস্যদের কাজের প্রশংসা করার পাশাপাশি তাঁদের সামর্থ্য অনুযায়ী বিভিন্নভাবে সহযোগিতা ও অনুপ্রেরণা দিয়ে থাকেন।\n\nসাভারচালা শান্তি সংঘের বর্তমান অবস্থান ও সাংগঠনিক ভিত্তি গড়ে তোলার পেছনে যাঁর অবদান সবচেয়ে বেশি, তিনি হলেন এই প্রতিষ্ঠাতা সভাপতি জনাব হারুন শেখ। তাঁকে সাভারচালা শান্তি সংঘের **'হ্যামিলনের বাঁশিওয়ালা'** বললে হয়তো অত্যুক্তি হবে না। তাঁর আহ্বানে আজও এলাকার তরুণ সমাজ, প্রবীণ ও সর্বস্তরের মানুষ একত্রিত হন। তাঁর নেতৃত্ব ও ব্যক্তিত্বের প্রতি মানুষের এই আস্থা সংগঠনটির ঐক্য ও সম্প্রীতির অন্যতম শক্তি।\n\nসংগঠনের উন্নয়ন, এলাকার মানুষের কল্যাণ এবং সামাজিক ঐক্য প্রতিষ্ঠায় তিনি নিরলসভাবে কাজ করে যাচ্ছেন। সাভারচালা শান্তি সংঘের ইতিহাস ও অগ্রযাত্রায় তাঁর অবদান চিরস্মরণীয় হয়ে থাকবে।",
     responsibilitiesEn: [
-      "Founded Shavarchala Shanti Sangha in 2007 and served as the inaugural President",
+      `Founded ${FULL_BRAND_NAME_EN} in 2007 and served as the inaugural President`,
       "Formulated the club's foundational constitution, values of unity, and sporting ethics",
-      "Initiated the historic SPL (Shanti Sangha Premier League) tournament tradition",
+      `Initiated the historic SPL (${BRAND_NAME_EN} Premier League) tournament tradition`,
       "Mentored successive generations of youth leaders in community service and sportsmanship",
     ],
     responsibilitiesBn: [
@@ -111,12 +113,12 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Tanvir Khorshed Roman** served two terms as the elected President of Shavarchala Shanti Sangha. Under his leadership, the organization engaged actively in diverse social, organizational, and developmental initiatives. During his tenure as President, he surmounted various challenges and limitations to introduce and execute numerous initiatives for the development of the organization and the welfare of the local community.\n\nHis sincerity, sense of duty, and devotion toward the organization established him as a respected and cherished personality among all members. He consistently encourages and inspires members in commendable pursuits, extending thoughtful cooperation to their personal and organizational endeavors according to his abilities. In any moment of the organization's need, he remains steadfast by its side.\n\nCurrently, he serves as an esteemed member of the Advisory Board of Shavarchala Shanti Sangha. His wealth of experience, counsel, and collaboration continue to enrich the organization's programs, strategic decisions, and future plans. As a Former President, his leadership and contributions remain an essential milestone in the organizational journey of Shavarchala Shanti Sangha.",
+      `**Tanvir Khorshed Roman** served two terms as the elected President of ${FULL_BRAND_NAME_EN}. Under his leadership, the organization engaged actively in diverse social, organizational, and developmental initiatives. During his tenure as President, he surmounted various challenges and limitations to introduce and execute numerous initiatives for the development of the organization and the welfare of the local community.\n\nHis sincerity, sense of duty, and devotion toward the organization established him as a respected and cherished personality among all members. He consistently encourages and inspires members in commendable pursuits, extending thoughtful cooperation to their personal and organizational endeavors according to his abilities. In any moment of the organization's need, he remains steadfast by its side.\n\nCurrently, he serves as an esteemed member of the Advisory Board of ${FULL_BRAND_NAME_EN}. His wealth of experience, counsel, and collaboration continue to enrich the organization's programs, strategic decisions, and future plans. As a Former President, his leadership and contributions remain an essential milestone in the organizational journey of ${FULL_BRAND_NAME_EN}.`,
     bioBn:
       "**তানভীর খোরশেদ রোমান (Tanvir Khorshed Roman)** সাভারচালা শান্তি সংঘের দুইবারের নির্বাচিত সভাপতি হিসেবে দায়িত্ব পালন করেছেন। তাঁর নেতৃত্বে সংগঠনটি বিভিন্ন সামাজিক, সাংগঠনিক ও উন্নয়নমূলক কর্মকাণ্ডে অংশগ্রহণ করেছে। সভাপতির দায়িত্ব পালনকালে তিনি বিভিন্ন প্রতিকূলতা ও সীমাবদ্ধতা অতিক্রম করে সংগঠনের উন্নয়ন এবং এলাকার মানুষের কল্যাণে নানা উদ্যোগ গ্রহণ ও বাস্তবায়ন করেছেন।\n\nসংগঠনের প্রতি তাঁর আন্তরিকতা, দায়িত্ববোধ ও ভালোবাসা তাঁকে সদস্যদের কাছে একজন পরিচিত ও শ্রদ্ধাভাজন ব্যক্তিত্ব হিসেবে প্রতিষ্ঠিত করেছে। তিনি সবসময় সংগঠনের সদস্যদের বিভিন্ন ভালো কাজে উৎসাহিত ও অনুপ্রাণিত করেন এবং তাঁদের ব্যক্তিগত ও সাংগঠনিক উদ্যোগে সাধ্যানুযায়ী সহযোগিতা করে থাকেন। সংগঠনের যেকোনো প্রয়োজনে তিনি সর্বদা পাশে থাকার চেষ্টা করেন।\n\nবর্তমানে তিনি সাভারচালা শান্তি সংঘের উপদেষ্টা মণ্ডলীর একজন গুরুত্বপূর্ণ সদস্য হিসেবে দায়িত্ব পালন করছেন। সংগঠনের বিভিন্ন কার্যক্রম, সিদ্ধান্ত গ্রহণ ও ভবিষ্যৎ পরিকল্পনায় তাঁর অভিজ্ঞতা, পরামর্শ ও সহযোগিতা অব্যাহত রয়েছে। সাবেক সভাপতি হিসেবে তাঁর নেতৃত্ব ও অবদান সাভারচালা শান্তি সংঘের সাংগঠনিক অগ্রযাত্রার একটি গুরুত্বপূর্ণ অংশ।",
     responsibilitiesEn: [
       "Presided over club executive operations and premier athletic tournaments",
-      "Expanded the Shanti Sangha Premier League (SPL) cricket and football formats",
+      `Expanded the ${BRAND_NAME_EN} Premier League (SPL) cricket and football formats`,
       "Strengthened community cohesion, charitable welfare, and youth engagement",
       "Continues to serve as a revered senior advisor for club affairs",
     ],
@@ -159,7 +161,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Lutfor Rahman** is a Former President of Shavarchala Shanti Sangha. A devoted cricket enthusiast and passionate sports patron, his love and dedication are deeply intertwined with the organization's sporting arena.\n\nOver the years, he has played an essential role in organizing cricket tournaments, managing match operations, and driving athletic activities forward. His leadership and involvement in organizing and successfully orchestrating the GPL (Gosinga Premier League) are particularly noteworthy. Through his initiative and support, the organization's cricketing endeavors have become more vibrant and dynamic.\n\nAlongside his deep passion for cricket, he remains actively involved in diverse social and organizational programs of the club. In moments of the organization's need, his participation, assistance, and meaningful contributions have continuously propelled Shavarchala Shanti Sangha forward.\n\nHis lasting contributions to the sporting landscape and organizational progress of Shavarchala Shanti Sangha will always be remembered with deep appreciation.",
+      `**Lutfor Rahman** is a Former President of ${FULL_BRAND_NAME_EN}. A devoted cricket enthusiast and passionate sports patron, his love and dedication are deeply intertwined with the organization's sporting arena.\n\nOver the years, he has played an essential role in organizing cricket tournaments, managing match operations, and driving athletic activities forward. His leadership and involvement in organizing and successfully orchestrating the GPL (Gosinga Premier League) are particularly noteworthy. Through his initiative and support, the organization's cricketing endeavors have become more vibrant and dynamic.\n\nAlongside his deep passion for cricket, he remains actively involved in diverse social and organizational programs of the club. In moments of the organization's need, his participation, assistance, and meaningful contributions have continuously propelled ${FULL_BRAND_NAME_EN} forward.\n\nHis lasting contributions to the sporting landscape and organizational progress of ${FULL_BRAND_NAME_EN} will always be remembered with deep appreciation.`,
     bioBn:
       "**লুৎফর রহমান** সাভারচালা শান্তি সংঘের সাবেক সভাপতি। তিনি একজন ক্রিকেটপ্রেমী ও ক্রীড়ানুরাগী ব্যক্তিত্ব, যাঁর ভালোবাসা ও আন্তরিকতা সংগঠনের ক্রীড়াঙ্গনের সঙ্গে গভীরভাবে জড়িয়ে রয়েছে।\n\nসাভারচালা শান্তি সংঘের বিভিন্ন সময়ে ক্রিকেট খেলার আয়োজন, টুর্নামেন্ট পরিচালনা এবং ক্রীড়া কার্যক্রমকে এগিয়ে নিতে তিনি গুরুত্বপূর্ণ ভূমিকা পালন করেছেন। বিশেষ করে জিপিএল (GPL) আয়োজন ও সফলভাবে পরিচালনায় তাঁর নেতৃত্ব ও সম্পৃক্ততা উল্লেখযোগ্য। তাঁর উদ্যোগ ও সহযোগিতায় সংগঠনের ক্রিকেট কার্যক্রম আরও প্রাণবন্ত ও গতিশীল হয়েছে।\n\nক্রিকেটের প্রতি গভীর অনুরাগের পাশাপাশি তিনি সংগঠনের বিভিন্ন সামাজিক ও সাংগঠনিক কর্মকাণ্ডেও সক্রিয়ভাবে সম্পৃক্ত রয়েছেন। সাভারচালা শান্তি সংঘের প্রয়োজনে বিভিন্ন সময়ে তাঁর অংশগ্রহণ, সহযোগিতা ও অবদান সংগঠনের কার্যক্রমকে এগিয়ে নিতে সহায়তা করেছে।\n\nসাভারচালা শান্তি সংঘের ক্রীড়াঙ্গন ও সাংগঠনিক অগ্রযাত্রায় তাঁর অবদান স্মরণীয় হয়ে থাকবে।",
     responsibilitiesEn: [
@@ -223,13 +225,13 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Mahfojor Rahman** currently serves as the President of Shavarchala Shanti Sangha. He is regarded as one of the most successful, skilled, and hardworking presidents in the organization's history.\n\nSince the very inception of Shavarchala Shanti Sangha, he has played a pivotal role in advancing the organization through his intellect, skill, experience, and steadfast dedication. He remains genuinely committed to resolving problems faced by every member of the organization. Furthermore, through his creative vision, exceptional initiatives, and innovative concepts, he works tirelessly to make the organization's activities even more dynamic and modern.\n\nHis contribution to the organization's digitalization and modernization is particularly profound. His visionary leadership and constructive stewardship stand as a remarkable milestone in the continuous journey of Shavarchala Shanti Sangha.\n\n**Educational Qualification:** He completed his Bachelor of Laws (LLB) from Uttara University.",
+      `**Mahfojor Rahman** currently serves as the President of ${FULL_BRAND_NAME_EN}. He is regarded as one of the most successful, skilled, and hardworking presidents in the organization's history.\n\nSince the very inception of ${FULL_BRAND_NAME_EN}, he has played a pivotal role in advancing the organization through his intellect, skill, experience, and steadfast dedication. He remains genuinely committed to resolving problems faced by every member of the organization. Furthermore, through his creative vision, exceptional initiatives, and innovative concepts, he works tirelessly to make the organization's activities even more dynamic and modern.\n\nHis contribution to the organization's digitalization and modernization is particularly profound. His visionary leadership and constructive stewardship stand as a remarkable milestone in the continuous journey of ${FULL_BRAND_NAME_EN}.\n\n**Educational Qualification:** He completed his Bachelor of Laws (LLB) from Uttara University.`,
     bioBn:
       "**মাহফুজুর রহমান (Mahfojor Rahman)** বর্তমানে সাভারচালা শান্তি সংঘের সভাপতি হিসেবে দায়িত্ব পালন করছেন। সংগঠনটির ইতিহাসে সফল, দক্ষ ও পরিশ্রমী সভাপতিদের মধ্যে তিনি অন্যতম।\n\nসাভারচালা শান্তি সংঘের প্রতিষ্ঠালগ্ন থেকেই তিনি নিজের মেধা, দক্ষতা, অভিজ্ঞতা ও নিষ্ঠার মাধ্যমে সংগঠনকে এগিয়ে নিতে গুরুত্বপূর্ণ ভূমিকা পালন করে আসছেন। সংগঠনের প্রতিটি সদস্যের সমস্যা সমাধানে তিনি সর্বদা আন্তরিক ও বদ্ধপরিকর। পাশাপাশি তাঁর সৃজনশীল চিন্তাভাবনা, ব্যতিক্রমী উদ্যোগ ও নতুন নতুন ধারণার মাধ্যমে সংগঠনের কার্যক্রমকে আরও গতিশীল ও আধুনিক করে তুলতে নিরলসভাবে কাজ করে যাচ্ছেন।\n\nবিশেষ করে সংগঠনের ডিজিটালাইজেশন ও আধুনিকায়নে তাঁর অবদান অত্যন্ত গুরুত্বপূর্ণ। তাঁর দূরদর্শী নেতৃত্ব ও ইতিবাচক ভূমিকা সাভারচালা শান্তি সংঘের অগ্রযাত্রায় এক উল্লেখযোগ্য সংযোজন।\n\n**শিক্ষাগত যোগ্যতা:** তিনি উত্তরা ইউনিভার্সিটি (Uttara University) থেকে এলএলবি (LLB) সম্পন্ন করেছেন।",
     responsibilitiesEn: [
       "Chief executive leader overseeing all club policies, committees, and events",
       "Presides over executive meetings and ensures transparent decision-making",
-      "Represents Shavarchala Shanti Sangha in external affairs and sports federations",
+      `Represents ${FULL_BRAND_NAME_EN} in external affairs and sports federations`,
       "Supervises the planning and execution of the SPL and annual festivals",
     ],
     responsibilitiesBn: [
@@ -302,7 +304,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Rasel Shuvo** currently serves as the Senior Vice President of Shavarchala Shanti Sangha. He has been leading the organization's cricket team for a long time. Under his leadership and skills, Shavarchala Shanti Sangha achieved the glory of becoming champions in the 2025–2026 season GPL (Gosinga Premier League).\n\nAdditionally, he lived and spent a significant period of time in Singapore.\n\nHe is renowned as an essential and inspiring figure in the club's sporting arena.",
+      `**Rasel Shuvo** currently serves as the Senior Vice President of ${FULL_BRAND_NAME_EN}. He has been leading the organization's cricket team for a long time. Under his leadership and skills, ${FULL_BRAND_NAME_EN} achieved the glory of becoming champions in the 2025–2026 season GPL (Gosinga Premier League).\n\nAdditionally, he lived and spent a significant period of time in Singapore.\n\nHe is renowned as an essential and inspiring figure in the club's sporting arena.`,
     bioBn:
       "**রাসেল শুভ** বর্তমানে সাভারচালা শান্তি সংঘের সিনিয়র সহসভাপতি হিসেবে দায়িত্ব পালন করছেন। তিনি দীর্ঘদিন ধরে সংগঠনটির ক্রিকেট দলকে নেতৃত্ব দিয়ে আসছেন। তাঁর নেতৃত্ব ও দক্ষতায় ২০২৫–২০২৬ মৌসুমের জিপিএল (GPL)-এ সাভারচালা শান্তি সংঘ চ্যাম্পিয়ন হওয়ার গৌরব অর্জন করে।\n\nএছাড়াও, তিনি দীর্ঘদিন সিঙ্গাপুরে অবস্থান করেছেন এবং সেখানে সময় কাটিয়েছেন।\n\nতিনি সংগঠনের ক্রীড়াঙ্গনে একজন গুরুত্বপূর্ণ ব্যক্তিত্ব হিসেবে পরিচিত।",
     responsibilitiesEn: [
@@ -438,7 +440,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Mostakim** currently serves as the General Secretary of Shavarchala Shanti Sangha for the 2025–2026 tenure. He plays an active and instrumental role in organizing, coordinating, and driving the organization's multifaceted organizational and sporting initiatives forward.\n\nIn particular, he works with deep sincerity, dedication, and diligence to ensure the successful execution of diverse tournaments and athletic events. His active participation and cooperation across every activity empower the organization's continuous journey with greater dynamism.\n\nAs the General Secretary of the current executive committee, he executes his responsibilities with exceptional accountability, working untiringly to elevate the organizational achievements of Shavarchala Shanti Sangha.",
+      `**Mostakim** currently serves as the General Secretary of ${FULL_BRAND_NAME_EN} for the 2025–2026 tenure. He plays an active and instrumental role in organizing, coordinating, and driving the organization's multifaceted organizational and sporting initiatives forward.\n\nIn particular, he works with deep sincerity, dedication, and diligence to ensure the successful execution of diverse tournaments and athletic events. His active participation and cooperation across every activity empower the organization's continuous journey with greater dynamism.\n\nAs the General Secretary of the current executive committee, he executes his responsibilities with exceptional accountability, working untiringly to elevate the organizational achievements of ${FULL_BRAND_NAME_EN}.`,
     bioBn:
       "**মোস্তাকিম** বর্তমানে সাভারচালা শান্তি সংঘের ২০২৫–২০২৬ মেয়াদের সাধারণ সম্পাদক হিসেবে দায়িত্ব পালন করছেন। সংগঠনের বিভিন্ন সাংগঠনিক ও ক্রীড়া কার্যক্রম পরিচালনা এবং এগিয়ে নেওয়ার ক্ষেত্রে তিনি সক্রিয় ভূমিকা পালন করে আসছেন।\n\nবিশেষ করে বিভিন্ন টুর্নামেন্ট ও ক্রীড়া আয়োজন সফলভাবে সম্পন্ন করতে তিনি আন্তরিকতা, নিষ্ঠা ও পরিশ্রমের সঙ্গে কাজ করেন। সংগঠনের প্রতিটি কার্যক্রমে তাঁর অংশগ্রহণ ও সহযোগিতা সংগঠনের অগ্রযাত্রাকে আরও গতিশীল করতে সহায়তা করছে।\n\nবর্তমান কমিটির সাধারণ সম্পাদক হিসেবে তিনি অত্যন্ত দায়িত্বশীলতার সঙ্গে নিজের দায়িত্ব পালন করে যাচ্ছেন এবং সাভারচালা শান্তি সংঘের সাংগঠনিক কার্যক্রমকে এগিয়ে নিতে নিরলসভাবে কাজ করছেন।",
     responsibilitiesEn: [
@@ -532,7 +534,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Sourav Prodhan** is currently serving as the Joint General Secretary of Shavarchala Shanti Sangha. Alongside this, he serves as the administrator of the organization's official Facebook page. In addition, he serves as the Lead Engineer of the Shavarchala Shanti Sangha website.\n\nIn his academic life, he completed his SSC in Science from Gosinga High School. Later, he completed a Diploma in Engineering in Computer Science and Technology (CST) from Mymensingh Polytechnic Institute.\n\nIn his professional career, he earned one year of experience working as a Backend Engineer at Betopia Group. Currently, he is working remotely as a Software Engineer at MaxValid.",
+      `**Sourav Prodhan** is currently serving as the Joint General Secretary of ${FULL_BRAND_NAME_EN}. Alongside this, he serves as the administrator of the organization's official Facebook page. In addition, he serves as the Lead Engineer of the ${FULL_BRAND_NAME_EN} website.\n\nIn his academic life, he completed his SSC in Science from Gosinga High School. Later, he completed a Diploma in Engineering in Computer Science and Technology (CST) from Mymensingh Polytechnic Institute.\n\nIn his professional career, he earned one year of experience working as a Backend Engineer at Betopia Group. Currently, he is working remotely as a Software Engineer at MaxValid.`,
     bioBn:
       "**সৌরভ প্রধান** বর্তমানে সাভারচালা শান্তি সংঘের যুগ্ম সাধারণ সম্পাদকের দায়িত্ব পালন করছেন। পাশাপাশি তিনি সংগঠনটির অফিসিয়াল ফেসবুক পেজের অ্যাডমিন হিসেবে দায়িত্ব পালন করছেন। এছাড়াও, তিনি সাভারচালা শান্তি সংঘের ওয়েবসাইটের লিড ইঞ্জিনিয়ার হিসেবে দায়িত্ব পালন করছেন।\n\nশিক্ষাজীবনে তিনি গোসিঙ্গা হাই স্কুল (Gosinga High School) থেকে বিজ্ঞান বিভাগে এসএসসি সম্পন্ন করেন। পরবর্তীতে ময়মনসিংহ পলিটেকনিক ইনস্টিটিউট থেকে কম্পিউটার সায়েন্স অ্যান্ড টেকনোলজি (CST) বিষয়ে ডিপ্লোমা ইন ইঞ্জিনিয়ারিং সম্পন্ন করেন।\n\nপেশাগত জীবনে তিনি Betopia Group-এ ব্যাকএন্ড ইঞ্জিনিয়ার হিসেবে এক বছর কাজ করার অভিজ্ঞতা অর্জন করেছেন। বর্তমানে তিনি MaxValid-এ রিমোট ভিত্তিতে সফটওয়্যার ইঞ্জিনিয়ার হিসেবে কর্মরত রয়েছেন।",
     responsibilitiesEn: [
@@ -716,7 +718,7 @@ export const allPeople: PersonDetail[] = [
       "ম্যাচ রেফারি, মাঠ ব্যবস্থাপনা ও মানসম্মত ক্রীড়া সামগ্রী নিশ্চিতকরণ",
       "এলাকার নতুন প্রতিভাবান খেলোয়াড়দের খুঁজে বের করে ক্লাবে সুযোগ করে দেওয়া",
     ],
-    quoteEn: "Sports is the heart and soul of Shavarchala Shanti Sangha.",
+    quoteEn: `Sports is the heart and soul of ${FULL_BRAND_NAME_EN}.`,
     quoteBn: "খেলাধুলাই হলো সাভারচালা শান্তি সংঘের প্রাণ এবং আত্মার স্পন্দন।",
   },
   {
@@ -895,7 +897,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Asraful Aopo** is the Head of Digital Media at Shavarchala Shanti Sangha. He leads creative media production, digital campaign strategies, and visual storytelling for club tournaments and social welfare programs.",
+      `**Asraful Aopo** is the Head of Digital Media at ${FULL_BRAND_NAME_EN}. He leads creative media production, digital campaign strategies, and visual storytelling for club tournaments and social welfare programs.`,
     bioBn:
       "**আশরাফুল অপো** সাভারচালা শান্তি সংঘের ডিজিটাল মিডিয়া প্রধান (Head of Digital Media)। ক্লাবের বিভিন্ন টুর্নামেন্ট, সামাজিক উদ্যোগ ও মিডিয়া প্রচারণায় তিনি সৃষ্টিশীল নেতৃত্ব দিয়ে চলেছেন।",
     responsibilitiesEn: [
@@ -925,7 +927,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Mahbub Farabi** serves as the Content Manager & Digital Relations of Shavarchala Shanti Sangha, managing official written content, creative press releases, and stakeholder communications across digital platforms.",
+      `**Mahbub Farabi** serves as the Content Manager & Digital Relations of ${FULL_BRAND_NAME_EN}, managing official written content, creative press releases, and stakeholder communications across digital platforms.`,
     bioBn:
       "**মাহবুব ফারাবী** সাভারচালা শান্তি সংঘের কনটেন্ট ম্যানেজার ও ডিজিটাল রিলেশনস হিসেবে দায়িত্ব পালন করছেন। ক্লাবের লিখিত বার্তা, প্রেস রিলিজ ও সোশ্যাল মিডিয়া কনটেন্ট ব্যবস্থাপনায় তিনি নিবেদিতপ্রাণ।",
     responsibilitiesEn: [
@@ -955,7 +957,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Al Amin** is the Digital Marketing Specialist of Shavarchala Shanti Sangha, expanding the club's digital outreach, fan engagement, and campaign analytics.",
+      `**Al Amin** is the Digital Marketing Specialist of ${FULL_BRAND_NAME_EN}, expanding the club's digital outreach, fan engagement, and campaign analytics.`,
     bioBn:
       "**আল আমিন** সাভারচালা শান্তি সংঘের ডিজিটাল মার্কেটিং স্পেশালিস্ট। ক্লাবের টুর্নামেন্ট প্রচার, অনলাইন উপস্থিতি ও দর্শক এনগেজমেন্ট বৃদ্ধিতে তিনি কাজ করছেন।",
     responsibilitiesEn: [
@@ -985,7 +987,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Adil** serves as Digital Media Executive for Shavarchala Shanti Sangha, actively supporting digital operations, live broadcasts, and media logistics.",
+      `**Adil** serves as Digital Media Executive for ${FULL_BRAND_NAME_EN}, actively supporting digital operations, live broadcasts, and media logistics.`,
     bioBn:
       "**আদিল** সাভারচালা শান্তি সংঘের ডিজিটাল মিডিয়া এক্সিকিউটিভ হিসেবে ক্লাবের সম্প্রচার, ইভেন্ট মিডিয়া ও অনলাইন কার্যক্রমে দায়িত্ব পালন করছেন।",
     responsibilitiesEn: [
@@ -1015,7 +1017,7 @@ export const allPeople: PersonDetail[] = [
     villageEn: "Shavarchala",
     villageBn: "সাভারচালা",
     bioEn:
-      "**Rishan** is the Video Editor & Media Creator for Shavarchala Shanti Sangha, bringing tournament highlights, player reels, and promotional visual stories to life.",
+      `**Rishan** is the Video Editor & Media Creator for ${FULL_BRAND_NAME_EN}, bringing tournament highlights, player reels, and promotional visual stories to life.`,
     bioBn:
       "**রিশান** সাভারচালা শান্তি সংঘের ভিডিও এডিটর ও মিডিয়া ক্রিয়েটর। টুর্নামেন্টের উত্তেজনাপূর্ণ হাইলাইটস, প্লেয়ার রিলস ও ভিডিও কনটেন্ট নির্মাণে তিনি কাজ করে থাকেন।",
     responsibilitiesEn: [

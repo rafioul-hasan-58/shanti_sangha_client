@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/i18n/config";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 import MembersDirectory from "@/components/members/MembersDirectory";
 
 export async function generateMetadata({
@@ -14,10 +15,10 @@ export async function generateMetadata({
   return {
     title: isBn
       ? "সদস্যবৃন্দ | সাভারচালা শান্তি সংঘ"
-      : "Members Directory | Shavarchala Shanti Sangha",
+      : `Members Directory | ${FULL_BRAND_NAME_EN}`,
     description: isBn
       ? "সাভারচালা শান্তি সংঘের সম্মানিত উপদেষ্টা, কার্যনির্বাহী সদস্য ও সাধারণ সদস্যদের তালিকা।"
-      : "Directory of advisors, executive members, and general members of Shavarchala Shanti Sangha.",
+      : `Directory of advisors, executive members, and general members of ${FULL_BRAND_NAME_EN}.`,
   };
 }
 

@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
+import { BRAND_NAME_EN, BRAND_NAME_UPPER_EN } from "@/lib/constants/site";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserProfileDropdown from "./UserProfileDropdown";
 import UserAvatar from "./UserAvatar";
@@ -74,7 +75,7 @@ export default function Navbar({
               <div className="absolute inset-0 backface-hidden flex items-center justify-center">
                 <Image
                   src="/logo.png"
-                  alt="Shanti Sangha Logo"
+                  alt={`${BRAND_NAME_EN} Logo`}
                   width={64}
                   height={64}
                   priority
@@ -85,7 +86,7 @@ export default function Navbar({
               <div className="absolute inset-0 backface-hidden rotate-y-180 flex items-center justify-center">
                 <Image
                   src="/logo.png"
-                  alt="Shanti Sangha Logo"
+                  alt={`${BRAND_NAME_EN} Logo`}
                   width={64}
                   height={64}
                   priority
@@ -99,7 +100,7 @@ export default function Navbar({
               {isBn ? "সাভারচালা" : "SHAVARCHALA"}
             </span>
             <span className="font-extrabold text-xs sm:text-sm md:text-[15px] tracking-wider text-white uppercase font-sans">
-              {isBn ? "শান্তি সংঘ" : "SHANTI SANGHA"}
+              {isBn ? "শান্তি সংঘ" : BRAND_NAME_UPPER_EN}
             </span>
           </div>
         </Link>

@@ -8,7 +8,7 @@ import { formatMonthLabel } from "@/lib/constants/categories";
 
 /**
  * Static Mock Data for Admin Dashboard Overview
- * Realistic financial and membership data for Shavarchala Shanti Sangha.
+ * Realistic financial and membership data for Shavarchala Shanti Sangho.
  * When real API is connected, only `lib/api/dashboard.ts` needs updating.
  */
 

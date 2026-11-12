@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface PioneerLeader {
   id: string;
@@ -33,7 +34,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
     tributeBn:
       "সাভারচালা শান্তি সংঘের সূচনা ও সমৃদ্ধির পথে দিকনির্দেশনামূলক নেতৃত্ব ও সম্প্রীতির সুদৃঢ় ভিত্তি গড়ে দেওয়ার জন্য আমরা চিরকৃতজ্ঞ।",
     tributeEn:
-      "Forever honored for his guiding leadership, steadfast commitment to harmony, and building the foundation of Shavarchala Shanti Sangha.",
+      `Forever honored for his guiding leadership, steadfast commitment to harmony, and building the foundation of ${FULL_BRAND_NAME_EN}.`,
   };
 
   // Next Line: Next Two Leaders
@@ -91,7 +92,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
           <p className="text-xs sm:text-base text-brand-700/90 leading-relaxed font-sans max-w-2xl mx-auto">
             {isBn
               ? "সাভারচালা শান্তি সংঘের গৌরবময় পথচলায় যে সকল শ্রদ্ধেয় প্রাক্তন সভাপতি শান্তি, সৌহার্দ্য ও ঐক্যের আলোকবর্তিকা জ্বালিয়ে গেছেন।"
-              : "Honoring our esteemed former presidents who ignited the torch of peace, unity, and brotherhood across generations of Shavarchala Shanti Sangha."}
+              : `Honoring our esteemed former presidents who ignited the torch of peace, unity, and brotherhood across generations of ${FULL_BRAND_NAME_EN}.`}
           </p>
 
           <div className="flex items-center justify-center gap-2 pt-1">
@@ -141,7 +142,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                   {isBn ? topLeader.nameBn : topLeader.nameEn}
                 </h3>
                 <p className="text-xs sm:text-sm font-semibold text-[#006a4e] uppercase tracking-wider mt-0.5">
-                  {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
+                  {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_EN}
                 </p>
               </div>
 
@@ -202,7 +203,7 @@ export default function PioneersSection({ locale }: { locale: Locale }) {
                   {role}
                 </p>
                 <p className="text-[9px] sm:text-[11px] text-brand-500 font-medium">
-                  {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
+                  {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_EN}
                 </p>
 
                 {/* Tribute Text */}

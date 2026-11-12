@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/getDictionary";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 import LoginForm from "@/components/auth/LoginForm";
 
 export async function generateMetadata({
@@ -15,10 +16,10 @@ export async function generateMetadata({
   return {
     title: isBn
       ? "লগইন | সাভারচালা শান্তি সংঘ"
-      : "Login | Shavarchala Shanti Sangha",
+      : `Login | ${FULL_BRAND_NAME_EN}`,
     description: isBn
       ? "সাভারচালা শান্তি সংঘের সদস্য একাউন্টে প্রবেশ করুন।"
-      : "Sign in to your Shavarchala Shanti Sangha account.",
+      : `Sign in to your ${FULL_BRAND_NAME_EN} account.`,
   };
 }
 

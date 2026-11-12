@@ -1,4 +1,5 @@
 import type { ExpenseCategory } from "@/lib/types/dashboard";
+import { BRAND_NAME_EN } from "@/lib/constants/site";
 
 export interface CategoryMeta {
   key: ExpenseCategory;
@@ -30,7 +31,7 @@ export const CATEGORY_CONFIG: Record<ExpenseCategory, CategoryMeta> = {
     label: "SPL",
     labelBn: "এসপিএল প্রিমিয়ার লিগ",
     color: "#00a67e", // --primary-light
-    description: "Shanti Sangha Premier League (Football & Cricket)",
+    description: `${BRAND_NAME_EN} Premier League (Football & Cricket)`,
   },
   SPORTS: {
     key: "SPORTS",

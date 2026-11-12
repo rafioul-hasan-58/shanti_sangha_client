@@ -8,6 +8,7 @@ import UserAvatar from "@/components/layout/UserAvatar";
 import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
 import { hasDashboardAccess, normalizeRole } from "@/lib/authRole";
+import { BRAND_NAME_EN } from "@/lib/constants/site";
 
 export interface NavItemConfig {
   id: string;
@@ -169,14 +170,14 @@ export default function DashboardSidebar({
             <div className="relative h-10 w-10 sm:h-11 sm:w-11 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-2 flex items-center justify-center shadow-xs">
               <Image
                 src="/logo.png"
-                alt="Shanti Sangha"
+                alt={BRAND_NAME_EN}
                 fill
                 className="object-contain p-1 drop-shadow-xs"
               />
             </div>
             <div>
               <h2 className="font-black text-sm sm:text-base text-slate-900 group-hover:text-[#006a4e] transition-colors leading-tight tracking-tight">
-                {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
+                {isBn ? "সাভারচালা শান্তি সংঘ" : BRAND_NAME_EN}
               </h2>
               <p className="text-[11px] sm:text-xs font-semibold text-[#006a4e] mt-0.5">
                 {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}

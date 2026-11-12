@@ -48,7 +48,7 @@ export default function GoogleAuthButton({
   const isBn = locale === "bn";
 
   const renderGisButton = useCallback(() => {
-    if (!buttonHostRef.current || !window.google?.accounts?.id) {
+    if (!buttonHostRef.current || !window.google?.accounts?.id || !GOOGLE_CLIENT_ID) {
       return;
     }
 
@@ -141,6 +141,14 @@ export default function GoogleAuthButton({
 
   const handleFallbackClick = async () => {
     if (disabled || submitting) return;
+    if (!GOOGLE_CLIENT_ID) {
+      onErrorRef.current(
+        isBn
+          ? "গুগল OAuth ক্লায়েন্ট আইডি কনফিগার করা হয়নি।"
+          : "Google OAuth client ID is not configured."
+      );
+      return;
+    }
     setSubmitting(true);
     onLoadingChangeRef.current?.(true);
     try {

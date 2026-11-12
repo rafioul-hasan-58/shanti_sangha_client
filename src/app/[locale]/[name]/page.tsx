@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLocale, locales } from "@/i18n/config";
 import { getPersonBySlug, getAllPersonSlugs } from "@/data/people";
+import { SAVARCHALA_FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 import PersonDetailsView from "@/components/profile/PersonDetailsView";
 
 interface PageProps {
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const personName = isBn ? person.nameBn : person.nameEn;
   const personRole = isBn ? person.roleBn : person.roleEn;
   const title = `${personName} (${personRole}) | ${
-    isBn ? "সাভারচালা শান্তি সংঘ" : "Savarchala Shanti Sangha"
+    isBn ? "সাভারচালা শান্তি সংঘ" : SAVARCHALA_FULL_BRAND_NAME_EN
   }`;
   const description = isBn ? person.bioBn : person.bioEn;
 

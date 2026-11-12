@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/i18n/config";
+import { BRAND_NAME_EN, FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface Message {
   id: string;
@@ -29,7 +30,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       sender: "bot",
       text: isBn
         ? "আসসালামু আলাইকুম! সাভারচালা শান্তি সংঘের অফিসিয়াল ডিজিটাল সহকারীতে আপনাকে স্বাগতম। আমি আপনাকে কীভাবে সাহায্য করতে পারি?"
-        : "Hello! Welcome to Shavarchala Shanti Sangha's official digital assistant. How can I help you today?",
+        : `Hello! Welcome to ${FULL_BRAND_NAME_EN}'s official digital assistant. How can I help you today?`,
       timestamp: "Just now",
     },
   ];
@@ -93,8 +94,8 @@ export default function ChatBot({ locale }: { locale: Locale }) {
     if (q.includes("spl") || q.includes("এসপিএল") || q.includes("প্রিমিয়ার লিগ") || q.includes("premier league")) {
       return {
         reply: isBn
-          ? "এসপিএল (SPL - Shanti Sangha Premier League) হলো আমাদের সবচেয়ে জনপ্রিয় ক্রীড়া টুর্নামেন্ট! এতে গ্রীষ্মকালে জমজমাট ফুটবল এবং শীতকালে প্রিমিয়ার ক্রিকেট টুর্নামেন্ট অনুষ্ঠিত হয়।"
-          : "SPL (Shanti Sangha Premier League) is our flagship championship! It features an exciting summer football league and a competitive winter cricket tournament.",
+          ? `এসপিএল (SPL - ${BRAND_NAME_EN} Premier League) হলো আমাদের সবচেয়ে জনপ্রিয় ক্রীড়া টুর্নামেন্ট! এতে গ্রীষ্মকালে জমজমাট ফুটবল এবং শীতকালে প্রিমিয়ার ক্রিকেট টুর্নামেন্ট অনুষ্ঠিত হয়।`
+          : `SPL (${BRAND_NAME_EN} Premier League) is our flagship championship! It features an exciting summer football league and a competitive winter cricket tournament.`,
         action: { label: isBn ? "এসপিএল সেকশন দেখুন" : "View SPL Section", href: `/${locale}#spl` },
       };
     }
@@ -116,7 +117,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       return {
         reply: isBn
           ? "সাভারচালা শান্তি সংঘের 'শান্তির অগ্রদূত' শ্রদ্ধেয় প্রাক্তন সভাপতিবৃন্দ হলেন জনাব হারুন শেখ, জনাব মোঃ লুৎফর রহমান এবং জনাব টি.কে. রোমান। তাঁদের দিকনির্দেশনা ও আত্মত্যাগে ক্লাবের ভিত্তি সুদৃঢ় হয়েছে।"
-          : "The 'Pioneers of Peace' of Shavarchala Shanti Sangha are our esteemed former presidents: Harun Sheikh, Md. Lutfor Rahman, and T.K. Roman, whose visionary guidance built the club's foundation.",
+          : `The 'Pioneers of Peace' of ${FULL_BRAND_NAME_EN} are our esteemed former presidents: Harun Sheikh, Md. Lutfor Rahman, and T.K. Roman, whose visionary guidance built the club's foundation.`,
         action: { label: isBn ? "শান্তির অগ্রদূত দেখুন" : "View Pioneers of Peace", href: `/${locale}#pioneer-of-peace` },
       };
     }
@@ -135,7 +136,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       return {
         reply: isBn
           ? "সাভারচালা শান্তি সংঘের বর্তমান কার্যনির্বাহী কমিটির সভাপতি জনাব মাহফুজুর রহমান এবং সাধারণ সম্পাদক জনাব মোঃ মুস্তাকিম। সিনিয়র সহ-সভাপতি মোঃ রাকিব ও রাসেল শুভ। কমিটিতে মোট ১৬ জন নিবেদিত নেতা রয়েছেন।"
-          : "Shavarchala Shanti Sangha is led by President Mahfozor Rahman and General Secretary Md. Mustakim, along with 14 other executive committee leaders.",
+          : `${FULL_BRAND_NAME_EN} is led by President Mahfozor Rahman and General Secretary Md. Mustakim, along with 14 other executive committee leaders.`,
         action: { label: isBn ? "কমিটি তালিকা দেখুন" : "View Committee", href: `/${locale}#committee` },
       };
     }
@@ -153,7 +154,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       return {
         reply: isBn
           ? "বিগত ১৯+ বছর ধরে সাভারচালা শান্তি সংঘ ৩টি প্রধান বাৎসরিক কর্মসূচি পালন করে আসছে:\n১. এসপিএল (SPL - ফুটবল ও ক্রিকেট প্রিমিয়ার লিগ)\n২. বাৎসরিক ক্রীড়া প্রতিযোগিতা (সব বয়সের জন্য অ্যাথলেটিক্স ও দৌড়)\n৩. বাৎসরিক ওয়াজ মাহফিল (নৈতিক ও আধ্যাত্মিক সমাবেশ)।"
-          : "For over 19+ years, Shanti Sangha has annually organized 3 signature events:\n1. SPL (Premier football & cricket)\n2. Annual Sports Program (Athletics & games for all ages)\n3. Annual Waz Mahfil (Spiritual & moral gathering).",
+          : `For over 19+ years, ${BRAND_NAME_EN} has annually organized 3 signature events:\n1. SPL (Premier football & cricket)\n2. Annual Sports Program (Athletics & games for all ages)\n3. Annual Waz Mahfil (Spiritual & moral gathering).`,
         action: { label: isBn ? "ইতিহাস ও ঐতিহ্য দেখুন" : "View Heritage", href: `/${locale}#about` },
       };
     }
@@ -190,7 +191,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       return {
         reply: isBn
           ? "সাভারচালা শান্তি সংঘ পরিবারের অংশ হতে ওয়েবসাইটে নিবন্ধন সম্পন্ন করুন। নিবন্ধিত সদস্যরা টুর্নামেন্টে অংশগ্রহণ, ক্লাবের ড্যাশবোর্ড এবং বাৎসরিক আয়োজনে অগ্রাধিকার পান।"
-          : "To join the Shavarchala Shanti Sangha family, simply register your account online. Registered members enjoy priority in tournaments, member directory, and club dashboard access.",
+          : `To join the ${FULL_BRAND_NAME_EN} family, simply register your account online. Registered members enjoy priority in tournaments, member directory, and club dashboard access.`,
         action: { label: isBn ? "নিবন্ধন ফর্ম খুলুন" : "Register Now", href: `/${locale}/register` },
       };
     }
@@ -218,7 +219,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
       return {
         reply: isBn
           ? "সাভারচালা শান্তি সংঘ ২০০৭ সালে এলাকার একদল উদ্যমী তরুণ ও ক্রীড়াপ্রেমীদের হাত ধরে প্রতিষ্ঠিত হয়। বিগত ১৯+ বছর ধরে এটি এলাকায় সৌহার্দ্য, সুস্থ ক্রীড়া চর্চা ও সমাজসেবার প্রতীক হিসেবে প্রতিষ্ঠিত।"
-          : "Founded in 2007 by visionary youth and athletes in Shavarchala, Shanti Sangha has 19+ years of heritage promoting athletic excellence and brotherhood.",
+          : `Founded in 2007 by visionary youth and athletes in Shavarchala, ${BRAND_NAME_EN} has 19+ years of heritage promoting athletic excellence and brotherhood.`,
         action: { label: isBn ? "আমাদের ইতিহাস পড়ুন" : "Read Full Story", href: `/${locale}#about` },
       };
     }
@@ -333,7 +334,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
               <div className="relative w-10 h-10 rounded-full bg-white p-1 shadow-sm ring-2 ring-white/50 shrink-0 flex items-center justify-center">
                 <Image
                   src="/logo.png"
-                  alt="Shanti Sangha"
+                  alt={BRAND_NAME_EN}
                   width={36}
                   height={36}
                   className="w-full h-full object-contain"
@@ -341,7 +342,7 @@ export default function ChatBot({ locale }: { locale: Locale }) {
               </div>
               <div className="leading-tight">
                 <h3 className="font-extrabold text-sm sm:text-base tracking-wide flex items-center gap-1.5">
-                  <span>{isBn ? "শান্তি সংঘ AI Bot" : "Shanti Sangha AI Bot"}</span>
+                  <span>{isBn ? "শান্তি সংঘ AI Bot" : `${BRAND_NAME_EN} AI Bot`}</span>
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 </h3>
                 <p className="text-[11px] text-white/80 font-medium">

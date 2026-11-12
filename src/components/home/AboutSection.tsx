@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { Locale } from "@/i18n/config";
+import { BRAND_NAME_EN, FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 export default function AboutSection({ locale }: { locale: Locale }) {
   const isBn = locale === "bn";
@@ -32,7 +33,7 @@ export default function AboutSection({ locale }: { locale: Locale }) {
             <div className="relative aspect-[4/3] sm:aspect-square lg:aspect-[4/5] rounded-2xl overflow-hidden shadow-md ring-1 ring-black/5 group">
               <Image
                 src="/images/about/foundation.jpg"
-                alt="Shavarchala Shanti Sangha Foundation"
+                alt={`${FULL_BRAND_NAME_EN} Foundation`}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
               />
@@ -46,7 +47,7 @@ export default function AboutSection({ locale }: { locale: Locale }) {
                 </div>
                 <div>
                   <h4 className="text-xs font-bold text-pitch uppercase tracking-wider">
-                    {isBn ? "সাভারচালা শান্তি সংঘ" : "Shavarchala Shanti Sangha"}
+                    {isBn ? "সাভারচালা শান্তি সংঘ" : FULL_BRAND_NAME_EN}
                   </h4>
                   <p className="text-[11px] text-brand-600 font-medium">
                     {isBn
@@ -74,13 +75,13 @@ export default function AboutSection({ locale }: { locale: Locale }) {
             <p className="text-sm sm:text-base text-brand-800/90 leading-relaxed font-sans">
               {isBn
                 ? "২০০৭ সালে সাভারচালা এলাকার একদল উদ্যমী তরুণ ও ক্রীড়াপ্রেমীদের হাত ধরে সাভারচালা শান্তি সংঘ প্রতিষ্ঠিত হয়। আমাদের প্রধান লক্ষ্য ছিল স্থানীয় যুবসমাজকে ইতিবাচক কাজে সম্পৃক্ত করা, মাঠে খেলাধুলার সুস্থ পরিবেশ নিশ্চিত করা এবং সমাজে ভ্রাতৃত্ববোধ সুদৃঢ় করা।"
-                : "Established in 2007 by visionary youth and sports enthusiasts in Shavarchala, Shanti Sangha began with a shared dream: creating a healthy sports environment, nurturing athletic talent, and fostering lasting brotherhood in the community."}
+                : `Established in 2007 by visionary youth and sports enthusiasts in Shavarchala, ${BRAND_NAME_EN} began with a shared dream: creating a healthy sports environment, nurturing athletic talent, and fostering lasting brotherhood in the community.`}
             </p>
 
             <p className="text-sm sm:text-base text-brand-800/90 leading-relaxed font-sans">
               {isBn
                 ? "বিগত ১৯+ বছর ধরে সাভারচালা শান্তি সংঘ নিয়মিত ও সুনামের সাথে ৩টি প্রধান বাৎসরিক কর্মসূচি আয়োজন করে আসছে — শান্তি সংঘ প্রিমিয়ার লিগ (এসপিএল / SPL), বাৎসরিক ক্রীড়া প্রতিযোগিতা এবং বাৎসরিক ওয়াজ মাহফিল। খেলাধুলার পাশাপাশি রক্তদান কর্মসূচি, সামাজিক সহায়তা ও মানুষের পাশে দাঁড়ানো আমাদের অবিচ্ছেদ্য অঙ্গীকার।"
-                : "For over 19+ years, Shavarchala Shanti Sangha has proudly and consistently organized three signature annual events — the SPL (Shanti Sangha Premier League), the Annual Sports Program, and the Annual Waz Mahfil. Beyond sports, we lead community service, humanitarian aid, and social welfare programs."}
+                : `For over 19+ years, ${FULL_BRAND_NAME_EN} has proudly and consistently organized three signature annual events — the SPL (${BRAND_NAME_EN} Premier League), the Annual Sports Program, and the Annual Waz Mahfil. Beyond sports, we lead community service, humanitarian aid, and social welfare programs.`}
             </p>
 
             {/* 3 Signature Annual Events Cards */}

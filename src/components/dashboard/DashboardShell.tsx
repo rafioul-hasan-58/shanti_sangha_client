@@ -17,6 +17,7 @@ import {
   hasDashboardAccess,
   normalizeRole,
 } from "@/lib/authRole";
+import { BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface Props {
   title?: string;
@@ -202,14 +203,14 @@ export default function DashboardShell({
             <div className="relative h-10 w-10 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-1.5 flex items-center justify-center shadow-xs">
               <Image
                 src="/logo.png"
-                alt="Shanti Sangha"
+                alt={BRAND_NAME_EN}
                 fill
                 className="object-contain p-0.5 drop-shadow-xs"
               />
             </div>
             <div className="text-left">
               <h2 className="font-black text-sm text-slate-900 tracking-tight leading-tight">
-                {isBn ? "সাভারচালা শান্তি সংঘ" : "Shanti Sangha"}
+                {isBn ? "সাভারচালা শান্তি সংঘ" : BRAND_NAME_EN}
               </h2>
               <p className="text-[10px] font-bold text-[#006a4e] leading-tight">
                 {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
@@ -1061,7 +1062,7 @@ export default function DashboardShell({
                 <p className="text-xs sm:text-sm text-emerald-100 mt-1 max-w-xl">
                   {isBn
                     ? "শান্তি সংঘ আয়োজিত ঐতিহাসিক গ্রামীণ ক্রিকেট উৎসব। আগামী ম্যাচ ও দলগুলোর অবস্থান।"
-                    : "Official village cricket championship organized by Shanti Sangha. Track schedules and team rosters."}
+                    : `Official village cricket championship organized by ${BRAND_NAME_EN}. Track schedules and team rosters.`}
                 </p>
               </div>
 

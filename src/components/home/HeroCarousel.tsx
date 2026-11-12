@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Dictionary } from "@/i18n/getDictionary";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 const slideImages = [
   "/images/hero/slide1.jpg",
@@ -86,7 +87,7 @@ export default function HeroCarousel({ dict }: { dict: Dictionary["hero"] }) {
             <div className="relative mx-auto flex h-full max-w-7xl items-start pt-4 sm:pt-6 md:pt-8 px-4 sm:px-6 lg:px-8">
               <div className="max-w-2xl">
                 <span className="inline-block bg-[#006a4e]/90 text-white font-extrabold text-[11px] sm:text-xs uppercase px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-sm tracking-widest mb-1.5 sm:mb-2.5 border border-white/20 backdrop-blur-sm shadow-sm">
-                  Shavarchala Shanti Sangha
+                  {FULL_BRAND_NAME_EN}
                 </span>
                 <h1 className="font-display text-2xl font-extrabold leading-tight tracking-tight sm:text-4xl md:text-5xl text-white drop-shadow-md">
                   {s.title}
