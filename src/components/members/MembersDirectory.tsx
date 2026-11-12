@@ -35,7 +35,7 @@ import {
 } from "./MemberCardShared";
 import MemberDetailsModal from "./MemberDetailsModal";
 
-type QuickTabKey = "ALL" | "PERMANENT" | "PLAYER_QUOTA" | "ADMIN" | "MODERATOR";
+type QuickTabKey = "ALL" | "PLAYER_QUOTA" | "ADMIN";
 
 const DEFAULT_META: UsersPaginationMeta = {
   total: 0,
@@ -128,18 +128,12 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
     if (key === "ALL") {
       setRoleFilter("ALL");
       setMembershipFilter("ALL");
-    } else if (key === "PERMANENT") {
-      setRoleFilter("ALL");
-      setMembershipFilter("PERMANENT");
     } else if (key === "PLAYER_QUOTA") {
       setRoleFilter("ALL");
       setMembershipFilter("PLAYER_QUOTA");
     } else if (key === "ADMIN") {
       setMembershipFilter("ALL");
       setRoleFilter("ADMIN");
-    } else if (key === "MODERATOR") {
-      setMembershipFilter("ALL");
-      setRoleFilter("MODERATOR");
     }
   };
 
@@ -163,10 +157,8 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
 
   const quickTabs: Array<{ key: QuickTabKey; labelBn: string; labelEn: string }> = [
     { key: "ALL", labelBn: "সকল সদস্য", labelEn: "All Members" },
-    { key: "PERMANENT", labelBn: "স্থায়ী সদস্য", labelEn: "Permanent" },
     { key: "PLAYER_QUOTA", labelBn: "খেলোয়াড় কোটা", labelEn: "Player Quota" },
-    { key: "ADMIN", labelBn: "অ্যাডমিন / পরিচালনা", labelEn: "Admins" },
-    { key: "MODERATOR", labelBn: "মডারেটর", labelEn: "Moderators" },
+    { key: "ADMIN", labelBn: "অ্যাডমিন", labelEn: "Admins" },
   ];
 
   const sortOptions: Array<{ value: UserSortField; labelBn: string; labelEn: string }> = [
@@ -195,79 +187,83 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
       </div>
 
       {/* Search & Filter Toolbar */}
-      <div className="rounded-3xl bg-white border border-emerald-200/80 p-4 sm:p-6 shadow-xs mb-6 space-y-4">
-        {/* Search Input */}
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[#006a4e]/70">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={
-              isBn
-                ? "নাম, ইমেইল, গ্রাম, ফোন বা পেশা দিয়ে সদস্য খুঁজুন..."
-                : "Search member by name, email, village, phone, or profession..."
-            }
-            className="w-full h-11 sm:h-12 pl-11 pr-10 rounded-2xl border border-emerald-200/80 bg-emerald-50/55 text-pitch text-sm sm:text-base placeholder-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-3 focus:ring-[#006a4e]/15 transition-all outline-none"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-pitch cursor-pointer"
-              aria-label={isBn ? "অনুসন্ধান মুছুন" : "Clear search"}
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+      <div className="rounded-3xl bg-white border border-emerald-200/80 p-3.5 sm:p-5 shadow-xs mb-6 space-y-3">
+        {/* Row 1: Search Input (left) + Total Member Badge (right) aligned seamlessly */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="relative flex-1 min-w-0">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#006a4e]/70">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
               </svg>
-            </button>
-          )}
-        </div>
-
-        {/* Quick Category Tabs */}
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            {quickTabs.map((tab) => {
-              const active = activeTab === tab.key;
-              return (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => handleQuickTab(tab.key)}
-                  className={`px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
-                    active
-                      ? "bg-[#006a4e] border-[#006a4e] text-white shadow-xs"
-                      : "bg-emerald-50/55 border-emerald-200/80 text-[var(--text)] hover:bg-emerald-100/60 hover:text-[#006a4e]"
-                  }`}
-                >
-                  {isBn ? tab.labelBn : tab.labelEn}
-                </button>
-              );
-            })}
+            </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={
+                isBn
+                  ? "নাম, গ্রাম, ফোন বা পেশা দিয়ে খুঁজুন..."
+                  : "Search name, village, profession..."
+              }
+              className="w-full h-10 pl-10 pr-9 rounded-xl border border-emerald-200/80 bg-emerald-50/55 text-pitch text-xs sm:text-sm placeholder-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/15 transition-all outline-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-pitch cursor-pointer"
+                aria-label={isBn ? "অনুসন্ধান মুছুন" : "Clear search"}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
 
-          <div className="text-xs font-extrabold text-[#006a4e] bg-emerald-50 border border-emerald-200/80 px-3 py-1 rounded-full shrink-0">
-            {isBn
-              ? `মোট সদস্য: ${meta.total} জন`
-              : `Total: ${meta.total} members`}
+          <div
+            title={isBn ? "মোট সক্রিয় সদস্য" : "Total Active Members"}
+            className="shrink-0 h-10 px-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 text-xs font-extrabold text-[#006a4e] inline-flex items-center gap-1.5 shadow-2xs select-none"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+            <span className="whitespace-nowrap">
+              {isBn ? `মোট: ${meta.total} জন` : `Total: ${meta.total}`}
+            </span>
           </div>
         </div>
 
-        {/* Fine Filters: Role, Blood Group, Sort & Order */}
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2 pt-1 border-t border-emerald-100">
+        {/* Row 2: 3 Equal-Width Filter Buttons Filling 100% of the Line with No Scroll */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 w-full">
+          {quickTabs.map((tab) => {
+            const active = activeTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => handleQuickTab(tab.key)}
+                className={`w-full h-9 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-extrabold inline-flex items-center justify-center text-center transition-all cursor-pointer border truncate ${
+                  active
+                    ? "bg-[#006a4e] border-[#006a4e] text-white shadow-2xs"
+                    : "bg-emerald-50/55 border-emerald-200/80 text-[var(--text)] hover:bg-emerald-100/60 hover:text-[#006a4e]"
+                }`}
+              >
+                <span className="truncate">{isBn ? tab.labelBn : tab.labelEn}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Row 3: Strict 2-Column Symmetrical Grid on Mobile, Clean Flow Bar on Desktop */}
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:items-center gap-2 pt-2 border-t border-emerald-100/80">
           <ThemedSelect
             ariaLabel={isBn ? "রোল ফিল্টার" : "Filter by role"}
             value={roleFilter}
             isFiltered={roleFilter !== "ALL"}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-9"
             icon={
               <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -275,12 +271,15 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
             }
             onChange={(val) => {
               setRoleFilter(val);
-              setActiveTab(val === "ADMIN" ? "ADMIN" : val === "MODERATOR" ? "MODERATOR" : "ALL");
+              setActiveTab(val === "ADMIN" ? "ADMIN" : "ALL");
               setPage(1);
             }}
             options={[
               { value: "ALL", label: isBn ? "সব রোল" : "All Roles" },
-              ...ROLE_OPTIONS.map((r) => ({ value: r, label: r })),
+              ...ROLE_OPTIONS.filter((r) => r !== "MODERATOR").map((r) => ({
+                value: r,
+                label: r === "USER" ? (isBn ? "সদস্য (Member)" : "Member") : r,
+              })),
             ]}
           />
 
@@ -288,7 +287,7 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
             ariaLabel={isBn ? "রক্তের গ্রুপ ফিল্টার" : "Filter by blood group"}
             value={bloodGroupFilter}
             isFiltered={bloodGroupFilter !== "ALL"}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto h-9"
             icon={
               <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3.25C12 3.25 6 10 6 14.25a6 6 0 1012 0C18 10 12 3.25 12 3.25z" />
@@ -314,7 +313,7 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
             ariaLabel={isBn ? "সর্ট ফিল্ড" : "Sort by"}
             value={sortBy}
             align="right"
-            className="w-full sm:w-auto sm:ml-auto"
+            className="w-full sm:w-auto sm:ml-auto h-9"
             icon={
               <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
@@ -336,7 +335,7 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
               setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
               setPage(1);
             }}
-            className="w-full sm:w-auto h-9 px-3 rounded-xl border border-emerald-200/80 bg-emerald-50/55 hover:bg-emerald-100/60 hover:border-[#006a4e]/40 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
+            className="w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl border border-emerald-200/80 bg-emerald-50/55 hover:bg-emerald-100/60 hover:border-[#006a4e]/40 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
           >
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
