@@ -83,6 +83,9 @@ export default function DashboardShell({
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileSaveSuccess, setProfileSaveSuccess] = useState(false);
+  const [profileSectionTab, setProfileSectionTab] = useState<
+    "personal" | "profession" | "location"
+  >("personal");
 
   const isProfileDirty = (
     Object.keys(profileForm) as Array<keyof typeof profileForm>
@@ -754,272 +757,371 @@ export default function DashboardShell({
               </div>
 
               {/* Main Profile Form */}
-              <form onSubmit={handleSaveProfile} className="space-y-7">
-                {/* 1. Personal & Family Identity */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <span className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center text-lg shrink-0">
-                      👤
+              <form onSubmit={handleSaveProfile} className="space-y-6">
+                {/* Profile Sub-Section Tabs (Mobile & Desktop) */}
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 p-1.5 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 w-full select-none">
+                  <button
+                    type="button"
+                    onClick={() => setProfileSectionTab("personal")}
+                    className={`py-2 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      profileSectionTab === "personal"
+                        ? "bg-[#006a4e] text-white shadow-xs"
+                        : "text-slate-700 hover:text-[#006a4e] hover:bg-emerald-100/60"
+                    }`}
+                  >
+                    <span className="text-sm">👤</span>
+                    <span className="truncate">
+                      {isBn ? "ব্যক্তিগত তথ্য" : "Personal Info"}
                     </span>
-                    <div>
-                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
-                        {isBn ? "ব্যক্তিগত ও পারিবারিক তথ্য" : "Personal & Family Information"}
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {isBn ? "আপনার নাম, পিতামাতার নাম ও রক্তের গ্রুপ" : "Personal identity, parents' names and blood group"}
-                      </p>
-                    </div>
-                  </div>
+                  </button>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                    {/* Full Name */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "পুরো নাম" : "Full Name"} <span className="text-rose-500">*</span>
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.name}
-                        onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
-                        required
-                        placeholder={isBn ? "আপনার পুরো নাম" : "Your full name"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
+                  <button
+                    type="button"
+                    onClick={() => setProfileSectionTab("profession")}
+                    className={`py-2 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      profileSectionTab === "profession"
+                        ? "bg-[#006a4e] text-white shadow-xs"
+                        : "text-slate-700 hover:text-[#006a4e] hover:bg-emerald-100/60"
+                    }`}
+                  >
+                    <span className="text-sm">💼</span>
+                    <span className="truncate">
+                      {isBn ? "পেশা ও বায়ো" : "Profession & Bio"}
+                    </span>
+                  </button>
 
-                    {/* Email (Read only) */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
-                          {isBn ? "ইমেইল ঠিকানা" : "Email Address"}
-                        </label>
-                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
-                          {isBn ? "✓ যাচাইকৃত" : "✓ Verified"}
-                        </span>
+                  <button
+                    type="button"
+                    onClick={() => setProfileSectionTab("location")}
+                    className={`py-2 px-2 sm:px-4 rounded-xl text-xs sm:text-sm font-extrabold inline-flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                      profileSectionTab === "location"
+                        ? "bg-[#006a4e] text-white shadow-xs"
+                        : "text-slate-700 hover:text-[#006a4e] hover:bg-emerald-100/60"
+                    }`}
+                  >
+                    <span className="text-sm">📍</span>
+                    <span className="truncate">
+                      {isBn ? "ঠিকানা ও লিংক" : "Location & Links"}
+                    </span>
+                  </button>
+                </div>
+
+                {/* 1. Personal & Family Identity */}
+                {profileSectionTab === "personal" && (
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                      <span className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center text-lg shrink-0">
+                        👤
+                      </span>
+                      <div>
+                        <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
+                          {isBn ? "ব্যক্তিগত ও পারিবারিক তথ্য" : "Personal & Family Information"}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {isBn ? "আপনার নাম, পিতামাতার নাম ও রক্তের গ্রুপ" : "Personal identity, parents' names and blood group"}
+                        </p>
                       </div>
-                      <input
-                        type="email"
-                        value={displayEmail}
-                        disabled
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-100/80 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed outline-none select-all"
-                      />
                     </div>
 
-                    {/* fatherName (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "বাবার নাম" : "Father's Name"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.fatherName}
-                        onChange={(e) => setProfileForm({ ...profileForm, fatherName: e.target.value })}
-                        placeholder={isBn ? "বাবার পুরো নাম লিখুন" : "Enter father's name"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* motherName (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "মায়ের নাম" : "Mother's Name"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.motherName}
-                        onChange={(e) => setProfileForm({ ...profileForm, motherName: e.target.value })}
-                        placeholder={isBn ? "মায়ের পুরো নাম লিখুন" : "Enter mother's name"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* bloodGroup (BloodGroup @default(UNKNOWN)) */}
-                    <div className="sm:col-span-2">
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
-                          {isBn ? "রক্তের গ্রুপ" : "Blood Group"}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                      {/* Full Name */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "পুরো নাম" : "Full Name"} <span className="text-rose-500">*</span>
                         </label>
-                        <span className="text-[11px] text-rose-600 font-bold">
-                          {isBn ? "জরুরি রক্তদানে ক্লাব সদস্যদের সহায়তায় ব্যবহৃত" : "Used for emergency blood donation"}
-                        </span>
+                        <input
+                          type="text"
+                          value={profileForm.name}
+                          onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                          required
+                          placeholder={isBn ? "আপনার পুরো নাম" : "Your full name"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                        />
                       </div>
-                      <div className="relative">
-                        <select
-                          value={profileForm.bloodGroup}
-                          onChange={(e) => setProfileForm({ ...profileForm, bloodGroup: e.target.value as BloodGroup })}
-                          className="w-full h-12 px-4 pr-11 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-bold text-slate-800 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none cursor-pointer appearance-none shadow-2xs hover:bg-slate-50"
-                        >
-                          {BLOOD_GROUP_OPTIONS.map((opt) => (
-                            <option key={opt.value} value={opt.value} className="text-slate-800 font-medium">
-                              🩸 {isBn ? opt.labelBn : opt.labelEn}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M19 9l-7 7-7-7" />
-                          </svg>
+
+                      {/* Email (Read only) */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs sm:text-sm font-bold text-slate-700">
+                            {isBn ? "ইমেইল ঠিকানা" : "Email Address"}
+                          </label>
+                          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
+                            {isBn ? "✓ যাচাইকৃত" : "✓ Verified"}
+                          </span>
+                        </div>
+                        <input
+                          type="email"
+                          value={displayEmail}
+                          disabled
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-100/80 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed outline-none select-all"
+                        />
+                      </div>
+
+                      {/* fatherName (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "বাবার নাম" : "Father's Name"}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.fatherName}
+                          onChange={(e) => setProfileForm({ ...profileForm, fatherName: e.target.value })}
+                          placeholder={isBn ? "বাবার পুরো নাম লিখুন" : "Enter father's name"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                        />
+                      </div>
+
+                      {/* motherName (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "মায়ের নাম" : "Mother's Name"}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.motherName}
+                          onChange={(e) => setProfileForm({ ...profileForm, motherName: e.target.value })}
+                          placeholder={isBn ? "মায়ের পুরো নাম লিখুন" : "Enter mother's name"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                        />
+                      </div>
+
+                      {/* bloodGroup (BloodGroup @default(UNKNOWN)) */}
+                      <div className="sm:col-span-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs sm:text-sm font-bold text-slate-700">
+                            {isBn ? "রক্তের গ্রুপ" : "Blood Group"}
+                          </label>
+                          <span className="text-[11px] text-rose-600 font-bold">
+                            {isBn ? "জরুরি রক্তদানে ক্লাব সদস্যদের সহায়তায় ব্যবহৃত" : "Used for emergency blood donation"}
+                          </span>
+                        </div>
+                        <div className="relative">
+                          <select
+                            value={profileForm.bloodGroup}
+                            onChange={(e) => setProfileForm({ ...profileForm, bloodGroup: e.target.value as BloodGroup })}
+                            className="w-full h-12 px-4 pr-11 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-bold text-slate-800 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none cursor-pointer appearance-none shadow-2xs hover:bg-slate-50"
+                          >
+                            {BLOOD_GROUP_OPTIONS.map((opt) => (
+                              <option key={opt.value} value={opt.value} className="text-slate-800 font-medium">
+                                🩸 {isBn ? opt.labelBn : opt.labelEn}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
                         </div>
                       </div>
                     </div>
+
+                    {/* Step Navigation to Next Tab */}
+                    <div className="pt-4 border-t border-slate-100 flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setProfileSectionTab("profession")}
+                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <span>{isBn ? "পরবর্তী: পেশা ও বায়ো" : "Next: Profession & Bio"}</span>
+                        <span>→</span>
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* 2. Profession, Summary & Bio */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <span className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center justify-center text-lg shrink-0">
-                      💼
-                    </span>
-                    <div>
-                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
-                        {isBn ? "পেশা, সারসংক্ষেপ ও জীবনবৃত্তান্ত" : "Profession, Summary & Biography"}
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {isBn ? "ক্লাবে আপনার পেশাগত পরিচিতি ও বায়ো" : "Your professional identity, short bio, and summary"}
-                      </p>
+                {profileSectionTab === "profession" && (
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                      <span className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center justify-center text-lg shrink-0">
+                        💼
+                      </span>
+                      <div>
+                        <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
+                          {isBn ? "পেশা, সারসংক্ষেপ ও জীবনবৃত্তান্ত" : "Profession, Summary & Biography"}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {isBn ? "ক্লাবে আপনার পেশাগত পরিচিতি ও বায়ো" : "Your professional identity, short bio, and summary"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-5">
+                      {/* profession (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "পেশা / বর্তমান পদবি" : "Profession / Designation"}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.profession}
+                          onChange={(e) => setProfileForm({ ...profileForm, profession: e.target.value })}
+                          placeholder={isBn ? "যেমন: সফটওয়্যার ইঞ্জিনিয়ার / ব্যবসায়ী / শিক্ষার্থী / শিক্ষক" : "e.g. Software Engineer, Business Owner, Student"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                        />
+                      </div>
+
+                      {/* summary (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "সংক্ষিপ্ত সারসংক্ষেপ (এক লাইন)" : "Short Summary (One-liner)"}
+                        </label>
+                        <input
+                          type="text"
+                          value={profileForm.summary}
+                          onChange={(e) => setProfileForm({ ...profileForm, summary: e.target.value })}
+                          placeholder={isBn ? "শান্তি সংঘের নিবেদিত সমাজকর্মী ও ক্রীড়াপ্রেমী..." : "Dedicated community advocate and sports enthusiast..."}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                        />
+                      </div>
+
+                      {/* bio (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "বিস্তারিত বায়ো / পরিচিতি" : "Detailed Biography"}
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={profileForm.bio}
+                          onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
+                          placeholder={isBn ? "আপনার সম্পর্কে বিস্তারিত লিখুন... ক্লাবের সাথে আপনার সম্পৃক্ততা ও লক্ষ্য।" : "Write about yourself, your contributions to the village club, and goals..."}
+                          className="w-full p-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none resize-y shadow-2xs hover:bg-slate-50 min-h-[110px] leading-relaxed"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Step Navigation */}
+                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setProfileSectionTab("personal")}
+                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <span>←</span>
+                        <span>{isBn ? "ব্যক্তিগত তথ্য" : "Personal Info"}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setProfileSectionTab("location")}
+                        className="h-10 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <span>{isBn ? "পরবর্তী: ঠিকানা ও যোগাযোগ" : "Next: Location & Contact"}</span>
+                        <span>→</span>
+                      </button>
                     </div>
                   </div>
-
-                  <div className="space-y-5">
-                    {/* profession (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "পেশা / বর্তমান পদবি" : "Profession / Designation"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.profession}
-                        onChange={(e) => setProfileForm({ ...profileForm, profession: e.target.value })}
-                        placeholder={isBn ? "যেমন: সফটওয়্যার ইঞ্জিনিয়ার / ব্যবসায়ী / শিক্ষার্থী / শিক্ষক" : "e.g. Software Engineer, Business Owner, Student"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* summary (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "সংক্ষিপ্ত সারসংক্ষেপ (এক লাইন)" : "Short Summary (One-liner)"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.summary}
-                        onChange={(e) => setProfileForm({ ...profileForm, summary: e.target.value })}
-                        placeholder={isBn ? "শান্তি সংঘের নিবেদিত সমাজকর্মী ও ক্রীড়াপ্রেমী..." : "Dedicated community advocate and sports enthusiast..."}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* bio (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "বিস্তারিত বায়ো / পরিচিতি" : "Detailed Biography"}
-                      </label>
-                      <textarea
-                        rows={4}
-                        value={profileForm.bio}
-                        onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                        placeholder={isBn ? "আপনার সম্পর্কে বিস্তারিত লিখুন... ক্লাবের সাথে আপনার সম্পৃক্ততা ও লক্ষ্য।" : "Write about yourself, your contributions to the village club, and goals..."}
-                        className="w-full p-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none resize-y shadow-2xs hover:bg-slate-50 min-h-[110px] leading-relaxed"
-                      />
-                    </div>
-                  </div>
-                </div>
+                )}
 
                 {/* 3. Address & Social Links */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
-                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
-                    <span className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200/80 flex items-center justify-center text-lg shrink-0">
-                      📍
-                    </span>
-                    <div>
-                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
-                        {isBn ? "ঠিকানা ও সামাজিক যোগাযোগ" : "Location & Contact Channels"}
-                      </h4>
-                      <p className="text-xs text-slate-400 mt-0.5">
-                        {isBn ? "স্থায়ী গ্রাম, বর্তমান অবস্থান ও যোগাযোগ মাধ্যম" : "Village origin, current location and social links"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                    {/* village (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "গ্রাম / স্থায়ী এলাকা" : "Village / Native Area"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.village}
-                        onChange={(e) => setProfileForm({ ...profileForm, village: e.target.value })}
-                        placeholder={isBn ? "যেমন: সাভারচালা, বহেড়াতলী, সখিপুর" : "e.g. Shavarchala, Sakhipur"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* currentLocation (String?) */}
-                    <div>
-                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
-                        {isBn ? "বর্তমান বাসস্থান / ঠিকানা" : "Current Location"}
-                      </label>
-                      <input
-                        type="text"
-                        value={profileForm.currentLocation}
-                        onChange={(e) => setProfileForm({ ...profileForm, currentLocation: e.target.value })}
-                        placeholder={isBn ? "যেমন: ঢাকা, বাংলাদেশ" : "e.g. Dhaka, Bangladesh"}
-                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
-                      />
-                    </div>
-
-                    {/* whatsappNumber (String?) */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
-                          {isBn ? "হোয়াটসঅ্যাপ নম্বর" : "WhatsApp Number"}
-                        </label>
-                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
-                          WhatsApp
-                        </span>
+                {profileSectionTab === "location" && (
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6 animate-in fade-in duration-200">
+                    <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                      <span className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200/80 flex items-center justify-center text-lg shrink-0">
+                        📍
+                      </span>
+                      <div>
+                        <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
+                          {isBn ? "ঠিকানা ও সামাজিক যোগাযোগ" : "Location & Contact Channels"}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {isBn ? "স্থায়ী গ্রাম, বর্তমান অবস্থান ও যোগাযোগ মাধ্যম" : "Village origin, current location and social links"}
+                        </p>
                       </div>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-emerald-600 font-bold text-base">
-                          💬
-                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                      {/* village (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "গ্রাম / স্থায়ী এলাকা" : "Village / Native Area"}
+                        </label>
                         <input
-                          type="tel"
-                          value={profileForm.whatsappNumber}
-                          onChange={(e) => setProfileForm({ ...profileForm, whatsappNumber: e.target.value })}
-                          placeholder="+8801700000000"
-                          className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                          type="text"
+                          value={profileForm.village}
+                          onChange={(e) => setProfileForm({ ...profileForm, village: e.target.value })}
+                          placeholder={isBn ? "যেমন: সাভারচালা, বহেড়াতলী, সখিপুর" : "e.g. Shavarchala, Sakhipur"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                         />
                       </div>
-                    </div>
 
-                    {/* facebookProfile (String?) */}
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
-                          {isBn ? "ফেসবুক প্রোফাইল লিংক" : "Facebook Profile"}
+                      {/* currentLocation (String?) */}
+                      <div>
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                          {isBn ? "বর্তমান বাসস্থান / ঠিকানা" : "Current Location"}
                         </label>
-                        <span className="text-[10px] text-blue-700 font-bold bg-blue-50 border border-blue-200/70 px-2 py-0.5 rounded-full">
-                          Facebook
-                        </span>
-                      </div>
-                      <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-blue-600 font-bold text-base">
-                          🌐
-                        </div>
                         <input
-                          type="url"
-                          value={profileForm.facebookProfile}
-                          onChange={(e) => setProfileForm({ ...profileForm, facebookProfile: e.target.value })}
-                          placeholder="https://facebook.com/username"
-                          className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                          type="text"
+                          value={profileForm.currentLocation}
+                          onChange={(e) => setProfileForm({ ...profileForm, currentLocation: e.target.value })}
+                          placeholder={isBn ? "যেমন: ঢাকা, বাংলাদেশ" : "e.g. Dhaka, Bangladesh"}
+                          className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                         />
                       </div>
+
+                      {/* whatsappNumber (String?) */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs sm:text-sm font-bold text-slate-700">
+                            {isBn ? "হোয়াটসঅ্যাপ নম্বর" : "WhatsApp Number"}
+                          </label>
+                          <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
+                            WhatsApp
+                          </span>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-emerald-600 font-bold text-base">
+                            💬
+                          </div>
+                          <input
+                            type="tel"
+                            value={profileForm.whatsappNumber}
+                            onChange={(e) => setProfileForm({ ...profileForm, whatsappNumber: e.target.value })}
+                            placeholder="+8801700000000"
+                            className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                          />
+                        </div>
+                      </div>
+
+                      {/* facebookProfile (String?) */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <label className="block text-xs sm:text-sm font-bold text-slate-700">
+                            {isBn ? "ফেসবুক প্রোফাইল লিংক" : "Facebook Profile"}
+                          </label>
+                          <span className="text-[10px] text-blue-700 font-bold bg-blue-50 border border-blue-200/70 px-2 py-0.5 rounded-full">
+                            Facebook
+                          </span>
+                        </div>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-blue-600 font-bold text-base">
+                            🌐
+                          </div>
+                          <input
+                            type="url"
+                            value={profileForm.facebookProfile}
+                            onChange={(e) => setProfileForm({ ...profileForm, facebookProfile: e.target.value })}
+                            placeholder="https://facebook.com/username"
+                            className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Step Navigation */}
+                    <div className="pt-4 border-t border-slate-100 flex items-center justify-start">
+                      <button
+                        type="button"
+                        onClick={() => setProfileSectionTab("profession")}
+                        className="h-10 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-extrabold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <span>←</span>
+                        <span>{isBn ? "পেশা ও বায়ো" : "Profession & Bio"}</span>
+                      </button>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Form Action Controls (shown only when data changes or saving/saved) */}
                 {(isProfileDirty || isSavingProfile || profileSaveSuccess) && (
