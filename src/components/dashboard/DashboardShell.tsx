@@ -187,17 +187,6 @@ export default function DashboardShell({
     setPendingMembers((prev) => prev.filter((m) => m.id !== id));
   };
 
-  // Mock live score for admin
-  const [liveScore, setLiveScore] = useState({
-    teamA: "সাভারচালা রয়্যালস",
-    teamB: "সাভারচালা ভাইকিংস",
-    score: "142/4",
-    overs: "16.2",
-    target: "165",
-    striker: "রাকিবুল ইসলাম (45*)",
-    bowler: "শামীম রেজা (2/28)",
-  });
-
   return (
     <div className="min-h-screen bg-[#f7f4ea] flex flex-col md:flex-row font-sans text-slate-800">
       {/* MODULAR DASHBOARD SIDEBAR (Skipped when rendered inside AdminLayout) */}
@@ -1232,68 +1221,15 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB 5: ADMIN: LIVE SCORE CONTROLLER (Admin Only)     */}
+          {/* TAB 5: ADMIN: LIVE SCORE (Cooking)                   */}
           {/* ===================================================== */}
           {activeTab === "admin_live" && isAdmin && (
-            <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-5">
-              <div className="pb-4 border-b border-slate-100">
-                <span className="text-xs font-black text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full">
-                  LIVE SCOREBOARD CONTROLLER
-                </span>
-                <h3 className="text-lg font-black text-slate-900 mt-1">
-                  {isBn ? "চলমান এসপিএল ম্যাচের লাইভ স্কোরবোর্ড আপডেট" : "Live Match Scoreboard Updater"}
-                </h3>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "দল ১" : "Team 1"}</label>
-                  <input
-                    type="text"
-                    value={liveScore.teamA}
-                    onChange={(e) => setLiveScore({ ...liveScore, teamA: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "দল ২" : "Team 2"}</label>
-                  <input
-                    type="text"
-                    value={liveScore.teamB}
-                    onChange={(e) => setLiveScore({ ...liveScore, teamB: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "বর্তমান রান / উইকেট" : "Current Score"}</label>
-                  <input
-                    type="text"
-                    value={liveScore.score}
-                    onChange={(e) => setLiveScore({ ...liveScore, score: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold text-[#006a4e]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-600 mb-1">{isBn ? "ওভার" : "Overs"}</label>
-                  <input
-                    type="text"
-                    value={liveScore.overs}
-                    onChange={(e) => setLiveScore({ ...liveScore, overs: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm font-bold"
-                  />
-                </div>
-              </div>
-
-              <div className="flex justify-end pt-2">
-                <button
-                  type="button"
-                  onClick={() => alert(isBn ? "লাইভ স্কোর আপডেট সফল হয়েছে!" : "Live score updated!")}
-                  className="px-6 py-2.5 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
-                >
-                  {isBn ? "স্কোরবোর্ড ব্রডকাস্ট করুন" : "Broadcast Live Score"}
-                </button>
-              </div>
-            </div>
+            <FeatureCooking
+              featureNameEn="Live Score"
+              featureNameBn="লাইভ স্কোর"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
 
           {/* ===================================================== */}

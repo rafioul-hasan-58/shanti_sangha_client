@@ -105,21 +105,12 @@
           "status": "ready"
         },
         {
-          "id": "admin_members",
-          "labelBn": "সদস্য অনুমোদন",
-          "labelEn": "Member Approvals",
-          "icon": "user_check",
-          "type": "tab",
-          "showPendingBadge": true,
-          "status": "ready"
-        },
-        {
           "id": "admin_live",
           "labelBn": "লাইভ স্কোর",
           "labelEn": "Live Score",
           "icon": "live",
           "type": "tab",
-          "status": "ready"
+          "status": "cooking"
         },
         {
           "id": "admin_finance",
