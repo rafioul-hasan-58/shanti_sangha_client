@@ -10,14 +10,89 @@
           "labelBn": "ওভারভিউ",
           "labelEn": "Overview",
           "icon": "dashboard",
-          "type": "tab"
+          "type": "tab",
+          "status": "ready"
+        },
+        {
+          "id": "sports",
+          "labelBn": "স্পোর্টস ও এসপিএল",
+          "labelEn": "Sports & SPL",
+          "icon": "sports",
+          "type": "tab",
+          "status": "ready"
+        },
+        {
+          "id": "members_directory",
+          "labelBn": "সদস্য তালিকা",
+          "labelEn": "Members Directory",
+          "icon": "members",
+          "type": "link",
+          "href": "/members",
+          "hasChevron": true,
+          "status": "ready"
+        },
+        {
+          "id": "notices",
+          "labelBn": "নোটিশ ও কল্যাণ",
+          "labelEn": "Notices & Welfare",
+          "icon": "welfare",
+          "type": "tab",
+          "status": "cooking"
+        },
+        {
+          "id": "profile",
+          "labelBn": "আমার প্রোফাইল",
+          "labelEn": "My Profile",
+          "icon": "user",
+          "type": "tab",
+          "status": "ready"
+        }
+      ]
+    },
+    {
+      "id": "leadership_section",
+      "titleBn": "নেতৃত্ব ও সংগঠন",
+      "titleEn": "LEADERSHIP",
+      "items": [
+        {
+          "id": "leadership",
+          "labelBn": "নেতৃত্ব",
+          "labelEn": "Leadership",
+          "icon": "crown",
+          "type": "group",
+          "children": [
+            {
+              "id": "leadership_pioneers",
+              "labelBn": "অগ্রপথিক",
+              "labelEn": "Pioneers",
+              "icon": "award",
+              "type": "tab",
+              "status": "ready"
+            },
+            {
+              "id": "leadership_committee",
+              "labelBn": "কমিটি",
+              "labelEn": "Committee",
+              "icon": "users",
+              "type": "tab",
+              "status": "ready"
+            },
+            {
+              "id": "leadership_admins",
+              "labelBn": "অ্যাডমিন",
+              "labelEn": "Admins",
+              "icon": "shield_check",
+              "type": "tab",
+              "status": "cooking"
+            }
+          ]
         }
       ]
     },
     {
       "id": "admin_controls",
-      "titleBn": "অ্যাডমিন টেস্ট ও নিয়ন্ত্রণ",
-      "titleEn": "ASSESSMENT & TEST",
+      "titleBn": "অ্যাডমিন নিয়ন্ত্রণ",
+      "titleEn": "ADMIN CONTROLS",
       "adminOnly": true,
       "badge": "ADAPTIVE",
       "items": [
@@ -26,7 +101,41 @@
           "labelBn": "ইউজার ম্যানেজমেন্ট",
           "labelEn": "User Management",
           "icon": "users_cog",
-          "type": "tab"
+          "type": "tab",
+          "status": "ready"
+        },
+        {
+          "id": "admin_members",
+          "labelBn": "সদস্য অনুমোদন",
+          "labelEn": "Member Approvals",
+          "icon": "user_check",
+          "type": "tab",
+          "showPendingBadge": true,
+          "status": "ready"
+        },
+        {
+          "id": "admin_live",
+          "labelBn": "লাইভ স্কোর",
+          "labelEn": "Live Score",
+          "icon": "live",
+          "type": "tab",
+          "status": "ready"
+        },
+        {
+          "id": "admin_finance",
+          "labelBn": "তহবিল ও হিসাব",
+          "labelEn": "Club Finance",
+          "icon": "finance",
+          "type": "tab",
+          "status": "ready"
+        },
+        {
+          "id": "admin_expenses",
+          "labelBn": "ব্যয় হিসাব",
+          "labelEn": "Expenses",
+          "icon": "wallet",
+          "type": "tab",
+          "status": "cooking"
         }
       ]
     }

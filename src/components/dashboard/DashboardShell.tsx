@@ -5,9 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { Dictionary } from "@/i18n/getDictionary";
+import type { Locale } from "@/i18n/config";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
+import FeatureCooking from "@/components/common/FeatureCooking";
+import PioneersSection from "@/components/home/PioneersSection";
+import CommitteeSection from "@/components/home/CommitteeSection";
 import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
 import AdminUsersView from "./AdminUsersView";
@@ -34,12 +38,16 @@ type TabType =
   | "sports"
   | "members"
   | "notices"
+  | "leadership_pioneers"
+  | "leadership_committee"
+  | "leadership_admins"
   | "admin_users"
   | "admin_users_all"
   | "admin_users_pending"
   | "admin_members"
   | "admin_live"
-  | "admin_finance";
+  | "admin_finance"
+  | "admin_expenses";
 
 export default function DashboardShell({
   dict,
@@ -106,12 +114,17 @@ export default function DashboardShell({
           "overview",
           "profile",
           "sports",
+          "notices",
+          "leadership_pioneers",
+          "leadership_committee",
+          "leadership_admins",
           "admin_users",
           "admin_users_all",
           "admin_users_pending",
           "admin_members",
           "admin_live",
           "admin_finance",
+          "admin_expenses",
         ].includes(tab)
       ) {
         setActiveTab(tab as TabType);
@@ -1312,6 +1325,58 @@ export default function DashboardShell({
                 </div>
               </div>
             </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 7: LEADERSHIP — PIONEERS                          */}
+          {/* ===================================================== */}
+          {activeTab === "leadership_pioneers" && (
+            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs">
+              <div className="-mt-12">
+                <PioneersSection locale={locale as Locale} />
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 8: LEADERSHIP — COMMITTEE                         */}
+          {/* ===================================================== */}
+          {activeTab === "leadership_committee" && (
+            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs">
+              <div className="-mt-12">
+                <CommitteeSection locale={locale as Locale} />
+              </div>
+            </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* COOKING FEATURE TABS (Admins / Notices / Expenses)     */}
+          {/* ===================================================== */}
+          {activeTab === "leadership_admins" && (
+            <FeatureCooking
+              featureNameEn="Admins"
+              featureNameBn="অ্যাডমিন"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
+          )}
+
+          {activeTab === "notices" && (
+            <FeatureCooking
+              featureNameEn="Notices & Welfare"
+              featureNameBn="নোটিশ ও কল্যাণ"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
+          )}
+
+          {activeTab === "admin_expenses" && isAdmin && (
+            <FeatureCooking
+              featureNameEn="Expenses"
+              featureNameBn="ব্যয় হিসাব"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
         </main>
       </div>

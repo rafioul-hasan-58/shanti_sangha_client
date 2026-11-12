@@ -8,6 +8,7 @@ interface FeatureCookingProps {
   featureNameEn: string;
   featureNameBn: string;
   locale?: string;
+  onDashboardClick?: () => void;
 }
 
 /**
@@ -18,6 +19,7 @@ export default function FeatureCooking({
   featureNameEn,
   featureNameBn,
   locale: localeProp,
+  onDashboardClick,
 }: FeatureCookingProps) {
   const params = useParams<{ locale?: string }>();
   const router = useRouter();
@@ -209,12 +211,22 @@ export default function FeatureCooking({
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-          <Link
-            href={withLocaleHref("/admin/dashboard", locale)}
-            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] leading-relaxed"
-          >
-            {isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}
-          </Link>
+          {onDashboardClick ? (
+            <button
+              type="button"
+              onClick={onDashboardClick}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] cursor-pointer leading-relaxed"
+            >
+              {isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}
+            </button>
+          ) : (
+            <Link
+              href={withLocaleHref("/admin/dashboard", locale)}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] leading-relaxed"
+            >
+              {isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}
+            </Link>
+          )}
 
           <button
             type="button"

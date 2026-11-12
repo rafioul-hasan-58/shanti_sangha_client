@@ -9,14 +9,17 @@ import UserAvatar from "@/components/layout/UserAvatar";
 import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
 import { hasDashboardAccess, normalizeRole } from "@/lib/authRole";
+import { ADMIN_UI_COPY } from "@/lib/config/adminNav";
 import { BRAND_NAME_EN } from "@/lib/constants/site";
 
 export interface NavSubItemConfig {
   id: string;
   labelBn: string;
   labelEn: string;
+  icon?: string;
   type?: "tab" | "link";
   href?: string;
+  status?: "ready" | "cooking";
   adminOnly?: boolean;
   showPendingBadge?: boolean;
 }
@@ -26,16 +29,14 @@ export interface NavItemConfig {
   labelBn: string;
   labelEn: string;
   icon: string;
-  type: "tab" | "link" | "action";
+  type: "tab" | "link" | "action" | "group";
   href?: string;
+  status?: "ready" | "cooking";
   hasChevron?: boolean;
   adminOnly?: boolean;
   showPendingBadge?: boolean;
   subItems?: NavSubItemConfig[];
-  // badge?: {
-  //   text: string;
-  //   type?: string;
-  // };
+  children?: NavSubItemConfig[];
 }
 
 export interface NavCategoryConfig {
@@ -127,6 +128,46 @@ function NavIcon({ name, className = "w-5 h-5 shrink-0" }: { name: string; class
           <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
         </svg>
       );
+    case "crown":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 18h18M4 15l2-9 6 5 6-5 2 9H4z" />
+        </svg>
+      );
+    case "award":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <circle cx="12" cy="9" r="5.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 14l-1 7 4-2 4 2-1-7" />
+        </svg>
+      );
+    case "users":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      );
+    case "user":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <circle cx="12" cy="8" r="4" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 20a8 8 0 0116 0" />
+        </svg>
+      );
+    case "user_check":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <circle cx="9" cy="8" r="3.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 20a6.5 6.5 0 0113 0M16 11l2 2 4-4" />
+        </svg>
+      );
+    case "wallet":
+      return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 7a2 2 0 012-2h13a2 2 0 012 2v2h-5a2 2 0 00-2 2v2a2 2 0 002 2h5v2a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+          <circle cx="16.5" cy="12" r="1" fill="currentColor" />
+        </svg>
+      );
     default:
       return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -157,6 +198,7 @@ export default function DashboardSidebar({
   const resolvedIsAdmin = hasDashboardAccess(resolvedRole);
   const categories = navConfig.categories as unknown as NavCategoryConfig[];
   const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({
+    leadership: true,
     admin_users: true,
   });
 
@@ -251,9 +293,11 @@ export default function DashboardSidebar({
                     if (item.adminOnly && !resolvedIsAdmin) return null;
 
                     const label = isBn ? item.labelBn : item.labelEn;
-                    const visibleSubItems = (item.subItems ?? []).filter(
-                      (sub) => !(sub.adminOnly && !resolvedIsAdmin)
-                    );
+                    const visibleSubItems = (
+                      item.children ??
+                      item.subItems ??
+                      []
+                    ).filter((sub) => !(sub.adminOnly && !resolvedIsAdmin));
                     const hasSubItems = visibleSubItems.length > 0;
                     const isSubItemActive = visibleSubItems.some(
                       (sub) => sub.id === activeTab
@@ -261,9 +305,15 @@ export default function DashboardSidebar({
                     const isActive = activeTab === item.id || isSubItemActive;
                     const isExpanded =
                       Boolean(expandedGroups[item.id]) || isSubItemActive;
+                    const soonBadgeText = isBn
+                      ? ADMIN_UI_COPY.soonBadgeBn
+                      : ADMIN_UI_COPY.soonBadgeEn;
 
-                    // Parent Item with Collapsible Sub-tabs (e.g., User Management -> All Users / Pending Users)
-                    if (item.type === "tab" && hasSubItems) {
+                    // Parent Item with Collapsible Sub-tabs (e.g., Leadership -> Pioneers / Committee / Admins)
+                    if (
+                      (item.type === "group" || item.type === "tab") &&
+                      hasSubItems
+                    ) {
                       return (
                         <div key={item.id} className="space-y-1">
                           <button
@@ -273,7 +323,11 @@ export default function DashboardSidebar({
                                 ...prev,
                                 [item.id]: !isExpanded,
                               }));
-                              if (!isActive && visibleSubItems[0]) {
+                              if (
+                                item.type === "tab" &&
+                                !isActive &&
+                                visibleSubItems[0]
+                              ) {
                                 setActiveTab(visibleSubItems[0].id);
                               }
                             }}
@@ -317,8 +371,73 @@ export default function DashboardSidebar({
                                 const subLabel = isBn ? sub.labelBn : sub.labelEn;
                                 const subActive =
                                   activeTab === sub.id ||
-                                  (activeTab === item.id &&
+                                  (item.type === "tab" &&
+                                    activeTab === item.id &&
                                     sub.id === visibleSubItems[0]?.id);
+                                const isCooking = sub.status === "cooking";
+                                const subClassName = `w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-xs transition-all cursor-pointer ${
+                                  subActive
+                                    ? "bg-[#006a4e]/10 text-[#006a4e] font-extrabold"
+                                    : "text-slate-600 font-semibold hover:bg-[#f7f4ea] hover:text-[#006a4e]"
+                                }`;
+
+                                const subInner = (
+                                  <>
+                                    <span className="flex items-center gap-2 min-w-0">
+                                      {sub.icon ? (
+                                        <NavIcon
+                                          name={sub.icon}
+                                          className={`w-4 h-4 shrink-0 ${
+                                            subActive
+                                              ? "text-[#006a4e]"
+                                              : "text-slate-400"
+                                          }`}
+                                        />
+                                      ) : (
+                                        <span
+                                          className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                                            subActive
+                                              ? "bg-[#006a4e]"
+                                              : "bg-slate-300"
+                                          }`}
+                                        />
+                                      )}
+                                      <span className="truncate leading-relaxed">
+                                        {subLabel}
+                                      </span>
+                                    </span>
+
+                                    <span className="flex items-center gap-1 shrink-0">
+                                      {isCooking && (
+                                        <span className="inline-flex items-center gap-0.5 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full bg-[#f2b705]/20 text-[#996d00] border border-[#f2b705]/40">
+                                          <span>🍳</span>
+                                          <span>{soonBadgeText}</span>
+                                        </span>
+                                      )}
+                                      {sub.showPendingBadge && pendingCount > 0 && (
+                                        <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                                          {pendingCount}
+                                        </span>
+                                      )}
+                                    </span>
+                                  </>
+                                );
+
+                                if (sub.type === "link" && sub.href) {
+                                  const subHref = sub.href.startsWith("/")
+                                    ? `/${locale}${sub.href}`
+                                    : sub.href;
+                                  return (
+                                    <Link
+                                      key={sub.id}
+                                      href={subHref}
+                                      onClick={() => setMobileOpen(false)}
+                                      className={subClassName}
+                                    >
+                                      {subInner}
+                                    </Link>
+                                  );
+                                }
 
                                 return (
                                   <button
@@ -328,28 +447,9 @@ export default function DashboardSidebar({
                                       setActiveTab(sub.id);
                                       setMobileOpen(false);
                                     }}
-                                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all cursor-pointer ${
-                                      subActive
-                                        ? "bg-[#006a4e]/10 text-[#006a4e] font-extrabold"
-                                        : "text-slate-600 font-semibold hover:bg-[#f7f4ea] hover:text-[#006a4e]"
-                                    }`}
+                                    className={subClassName}
                                   >
-                                    <span className="flex items-center gap-2 truncate">
-                                      <span
-                                        className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                                          subActive
-                                            ? "bg-[#006a4e]"
-                                            : "bg-slate-300"
-                                        }`}
-                                      />
-                                      <span className="truncate">{subLabel}</span>
-                                    </span>
-
-                                    {sub.showPendingBadge && pendingCount > 0 && (
-                                      <span className="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                                        {pendingCount}
-                                      </span>
-                                    )}
+                                    {subInner}
                                   </button>
                                 );
                               })}
@@ -384,10 +484,23 @@ export default function DashboardSidebar({
                                   : "text-slate-500 group-hover:text-slate-800"
                               }`}
                             />
-                            <span className="truncate">{label}</span>
+                            <span className="truncate leading-relaxed">{label}</span>
                           </div>
 
                           <div className="flex items-center gap-1.5 shrink-0">
+                            {item.status === "cooking" && (
+                              <span
+                                className={`inline-flex items-center gap-0.5 text-[10px] font-extrabold px-1.5 py-0.5 rounded-full ${
+                                  isActive
+                                    ? "bg-[#f2b705] text-[#12231d]"
+                                    : "bg-[#f2b705]/20 text-[#996d00] border border-[#f2b705]/40"
+                                }`}
+                              >
+                                <span>🍳</span>
+                                <span>{soonBadgeText}</span>
+                              </span>
+                            )}
+
                             {/* Dynamic Pending Count for admin */}
                             {item.showPendingBadge && pendingCount > 0 && (
                               <span
