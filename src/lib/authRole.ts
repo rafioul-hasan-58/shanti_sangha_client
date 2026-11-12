@@ -1,7 +1,7 @@
 import type { Role, UserStatus, ViewRole } from "@/types";
 
 const VALID_ROLES = new Set<Role>(["USER", "MODERATOR", "ADMIN", "SUPER_ADMIN"]);
-const VALID_STATUSES = new Set<UserStatus>(["ACTIVE", "INACTIVE", "SUSPENDED"]);
+const VALID_STATUSES = new Set<UserStatus>(["ACTIVE", "SUSPENDED"]);
 
 export interface RoleDisplayMeta {
   role: Role;

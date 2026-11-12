@@ -118,9 +118,7 @@ export default function AdminUsersView({
     try {
       const res = await fetchUsers(params);
       if (isPendingView) {
-        const pendingAll = res.users.filter(
-          (u) => !u.adminVerified || u.status === "INACTIVE"
-        );
+        const pendingAll = res.users.filter((u) => !u.adminVerified);
         const total = pendingAll.length;
         const limit = filters.limit;
         const totalPages = Math.max(1, Math.ceil(total / limit));

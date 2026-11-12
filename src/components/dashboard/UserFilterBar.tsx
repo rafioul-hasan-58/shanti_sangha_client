@@ -20,12 +20,6 @@ function StatusFilterIcon({ status }: { status: UserStatus | "ALL" }) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
       );
-    case "INACTIVE":
-      return (
-        <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      );
     case "SUSPENDED":
       return (
         <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
@@ -48,7 +42,6 @@ const STATUS_FILTERS: Array<{
 }> = [
   { key: "ALL", labelEn: "All", labelBn: "সবাই" },
   { key: "ACTIVE", labelEn: "Active", labelBn: "সক্রিয়" },
-  { key: "INACTIVE", labelEn: "Inactive", labelBn: "নিষ্ক্রিয়" },
   { key: "SUSPENDED", labelEn: "Suspended", labelBn: "স্থগিত" },
 ];
 
@@ -122,7 +115,7 @@ export default function UserFilterBar({
         </div>
 
         {!hideStatusFilter && (
-          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-1.5">
+          <div className="grid grid-cols-3 sm:flex sm:items-center gap-1.5">
             {STATUS_FILTERS.map((f) => {
               const active = filters.status === f.key;
               return (

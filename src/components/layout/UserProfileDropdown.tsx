@@ -34,11 +34,7 @@ export default function UserProfileDropdown({
   const isBn = locale === "bn";
   const resolvedRole = normalizeRole(user.role ?? role);
   const statusDotClass =
-    user.status === "SUSPENDED"
-      ? "bg-rose-500"
-      : user.status === "INACTIVE"
-        ? "bg-amber-400"
-        : "bg-emerald-500";
+    user.status === "SUSPENDED" ? "bg-rose-500" : "bg-emerald-500";
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
@@ -192,21 +188,9 @@ export default function UserProfileDropdown({
                 <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                   <RoleBadge role={resolvedRole} isBn={isBn} />
 
-                  {user.status && user.status !== "ACTIVE" && (
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border leading-relaxed ${
-                        user.status === "SUSPENDED"
-                          ? "bg-rose-50 text-rose-700 border-rose-200"
-                          : "bg-amber-50 text-amber-800 border-amber-200"
-                      }`}
-                    >
-                      {user.status === "SUSPENDED"
-                        ? isBn
-                          ? "স্থগিত"
-                          : "Suspended"
-                        : isBn
-                          ? "নিষ্ক্রিয়"
-                          : "Inactive"}
+                  {user.status === "SUSPENDED" && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border leading-relaxed bg-rose-50 text-rose-700 border-rose-200">
+                      {isBn ? "স্থগিত" : "Suspended"}
                     </span>
                   )}
 

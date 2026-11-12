@@ -49,9 +49,7 @@ export default function AdminOverviewView({
 
     fetchUsers({ page: 1, limit: 50, sortBy: "createdAt", sortOrder: "desc" })
       .then((res) => {
-        const filtered = res.users.filter(
-          (u) => !u.adminVerified || u.status === "INACTIVE"
-        );
+        const filtered = res.users.filter((u) => !u.adminVerified);
         setTotalPendingCount(filtered.length);
         setPendingUsers(filtered.slice(0, MAX_OVERVIEW_PENDING));
       })
@@ -240,7 +238,7 @@ export default function AdminOverviewView({
                     {pendingUsers.map((pendingUser) => {
                       const statusMeta =
                         STATUS_BADGE_MAP[pendingUser.status] ??
-                        STATUS_BADGE_MAP.INACTIVE;
+                        STATUS_BADGE_MAP.ACTIVE;
                       const membershipMeta = pendingUser.membershipType
                         ? MEMBERSHIP_BADGE_MAP[pendingUser.membershipType]
                         : null;
@@ -341,7 +339,7 @@ export default function AdminOverviewView({
                 {pendingUsers.map((pendingUser) => {
                   const statusMeta =
                     STATUS_BADGE_MAP[pendingUser.status] ??
-                    STATUS_BADGE_MAP.INACTIVE;
+                    STATUS_BADGE_MAP.ACTIVE;
                   const membershipMeta = pendingUser.membershipType
                     ? MEMBERSHIP_BADGE_MAP[pendingUser.membershipType]
                     : null;

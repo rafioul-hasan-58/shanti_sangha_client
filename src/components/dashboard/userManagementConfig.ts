@@ -3,7 +3,7 @@ import type { UserSortField } from "@/lib/types/dashboard";
 
 export const ROLE_OPTIONS: Role[] = ["USER", "MODERATOR", "ADMIN", "SUPER_ADMIN"];
 
-export const STATUS_OPTIONS: UserStatus[] = ["ACTIVE", "INACTIVE", "SUSPENDED"];
+export const STATUS_OPTIONS: UserStatus[] = ["ACTIVE", "SUSPENDED"];
 
 export const MEMBERSHIP_OPTIONS: Array<{
   value: MembershipType;
@@ -35,11 +35,6 @@ export const STATUS_BADGE_MAP: Record<
     labelEn: "Active",
     labelBn: "সক্রিয়",
     className: "bg-[#006a4e]/10 text-[var(--primary)] border-[#006a4e]/25",
-  },
-  INACTIVE: {
-    labelEn: "Inactive",
-    labelBn: "নিষ্ক্রিয়",
-    className: "bg-[#f2b705]/20 text-[#9c7200] border-[#f2b705]/40",
   },
   SUSPENDED: {
     labelEn: "Suspended",

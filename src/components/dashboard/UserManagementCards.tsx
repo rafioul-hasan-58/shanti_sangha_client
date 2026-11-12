@@ -63,7 +63,6 @@ const CARD_PALETTES = [
 
 const STATUS_DOT_MAP: Record<UserStatus, { dot: string; labelEn: string; labelBn: string }> = {
   ACTIVE: { dot: "bg-emerald-500", labelEn: "Active", labelBn: "সক্রিয়" },
-  INACTIVE: { dot: "bg-amber-400", labelEn: "Inactive", labelBn: "নিষ্ক্রিয়" },
   SUSPENDED: { dot: "bg-rose-500", labelEn: "Suspended", labelBn: "স্থগিত" },
 };
 
@@ -187,8 +186,8 @@ export default function UserManagementCards({
     <div ref={gridRef} className="grid grid-cols-2 gap-2.5 sm:gap-3 md:hidden">
       {users.map((u, idx) => {
         const palette = CARD_PALETTES[idx % CARD_PALETTES.length];
-        const statusInfo = STATUS_DOT_MAP[u.status] ?? STATUS_DOT_MAP.ACTIVE;
         const isBlocked = u.status === "SUSPENDED";
+        const statusInfo = isBlocked ? STATUS_DOT_MAP.SUSPENDED : STATUS_DOT_MAP.ACTIVE;
         const isSelf = Boolean(currentUserId && currentUserId === u.id);
         const isBusy = busyUserId === u.id;
         const isMenuOpen = openMenuUserId === u.id;
@@ -204,13 +203,17 @@ export default function UserManagementCards({
         return (
           <div
             key={u.id}
-            className={`relative rounded-2xl border p-2.5 pt-3.5 sm:p-3.5 sm:pt-4 shadow-sm flex flex-col justify-between gap-2.5 min-w-0 transition-shadow hover:shadow-md ${palette.card}`}
+            className={`relative rounded-2xl border p-2.5 pt-3.5 sm:p-3.5 sm:pt-4 shadow-sm flex flex-col justify-between gap-2.5 min-w-0 transition-shadow hover:shadow-md ${palette.card} ${isMenuOpen ? "z-20" : ""}`}
           >
-            {/* Vivid Top Color Accent Strip */}
-            <span
+            {/* Vivid Top Color Accent Strip clipped to card's inner curve without clipping dropdown */}
+            <div
               aria-hidden="true"
-              className={`absolute inset-x-0 top-0 h-1.5 rounded-t-2xl bg-gradient-to-r ${palette.bar}`}
-            />
+              className="pointer-events-none absolute inset-0 rounded-[15px] overflow-hidden"
+            >
+              <span
+                className={`block w-full h-1.5 bg-gradient-to-r ${palette.bar}`}
+              />
+            </div>
 
             {/* Top Corner Controls: Player Quota Icon (left) & 3-Dots Menu (right) */}
             <div className="flex items-center justify-between min-h-[24px]">
