@@ -1,4 +1,6 @@
-export type Role = "user" | "admin";
+export type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
+export type ViewRole = "user" | "admin";
+export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
 
 export type BloodGroup =
   | "UNKNOWN"
@@ -28,6 +30,7 @@ export interface AuthUser {
   token?: string;
   provider: "google" | "credentials";
   role: Role;
+  status?: UserStatus;
 
   // Profile update fields matching Prisma schema
   fatherName?: string | null;

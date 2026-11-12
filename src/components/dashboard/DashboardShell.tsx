@@ -12,6 +12,11 @@ import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
 import type { BloodGroup } from "@/types";
 import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
+import {
+  getRoleDisplayMeta,
+  hasDashboardAccess,
+  normalizeRole,
+} from "@/lib/authRole";
 
 interface Props {
   title?: string;
@@ -134,15 +139,16 @@ export default function DashboardShell({
     }
   };
 
-  // Admin logic:
-  // Trust normalized backend user.role when authenticated; fall back to route/role preview when unauthenticated.
+  // Role & dashboard access logic:
+  // USER sees member view; MODERATOR, ADMIN, and SUPER_ADMIN get management/dashboard access.
   const isAdminRoute = pathname?.includes("/admin");
   const resolvedRole = user
-    ? String(user.role || "").trim().toLowerCase()
-    : isAdminRoute
-      ? "admin"
-      : String(role || "").trim().toLowerCase();
-  const isAdmin = resolvedRole === "admin";
+    ? normalizeRole(user.role)
+    : isAdminRoute || role === "admin"
+      ? "ADMIN"
+      : "USER";
+  const roleMeta = getRoleDisplayMeta(resolvedRole);
+  const isAdmin = hasDashboardAccess(resolvedRole);
 
   const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";
@@ -605,7 +611,11 @@ export default function DashboardShell({
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-xl sm:text-2xl font-black text-slate-900 truncate">{displayName}</h3>
                         <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2.5 py-0.5 rounded-full">
-                          {isAdmin ? (isBn ? "👑 ক্লাব অ্যাডমিন" : "👑 Club Admin") : (isBn ? "⭐ রেজিস্টার্ড মেম্বার" : "⭐ Club Member")}
+                          {isAdmin
+                            ? `👑 ${isBn ? roleMeta.labelBn : roleMeta.labelEn}`
+                            : isBn
+                              ? "⭐ রেজিস্টার্ড মেম্বার"
+                              : "⭐ Club Member"}
                         </span>
                       </div>
                       <p className="text-xs text-slate-400 mt-0.5 font-medium">{displayEmail}</p>
@@ -1305,7 +1315,7 @@ export default function DashboardShell({
                   </div>
                   <div className="flex items-center gap-1 mt-1 flex-wrap">
                     <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold">
-                      {isAdmin ? "👑 ADMIN EXECUTIVE" : "⭐ GENERAL MEMBER"}
+                      {isAdmin ? `👑 ${roleMeta.shortEn}` : "⭐ GENERAL MEMBER"}
                     </span>
                     {profileForm.village && (
                       <span className="text-[9px] bg-white/15 px-1.5 py-0.5 rounded font-semibold truncate max-w-[120px]">
@@ -1318,7 +1328,7 @@ export default function DashboardShell({
 
               <div className="border-t border-white/20 pt-2 flex items-center justify-between text-[9px] text-emerald-100">
                 <span>ESTD: 2007 • SHAVARCHALA</span>
-                <span>STATUS: VERIFIED</span>
+                <span>STATUS: {user?.status || "VERIFIED"}</span>
               </div>
             </div>
 

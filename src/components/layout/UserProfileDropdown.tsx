@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import UserAvatar from "./UserAvatar";
 import RoleBadge from "./RoleBadge";
+import { normalizeRole } from "@/lib/authRole";
 
 interface UserProfileDropdownProps {
   user: AuthUser;
@@ -30,10 +31,13 @@ export default function UserProfileDropdown({
   const { logout } = useAuth();
   const { role } = useRole();
   const isBn = locale === "bn";
-  const isAdmin =
-    String(user.role || role || "user")
-      .trim()
-      .toLowerCase() === "admin";
+  const resolvedRole = normalizeRole(user.role ?? role);
+  const statusDotClass =
+    user.status === "SUSPENDED"
+      ? "bg-rose-500"
+      : user.status === "INACTIVE"
+        ? "bg-amber-400"
+        : "bg-emerald-500";
 
   const closeDropdown = useCallback(() => {
     setIsOpen(false);
@@ -135,8 +139,10 @@ export default function UserProfileDropdown({
           className="h-9 w-9 sm:h-10 sm:w-10 ring-2 ring-white/90 shadow-xs bg-white"
         />
 
-        {/* Green Online Dot */}
-        <span className="absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white" />
+        {/* Status Dot */}
+        <span
+          className={`absolute bottom-0.5 right-0.5 h-3 w-3 rounded-full ${statusDotClass} ring-2 ring-white`}
+        />
       </button>
 
       {/* 2. DROPDOWN POPUP CARD */}
@@ -178,7 +184,25 @@ export default function UserProfileDropdown({
                   {user.email || (isBn ? "ক্লাব মেম্বার" : "Club Member")}
                 </p>
                 <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                  <RoleBadge isAdmin={isAdmin} isBn={isBn} />
+                  <RoleBadge role={resolvedRole} isBn={isBn} />
+
+                  {user.status && user.status !== "ACTIVE" && (
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border leading-relaxed ${
+                        user.status === "SUSPENDED"
+                          ? "bg-rose-50 text-rose-700 border-rose-200"
+                          : "bg-amber-50 text-amber-800 border-amber-200"
+                      }`}
+                    >
+                      {user.status === "SUSPENDED"
+                        ? isBn
+                          ? "স্থগিত"
+                          : "Suspended"
+                        : isBn
+                          ? "নিষ্ক্রিয়"
+                          : "Inactive"}
+                    </span>
+                  )}
 
                   {user.bloodGroup && user.bloodGroup !== "UNKNOWN" && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 leading-relaxed">

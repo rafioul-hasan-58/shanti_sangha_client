@@ -2,7 +2,7 @@
 /** Switch between Member and Admin views, then go to the matching dashboard. */
 import { useParams, useRouter } from "next/navigation";
 import { useRole } from "@/context/RoleContext";
-import type { Role } from "@/types";
+import type { ViewRole } from "@/types";
 import type { Dictionary } from "@/i18n/getDictionary";
 
 export default function RoleSwitcher({ dict }: { dict: Dictionary["role"] }) {
@@ -11,7 +11,7 @@ export default function RoleSwitcher({ dict }: { dict: Dictionary["role"] }) {
   const params = useParams();
   const locale = (params?.locale as string) || "bn";
 
-  const choose = (next: Role) => {
+  const choose = (next: ViewRole) => {
     setRole(next);
     router.push(`/${locale}/${next === "admin" ? "admin" : "dashboard"}`);
   };

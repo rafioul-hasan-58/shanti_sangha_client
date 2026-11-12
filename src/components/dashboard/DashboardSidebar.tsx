@@ -7,6 +7,7 @@ import RoleBadge from "@/components/layout/RoleBadge";
 import UserAvatar from "@/components/layout/UserAvatar";
 import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
+import { hasDashboardAccess, normalizeRole } from "@/lib/authRole";
 
 export interface NavItemConfig {
   id: string;
@@ -122,9 +123,12 @@ export default function DashboardSidebar({
   onLogout,
 }: DashboardSidebarProps) {
   const isBn = locale === "bn";
-  const resolvedIsAdmin = user
-    ? String(user.role || "").trim().toLowerCase() === "admin"
-    : isAdmin;
+  const resolvedRole = user
+    ? normalizeRole(user.role)
+    : isAdmin
+      ? "ADMIN"
+      : "USER";
+  const resolvedIsAdmin = hasDashboardAccess(resolvedRole);
   const categories = navConfig.categories as unknown as NavCategoryConfig[];
 
   const handleAction = (item: NavItemConfig) => {
@@ -394,7 +398,7 @@ export default function DashboardSidebar({
                   {displayName}
                 </h5>
                 <div className="mt-1">
-                  <RoleBadge isAdmin={resolvedIsAdmin} isBn={isBn} />
+                  <RoleBadge role={resolvedRole} isBn={isBn} />
                 </div>
               </div>
             </div>

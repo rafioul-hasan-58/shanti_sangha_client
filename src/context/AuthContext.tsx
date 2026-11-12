@@ -8,9 +8,16 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
-import type { AuthUser, Role } from "@/types";
+import type { AuthUser } from "@/types";
 import { useRole } from "./RoleContext";
 import { API_BASE_URL } from "@/lib/api";
+import {
+  decodeJwtPayload,
+  normalizeRole,
+  normalizeUserStatus,
+  resolveAuthMeta,
+  toViewRole,
+} from "@/lib/authRole";
 
 export const GOOGLE_CLIENT_ID =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
@@ -54,22 +61,9 @@ const AuthContext = createContext<AuthContextType>({
   clearError: () => {},
 });
 
-/** Helper to decode Google JWT token */
+/** Helper to decode JWT token payload */
 export function decodeJwt(token: string) {
-  try {
-    const base64Url = token.split(".")[1];
-    if (!base64Url) return null;
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-    return JSON.parse(jsonPayload);
-  } catch {
-    return null;
-  }
+  return decodeJwtPayload(token);
 }
 
 /** Helper to ensure Google GSI script is loaded */
@@ -100,9 +94,71 @@ export function ensureGoogleScript(): Promise<void> {
 const STORAGE_KEY = "shanti_auth_user";
 const TOKEN_KEY = "shanti_token";
 
-/** Normalize API role values (e.g. "ADMIN" | "admin" | "USER") to frontend Role. */
-function normalizeRole(role?: unknown): Role {
-  return String(role || "").trim().toLowerCase() === "admin" ? "admin" : "user";
+function extractBackendToken(
+  apiJson: Record<string, unknown> | null | undefined,
+  data: Record<string, unknown> | null | undefined
+): string | undefined {
+  const candidate =
+    data?.token ??
+    data?.accessToken ??
+    data?.access_token ??
+    apiJson?.token ??
+    apiJson?.accessToken;
+  return typeof candidate === "string" && candidate.trim() ? candidate : undefined;
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+function buildAuthUser(params: {
+  provider: "google" | "credentials";
+  backendUser?: Record<string, unknown> | null;
+  data?: Record<string, unknown> | null;
+  token?: string;
+  accessToken?: string;
+  fallbackId?: string;
+  fallbackName?: string;
+  fallbackEmail?: string;
+  fallbackPicture?: string;
+}): AuthUser {
+  const {
+    provider,
+    backendUser,
+    data,
+    token,
+    accessToken,
+    fallbackId,
+    fallbackName,
+    fallbackEmail,
+    fallbackPicture,
+  } = params;
+  const meta = resolveAuthMeta({ user: backendUser, data, token });
+
+  return {
+    id: meta.id || fallbackId || String(Date.now()),
+    name: meta.name || fallbackName || "Club Member",
+    email: meta.email || fallbackEmail || "",
+    picture:
+      asString(backendUser?.avatar) ||
+      asString(backendUser?.picture) ||
+      fallbackPicture,
+    accessToken,
+    token,
+    provider,
+    role: meta.role,
+    status: meta.status,
+    fatherName: asString(backendUser?.fatherName),
+    motherName: asString(backendUser?.motherName),
+    bloodGroup: asString(backendUser?.bloodGroup),
+    bio: asString(backendUser?.bio),
+    summary: asString(backendUser?.summary),
+    profession: asString(backendUser?.profession),
+    village: asString(backendUser?.village),
+    currentLocation: asString(backendUser?.currentLocation),
+    whatsappNumber: asString(backendUser?.whatsappNumber),
+    facebookProfile: asString(backendUser?.facebookProfile),
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -111,15 +167,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const { setRole } = useRole();
 
+  const persistSession = useCallback(
+    (authUser: AuthUser, token?: string) => {
+      const viewRole = toViewRole(authUser.role);
+      setUser(authUser);
+      setRole(viewRole);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
+        localStorage.setItem("role", viewRole);
+        if (token) {
+          localStorage.setItem(TOKEN_KEY, token);
+        }
+      } catch {}
+    },
+    [setRole]
+  );
+
   // Load saved user session on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed: AuthUser = JSON.parse(saved);
-        parsed.role = normalizeRole(parsed.role);
+        const storedToken = localStorage.getItem(TOKEN_KEY);
+        const restored = resolveAuthMeta({
+          user: parsed as unknown as Record<string, unknown>,
+          token: parsed.token || storedToken,
+          preferTokenClaims: true,
+        });
+        parsed.role = restored.role;
+        if (restored.status) parsed.status = restored.status;
         setUser(parsed);
-        setRole(parsed.role);
+        setRole(toViewRole(parsed.role));
       }
     } catch (err) {
       console.error("Failed to restore auth session:", err);
@@ -176,9 +255,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
               // Send access token to backend API if available
               let backendToken: string | undefined;
-              let backendRole: Role = "user";
-              let backendId: string | undefined;
-              let backendUser: Record<string, any> = {};
+              let backendData: Record<string, unknown> = {};
+              let backendUser: Record<string, unknown> = {};
 
               try {
                 const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
@@ -188,16 +266,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 });
 
                 if (apiRes.ok) {
-                  const apiJson = await apiRes.json();
-                  if (apiJson.success && apiJson.data) {
-                    const data = apiJson.data;
-                    backendToken = data.token || data.accessToken;
-                    if (data.user) {
-                      backendUser = data.user;
-                      backendRole = normalizeRole(data.user.role ?? data.role);
-                      if (data.user.id) backendId = data.user.id;
-                    } else if (data.role) {
-                      backendRole = normalizeRole(data.role);
+                  const apiJson = await apiRes.json().catch(() => null);
+                  if (apiJson?.success) {
+                    backendData = (apiJson.data || apiJson) as Record<string, unknown>;
+                    backendToken = extractBackendToken(apiJson, backendData);
+                    if (backendData.user && typeof backendData.user === "object") {
+                      backendUser = backendData.user as Record<string, unknown>;
                     }
                   }
                 }
@@ -205,38 +279,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 console.warn("Backend auth/google sync notice:", apiErr);
               }
 
-              const authUser: AuthUser = {
-                id: backendId || profile.sub || String(Date.now()),
-                name: backendUser.name || backendUser.fullName || profile.name || profile.email?.split("@")[0] || "Google Member",
-                email: backendUser.email || profile.email || "",
-                picture: backendUser.picture || backendUser.avatar || profile.picture,
-                accessToken: response.access_token,
-                token: backendToken,
+              const authUser = buildAuthUser({
                 provider: "google",
-                role: backendRole,
-                fatherName: backendUser.fatherName || undefined,
-                motherName: backendUser.motherName || undefined,
-                bloodGroup: backendUser.bloodGroup || undefined,
-                bio: backendUser.bio || undefined,
-                summary: backendUser.summary || undefined,
-                profession: backendUser.profession || undefined,
-                village: backendUser.village || undefined,
-                currentLocation: backendUser.currentLocation || undefined,
-                whatsappNumber: backendUser.whatsappNumber || undefined,
-                facebookProfile: backendUser.facebookProfile || undefined,
-              };
+                backendUser,
+                data: backendData,
+                token: backendToken,
+                accessToken: response.access_token,
+                fallbackId: profile.sub,
+                fallbackName:
+                  profile.name || profile.email?.split("@")[0] || "Google Member",
+                fallbackEmail: profile.email || "",
+                fallbackPicture: profile.picture,
+              });
 
-              setUser(authUser);
-              setRole(authUser.role);
-
-              try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-                localStorage.setItem("role", authUser.role);
-                if (backendToken) {
-                  localStorage.setItem(TOKEN_KEY, backendToken);
-                }
-              } catch {}
-
+              persistSession(authUser, backendToken);
               resolve(authUser);
             } catch (fetchErr: unknown) {
               const msg = fetchErr instanceof Error ? fetchErr.message : "Error fetching Google profile";
@@ -259,7 +315,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         reject(err);
       }
     });
-  }, [setRole]);
+  }, [persistSession]);
 
   /** Email & password login (communicates with backend API) */
   const loginWithCredentials = useCallback(
@@ -277,42 +333,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const apiJson = await apiRes.json().catch(() => null);
 
           if (apiRes.ok && apiJson?.success) {
-            const data = apiJson.data || {};
-            const backendUser = data.user || {};
-            const backendToken = data.token || data.accessToken;
-            const backendRole = normalizeRole(backendUser.role ?? data.role);
+            const data = (apiJson.data || apiJson) as Record<string, unknown>;
+            const backendUser =
+              data.user && typeof data.user === "object"
+                ? (data.user as Record<string, unknown>)
+                : undefined;
+            const backendToken = extractBackendToken(apiJson, data);
 
-            const authUser: AuthUser = {
-              id: backendUser.id || String(Date.now()),
-              name: backendUser.fullName || backendUser.name || email.split("@")[0],
-              email: backendUser.email || email,
-              picture: backendUser.avatar || backendUser.picture,
-              token: backendToken,
+            const authUser = buildAuthUser({
               provider: "credentials",
-              role: backendRole,
-              fatherName: backendUser.fatherName || undefined,
-              motherName: backendUser.motherName || undefined,
-              bloodGroup: backendUser.bloodGroup || undefined,
-              bio: backendUser.bio || undefined,
-              summary: backendUser.summary || undefined,
-              profession: backendUser.profession || undefined,
-              village: backendUser.village || undefined,
-              currentLocation: backendUser.currentLocation || undefined,
-              whatsappNumber: backendUser.whatsappNumber || undefined,
-              facebookProfile: backendUser.facebookProfile || undefined,
-            };
+              backendUser,
+              data,
+              token: backendToken,
+              fallbackName: email.split("@")[0],
+              fallbackEmail: email,
+            });
 
-            setUser(authUser);
-            setRole(backendRole);
-
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-              localStorage.setItem("role", backendRole);
-              if (backendToken) {
-                localStorage.setItem(TOKEN_KEY, backendToken);
-              }
-            } catch {}
-
+            persistSession(authUser, backendToken);
             return authUser;
           } else {
             const msg =
@@ -331,24 +368,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Simulated local fallback
-      const authUser: AuthUser = {
-        id: String(Date.now()),
-        name: email.split("@")[0] || "Club Member",
-        email,
+      const authUser = buildAuthUser({
         provider: "credentials",
-        role: "user",
-      };
+        fallbackName: email.split("@")[0] || "Club Member",
+        fallbackEmail: email,
+      });
 
-      setUser(authUser);
-      setRole("user");
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-        localStorage.setItem("role", "user");
-      } catch {}
-
+      persistSession(authUser);
       return authUser;
     },
-    [setRole]
+    [persistSession]
   );
 
   /** Registration (communicates with backend API) */
@@ -370,31 +399,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const apiJson = await apiRes.json().catch(() => null);
 
         if (apiRes.ok && apiJson?.success) {
-          const data = apiJson.data || {};
-          const backendUser = data.user || {};
-          const backendToken = data.token || data.accessToken;
-          const backendRole = normalizeRole(backendUser.role ?? data.role);
+          const data = (apiJson.data || apiJson) as Record<string, unknown>;
+          const backendUser =
+            data.user && typeof data.user === "object"
+              ? (data.user as Record<string, unknown>)
+              : undefined;
+          const backendToken = extractBackendToken(apiJson, data);
 
-          const authUser: AuthUser = {
-            id: backendUser.id || String(Date.now()),
-            name: backendUser.fullName || fullName,
-            email: backendUser.email || email,
-            token: backendToken,
+          const authUser = buildAuthUser({
             provider: "credentials",
-            role: backendRole,
-          };
+            backendUser,
+            data,
+            token: backendToken,
+            fallbackName: fullName,
+            fallbackEmail: email,
+          });
 
-          setUser(authUser);
-          setRole(backendRole);
-
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-            localStorage.setItem("role", backendRole);
-            if (backendToken) {
-              localStorage.setItem(TOKEN_KEY, backendToken);
-            }
-          } catch {}
-
+          persistSession(authUser, backendToken);
           return authUser;
         } else {
           const msg =
@@ -412,7 +433,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Registration failed");
       }
     },
-    [setRole]
+    [persistSession]
   );
 
   /** Update user profile fields (matches Prisma User schema) */
@@ -498,6 +519,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       } catch (err) {
         console.warn("Backend profile sync notice (saved locally):", err);
+      }
+
+      updatedUser.role = normalizeRole(updatedUser.role);
+      if (updatedUser.status) {
+        updatedUser.status = normalizeUserStatus(updatedUser.status);
       }
 
       // 2. Persist in local state & localStorage

@@ -6,14 +6,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
-import type { Role } from "@/types";
 import { useAuth } from "@/context/AuthContext";
-
-function getPostLoginRedirect(role: Role | string | undefined, locale: Locale): string {
-  return String(role || "").trim().toLowerCase() === "admin"
-    ? `/${locale}/dashboard`
-    : `/${locale}`;
-}
+import { getPostLoginRedirect } from "@/lib/authRole";
 
 export default function LoginForm({
   locale,

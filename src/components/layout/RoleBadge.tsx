@@ -1,26 +1,33 @@
 "use client";
 
+import { getRoleDisplayMeta, normalizeRole } from "@/lib/authRole";
+
 interface RoleBadgeProps {
-  isAdmin: boolean;
+  role?: unknown;
+  isAdmin?: boolean;
   isBn?: boolean;
   className?: string;
 }
 
-/** Renders an emerald/gold Admin tag or soft mint Member tag. */
+/** Renders a role pill for USER, MODERATOR, ADMIN, or SUPER_ADMIN. */
 export default function RoleBadge({
-  isAdmin,
+  role,
+  isAdmin = false,
   isBn = false,
   className = "",
 }: RoleBadgeProps) {
+  const resolvedRole = normalizeRole(
+    role !== undefined ? role : isAdmin ? "ADMIN" : "USER"
+  );
+  const meta = getRoleDisplayMeta(resolvedRole);
+
   return (
     <span
       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold leading-relaxed ${
-        isAdmin
-          ? "bg-gradient-to-r from-[#006a4e] to-[#004d38] text-white border border-[#f2b705]/45 shadow-2xs"
-          : "bg-[#EEF8F1] text-[#006a4e] border border-[#A9DCBB]"
+        meta.badgeClass
       } ${isBn ? "" : "uppercase tracking-wider"} ${className}`}
     >
-      {isAdmin ? (
+      {meta.role === "ADMIN" || meta.role === "SUPER_ADMIN" ? (
         <svg
           className="w-3 h-3 text-[#f2b705] shrink-0"
           viewBox="0 0 20 20"
@@ -35,13 +42,13 @@ export default function RoleBadge({
         </svg>
       ) : (
         <span
-          className="w-1.5 h-1.5 rounded-full bg-[#00a67e] shrink-0"
+          className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+            meta.role === "MODERATOR" ? "bg-[#d97706]" : "bg-[#00a67e]"
+          }`}
           aria-hidden="true"
         />
       )}
-      <span>
-        {isAdmin ? (isBn ? "অ্যাডমিন" : "Admin") : isBn ? "সদস্য" : "Member"}
-      </span>
+      <span>{isBn ? meta.labelBn : meta.labelEn}</span>
     </span>
   );
 }
