@@ -28,7 +28,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
-  loginWithGoogle: () => Promise<AuthUser>;
+  loginWithGoogle: (credential: string) => Promise<AuthUser>;
   loginWithCredentials: (email: string, password?: string) => Promise<AuthUser>;
   registerWithCredentials: (
     fullName: string,
@@ -70,11 +70,11 @@ export function decodeJwt(token: string) {
 export function ensureGoogleScript(): Promise<void> {
   return new Promise((resolve, reject) => {
     if (typeof window === "undefined") return resolve();
-    if (window.google?.accounts?.oauth2) return resolve();
+    if (window.google?.accounts?.id) return resolve();
 
     const existing = document.getElementById("google-gsi-client") as HTMLScriptElement | null;
     if (existing) {
-      if (window.google?.accounts) return resolve();
+      if (window.google?.accounts?.id) return resolve();
       existing.addEventListener("load", () => resolve());
       existing.addEventListener("error", (e) => reject(e));
       return;
@@ -239,130 +239,70 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const clearError = useCallback(() => setError(null), []);
 
-  /** Google OAuth sign-in flow */
-  const loginWithGoogle = useCallback((): Promise<AuthUser> => {
-    return new Promise(async (resolve, reject) => {
+  /** Google ID token (credential JWT) sign-in flow */
+  const loginWithGoogle = useCallback(
+    async (credential: string): Promise<AuthUser> => {
       setError(null);
 
+      if (!credential || !credential.trim()) {
+        const msg = "Google ID token is required";
+        setError(msg);
+        throw new Error(msg);
+      }
+
       try {
-        await ensureGoogleScript();
-
-        if (!window.google?.accounts?.oauth2) {
-          const err = new Error("Google Identity Services failed to load. Please check your internet connection.");
-          setError(err.message);
-          return reject(err);
-        }
-
-        const client = window.google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: "email profile openid",
-          callback: async (response) => {
-            if (response.error || !response.access_token) {
-              const errMsg =
-                response.error_description ||
-                response.error ||
-                "Google access token was not returned";
-              setError(errMsg);
-              return reject(new Error(errMsg));
-            }
-
-            try {
-              const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ token: response.access_token }),
-              });
-
-              const apiJson = await apiRes.json().catch(() => null);
-
-              if (!apiRes.ok || !apiJson?.success) {
-                throw new Error(
-                  extractApiErrorMessage(apiJson, "Google login failed")
-                );
-              }
-
-              const backendData = (apiJson.data || apiJson) as Record<
-                string,
-                unknown
-              >;
-              const backendToken = extractBackendToken(apiJson, backendData);
-              const backendUser =
-                backendData.user && typeof backendData.user === "object"
-                  ? (backendData.user as Record<string, unknown>)
-                  : {};
-
-              // Enrich missing Google profile details after backend authentication succeeds
-              let profile: {
-                sub?: string;
-                name?: string;
-                email?: string;
-                picture?: string;
-              } = {};
-              const needsGoogleProfile =
-                (!asString(backendUser.name) &&
-                  !asString(backendUser.fullName)) ||
-                !asString(backendUser.email) ||
-                (!asString(backendUser.picture) &&
-                  !asString(backendUser.avatar));
-
-              if (needsGoogleProfile) {
-                try {
-                  const userInfoRes = await fetch(
-                    "https://www.googleapis.com/oauth2/v3/userinfo",
-                    {
-                      headers: {
-                        Authorization: `Bearer ${response.access_token}`,
-                      },
-                    }
-                  );
-                  if (userInfoRes.ok) {
-                    profile = await userInfoRes.json();
-                  }
-                } catch {}
-              }
-
-              const authUser = buildAuthUser({
-                provider: "google",
-                backendUser,
-                data: backendData,
-                token: backendToken,
-                accessToken: response.access_token,
-                fallbackId: profile.sub,
-                fallbackName:
-                  profile.name ||
-                  profile.email?.split("@")[0] ||
-                  "Google Member",
-                fallbackEmail: profile.email || "",
-                fallbackPicture: profile.picture,
-              });
-
-              persistSession(authUser, backendToken);
-              resolve(authUser);
-            } catch (fetchErr: unknown) {
-              const msg =
-                fetchErr instanceof Error
-                  ? fetchErr.message
-                  : "Google login failed";
-              setError(msg);
-              reject(fetchErr instanceof Error ? fetchErr : new Error(msg));
-            }
-          },
-          error_callback: (err: unknown) => {
-            const msg = err && typeof err === "object" && "message" in err ? String(err.message) : "Google popup closed or blocked";
-            setError(msg);
-            reject(new Error(msg));
-          },
+        const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: credential }),
         });
 
-        // Trigger Google popup prompt
-        client.requestAccessToken({ prompt: "select_account" });
-      } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : "Google authentication error";
+        const apiJson = await apiRes.json().catch(() => null);
+
+        if (!apiRes.ok || !apiJson?.success) {
+          throw new Error(
+            extractApiErrorMessage(apiJson, "Google login failed")
+          );
+        }
+
+        const backendData = (apiJson.data || apiJson) as Record<
+          string,
+          unknown
+        >;
+        const backendToken = extractBackendToken(apiJson, backendData);
+        const backendUser =
+          backendData.user && typeof backendData.user === "object"
+            ? (backendData.user as Record<string, unknown>)
+            : {};
+
+        // Decode Google ID token JWT only as fallback profile metadata after backend succeeds
+        const googleClaims = decodeJwtPayload(credential);
+
+        const authUser = buildAuthUser({
+          provider: "google",
+          backendUser,
+          data: backendData,
+          token: backendToken,
+          fallbackId: asString(googleClaims?.sub),
+          fallbackName:
+            asString(googleClaims?.name) ||
+            asString(googleClaims?.email)?.split("@")[0] ||
+            "Google Member",
+          fallbackEmail: asString(googleClaims?.email) || "",
+          fallbackPicture: asString(googleClaims?.picture),
+        });
+
+        persistSession(authUser, backendToken);
+        return authUser;
+      } catch (fetchErr: unknown) {
+        const msg =
+          fetchErr instanceof Error ? fetchErr.message : "Google login failed";
         setError(msg);
-        reject(err);
+        throw fetchErr instanceof Error ? fetchErr : new Error(msg);
       }
-    });
-  }, [persistSession]);
+    },
+    [persistSession]
+  );
 
   /** Email & password login (communicates with backend API) */
   const loginWithCredentials = useCallback(
