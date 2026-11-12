@@ -1,4 +1,4 @@
-# shanti_sangha_client
+# shanti_sangho_server
 
 Website for Shanti Sangha sporting club. English + Bangla, member dashboard, admin dashboard, green theme.
 
