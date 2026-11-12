@@ -382,30 +382,20 @@ export default function DashboardSidebar({
           >
             <div className="flex items-center gap-3 min-w-0">
               <div className="relative shrink-0">
-                {user?.picture ? (
-                  <div className="relative h-10 w-10 rounded-full overflow-hidden ring-1 ring-slate-200">
-                    <Image
-                      src={user.picture}
-                      alt={displayName}
-                      fill
-                      unoptimized
-                      className="object-cover"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#006a4e] text-white font-extrabold text-sm">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  src={user?.picture}
+                  name={displayName}
+                  className="h-10 w-10 ring-1 ring-slate-200"
+                />
               </div>
 
               <div className="min-w-0 flex-1 text-left">
                 <h5 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-[#006a4e] transition-colors leading-tight">
                   {displayName}
                 </h5>
-                <p className="text-[11px] font-semibold text-slate-500 mt-0.5 truncate">
-                  {isAdmin ? (isBn ? "অ্যাডমিন" : "Admin") : (isBn ? "মেম্বার" : "Member")}
-                </p>
+                <div className="mt-1">
+                  <RoleBadge isAdmin={resolvedIsAdmin} isBn={isBn} />
+                </div>
               </div>
             </div>
 
