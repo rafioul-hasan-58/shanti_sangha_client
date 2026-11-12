@@ -179,7 +179,7 @@ export default function GoogleAuthButton({
   const showFallback = !gisReady || hideHostForBusyState;
 
   return (
-    <div ref={wrapperRef} className="w-full mb-4">
+    <div ref={wrapperRef} className="w-full mb-3.5 md:mb-4">
       <div
         ref={buttonHostRef}
         className={
