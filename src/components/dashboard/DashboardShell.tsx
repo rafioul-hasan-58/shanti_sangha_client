@@ -1119,20 +1119,7 @@ export default function DashboardShell({
             activeTab === "admin_users_all" ||
             activeTab === "admin_users_pending") &&
             isAdmin && (
-              <AdminUsersView
-                locale={locale}
-                currentUserId={user?.id}
-                subTab={
-                  activeTab === "admin_users_pending" ? "pending" : "all"
-                }
-                onSubTabChange={(next) =>
-                  setActiveTab(
-                    next === "pending"
-                      ? "admin_users_pending"
-                      : "admin_users_all"
-                  )
-                }
-              />
+              <AdminUsersView locale={locale} currentUserId={user?.id} />
             )}
 
           {/* ===================================================== */}

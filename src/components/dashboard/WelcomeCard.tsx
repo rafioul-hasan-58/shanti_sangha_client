@@ -1,16 +1,24 @@
 "use client";
 
-import React from "react";
+import React, { type ReactNode } from "react";
 import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface WelcomeCardProps {
   adminName?: string;
   locale?: string;
+  badgeText?: string;
+  title?: string;
+  subtitle?: string;
+  rightContent?: ReactNode;
 }
 
 export default function WelcomeCard({
   adminName = "Admin",
   locale = "en",
+  badgeText,
+  title,
+  subtitle,
+  rightContent,
 }: WelcomeCardProps) {
   const isBn = locale === "bn";
 
@@ -22,6 +30,18 @@ export default function WelcomeCard({
     month: "long",
     day: "numeric",
   });
+
+  const resolvedBadge =
+    badgeText ??
+    (isBn ? "অ্যাডমিন পোর্টাল এক্সিকিউটিভ প্যানেল" : "ADMIN EXECUTIVE SUITE");
+  const resolvedTitle =
+    title ??
+    (isBn ? `স্বাগতম, ${adminName}!` : `Welcome back, ${adminName}!`);
+  const resolvedSubtitle =
+    subtitle ??
+    (isBn
+      ? "সাভারচালা শান্তি সংঘের আর্থিক আয়-ব্যয় হিসাব, টুর্নামেন্ট বাজেট ও ক্লাব পরিচালনা নিয়ন্ত্রণ কেন্দ্র।"
+      : `${FULL_BRAND_NAME_EN} financial oversight, tournament budget allocation & operations command.`);
 
   return (
     <div
@@ -40,31 +60,30 @@ export default function WelcomeCard({
           {/* Gold Accent Tag */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/20 border border-[#f2b705]/40 text-[#f2b705] text-xs font-bold tracking-wide">
             <span className="w-1.5 h-1.5 rounded-full bg-[#f2b705] animate-pulse" />
-            <span>{isBn ? "অ্যাডমিন পোর্টাল এক্সিকিউটিভ প্যানেল" : "ADMIN EXECUTIVE SUITE"}</span>
+            <span>{resolvedBadge}</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            {isBn ? `স্বাগতম, ${adminName}!` : `Welcome back, ${adminName}!`}
+            {resolvedTitle}
           </h1>
 
           <p className="text-xs sm:text-sm text-emerald-50/90 leading-relaxed font-medium">
-            {isBn
-              ? "সাভারচালা শান্তি সংঘের আর্থিক আয়-ব্যয় হিসাব, টুর্নামেন্ট বাজেট ও ক্লাব পরিচালনা নিয়ন্ত্রণ কেন্দ্র।"
-              : `${FULL_BRAND_NAME_EN} financial oversight, tournament budget allocation & operations command.`}
+            {resolvedSubtitle}
           </p>
         </div>
 
-        {/* Date and Quick Status Pill */}
+        {/* Date / Custom Right Slot */}
         <div className="shrink-0 flex flex-col sm:items-end justify-center">
-          <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-right">
-            <p className="text-[11px] font-bold text-[#f2b705] uppercase tracking-wider">
-              {isBn ? "আজকের তারিখ" : "TODAY"}
-            </p>
-            <p className="text-sm font-extrabold text-white">{dateStr}</p>
-          </div>
+          {rightContent ?? (
+            <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-right">
+              <p className="text-[11px] font-bold text-[#f2b705] uppercase tracking-wider">
+                {isBn ? "আজকের তারিখ" : "TODAY"}
+              </p>
+              <p className="text-sm font-extrabold text-white">{dateStr}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 }
-

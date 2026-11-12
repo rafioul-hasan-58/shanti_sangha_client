@@ -26,22 +26,7 @@
           "labelBn": "ইউজার ম্যানেজমেন্ট",
           "labelEn": "User Management",
           "icon": "users_cog",
-          "type": "tab",
-          "subItems": [
-            {
-              "id": "admin_users_all",
-              "labelBn": "সকল ব্যবহারকারী",
-              "labelEn": "All Users",
-              "type": "tab"
-            },
-            {
-              "id": "admin_users_pending",
-              "labelBn": "অপেক্ষমাণ ব্যবহারকারী",
-              "labelEn": "Pending Users",
-              "type": "tab",
-              "showPendingBadge": false
-            }
-          ]
+          "type": "tab"
         }
       ]
     }

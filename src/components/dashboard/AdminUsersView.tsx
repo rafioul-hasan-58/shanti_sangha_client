@@ -12,9 +12,12 @@ import type {
   UsersQueryParams,
 } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
+import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
+import WelcomeCard from "./WelcomeCard";
 import UserManagementTable from "./UserManagementTable";
 import UserManagementCards from "./UserManagementCards";
 import UserFilterBar, { type UserFiltersState } from "./UserFilterBar";
+import UserPaginationBar from "./UserPaginationBar";
 import UserDetailsModal from "./UserDetailsModal";
 import UserEditModal from "./UserEditModal";
 import UserDeleteConfirmModal from "./UserDeleteConfirmModal";
@@ -114,22 +117,29 @@ export default function AdminUsersView({
 
     try {
       const res = await fetchUsers(params);
-      const resultUsers = isPendingView
-        ? res.users.filter((u) => !u.adminVerified || u.status === "INACTIVE")
-        : res.users;
-      setUsers(resultUsers);
-      setMeta(
-        isPendingView
-          ? {
-              total: resultUsers.length,
-              page: 1,
-              limit: resultUsers.length || 50,
-              totalPages: 1,
-              hasNextPage: false,
-              hasPreviousPage: false,
-            }
-          : res.meta
-      );
+      if (isPendingView) {
+        const pendingAll = res.users.filter(
+          (u) => !u.adminVerified || u.status === "INACTIVE"
+        );
+        const total = pendingAll.length;
+        const limit = filters.limit;
+        const totalPages = Math.max(1, Math.ceil(total / limit));
+        const safePage = Math.min(page, totalPages);
+        const sliceStart = (safePage - 1) * limit;
+
+        setUsers(pendingAll.slice(sliceStart, sliceStart + limit));
+        setMeta({
+          total,
+          page: safePage,
+          limit,
+          totalPages,
+          hasNextPage: safePage < totalPages,
+          hasPreviousPage: safePage > 1,
+        });
+      } else {
+        setUsers(res.users);
+        setMeta(res.meta);
+      }
       setIsMockFallback(Boolean(res.isMockFallback));
       setFeedback((prev) => (prev?.type === "error" ? null : prev));
     } catch (err) {
@@ -275,78 +285,97 @@ export default function AdminUsersView({
     }
   };
 
-  const startIndex = meta.total === 0 ? 0 : (meta.page - 1) * meta.limit + 1;
-  const endIndex = Math.min(meta.page * meta.limit, meta.total);
+  const handleLimitChange = (nextLimit: number) => {
+    setFilters((prev) => ({ ...prev, limit: nextLimit }));
+    setPage(1);
+  };
 
   return (
-    <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs space-y-5 animate-in fade-in duration-300">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-        <div>
-          <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[var(--primary)] bg-[#006a4e]/10 px-2.5 py-0.5 rounded-full mb-1">
-            {isBn ? "অ্যাডমিন কন্ট্রোল" : "Admin Control"}
-          </span>
-          <h3 className="text-lg sm:text-xl font-black text-[var(--text)]">
-            {isBn ? "ইউজার ম্যানেজমেন্ট" : "User Management"}
-          </h3>
-          <p className="text-xs text-slate-500">
-            {isBn
-              ? "সকল নিবন্ধিত ব্যবহারকারীর তালিকা, রোল, ভেরিফিকেশন ও স্ট্যাটাস পরিচালনা করুন"
-              : "Search, filter, inspect, edit, block/unblock, and manage registered users"}
-          </p>
-        </div>
+    <div className="space-y-6 animate-in fade-in duration-300">
+      {/* Themed Banner Header matching Overview */}
+      <WelcomeCard
+        locale={locale}
+        badgeText={
+          isBn ? "ইউজার ম্যানেজমেন্ট ও অ্যাক্সেস কন্ট্রোল" : "USER MANAGEMENT SUITE"
+        }
+        title={isBn ? "ইউজার ম্যানেজমেন্ট" : "User Management"}
+        subtitle={
+          isBn
+            ? "সাভারচালা শান্তি সংঘের নিবন্ধিত সদস্য, অপেক্ষমাণ অনুমোদন, রোল ও অ্যাকাউন্ট স্ট্যাটাস পরিচালনা করুন।"
+            : `${FULL_BRAND_NAME_EN} member directory, pending registration approvals, roles & access control.`
+        }
+        rightContent={
+          <div className="flex items-center gap-2.5">
+            <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-left sm:text-right">
+              <p className="text-[10px] font-bold text-[#f2b705] uppercase tracking-wider">
+                {isPendingView
+                  ? isBn ? "অপেক্ষমাণ" : "PENDING"
+                  : isBn ? "মোট ব্যবহারকারী" : "TOTAL USERS"}
+              </p>
+              <p className="text-base font-extrabold text-white">
+                {meta.total}{" "}
+                <span className="text-xs font-semibold text-emerald-100">
+                  {isPendingView
+                    ? isBn ? "জন" : "Pending"
+                    : isBn ? "জন" : "Users"}
+                </span>
+              </p>
+            </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <span className="px-3 py-1 rounded-full bg-[#006a4e]/10 text-[var(--primary)] text-xs font-extrabold">
-            {meta.total}{" "}
+            <button
+              type="button"
+              onClick={() => void loadUsers()}
+              disabled={loading}
+              className="h-11 px-4 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs font-extrabold transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              {loading
+                ? isBn ? "লোড হচ্ছে..." : "Loading..."
+                : isBn ? "রিফ্রেশ" : "Refresh"}
+            </button>
+          </div>
+        }
+      />
+
+      <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs space-y-5">
+        {/* Sub-Tabs Switcher: All Users | Pending Users */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+          <div className="grid grid-cols-2 sm:inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => switchSubTab("all")}
+              className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                !isPendingView
+                  ? "bg-[#006a4e] text-white shadow-xs"
+                  : "text-[var(--text)] hover:text-[#006a4e]"
+              }`}
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span className="truncate">{isBn ? "সকল ব্যবহারকারী" : "All Users"}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => switchSubTab("pending")}
+              className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                isPendingView
+                  ? "bg-[#006a4e] text-white shadow-xs"
+                  : "text-[var(--text)] hover:text-[#006a4e]"
+              }`}
+            >
+              <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="truncate">{isBn ? "অপেক্ষমাণ ব্যবহারকারী" : "Pending Users"}</span>
+            </button>
+          </div>
+
+          <span className="text-xs font-semibold text-slate-500 hidden sm:inline">
             {isPendingView
-              ? isBn ? "জন অপেক্ষমাণ" : "Pending"
-              : isBn ? "জন ব্যবহারকারী" : "Users"}
+              ? isBn ? "অনুমোদনের অপেক্ষায় থাকা সদস্য যাচাই করুন" : "Review and approve awaiting registrations"
+              : isBn ? "সকল নিবন্ধিত ব্যবহারকারীর তালিকা পরিচালনা করুন" : "Browse, filter, edit and control user accounts"}
           </span>
-          <button
-            type="button"
-            onClick={() => void loadUsers()}
-            disabled={loading}
-            className="px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-bold text-slate-700 disabled:opacity-50 cursor-pointer"
-          >
-            {loading
-              ? isBn ? "লোড হচ্ছে..." : "Loading..."
-              : isBn ? "রিফ্রেশ" : "Refresh"}
-          </button>
         </div>
-      </div>
-
-      {/* Sub-Tabs Switcher: All Users | Pending Users */}
-      <div className="grid grid-cols-2 sm:inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15 w-full sm:w-auto">
-        <button
-          type="button"
-          onClick={() => switchSubTab("all")}
-          className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
-            !isPendingView
-              ? "bg-[#006a4e] text-white shadow-xs"
-              : "text-[var(--text)] hover:text-[#006a4e]"
-          }`}
-        >
-          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          <span className="truncate">{isBn ? "সকল ব্যবহারকারী" : "All Users"}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => switchSubTab("pending")}
-          className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-extrabold inline-flex items-center justify-center gap-2 transition-all cursor-pointer ${
-            isPendingView
-              ? "bg-[#006a4e] text-white shadow-xs"
-              : "text-[var(--text)] hover:text-[#006a4e]"
-          }`}
-        >
-          <svg className="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span className="truncate">{isBn ? "অপেক্ষমাণ ব্যবহারকারী" : "Pending Users"}</span>
-        </button>
-      </div>
 
       {isMockFallback && (
         <div className="rounded-2xl bg-[#f2b705]/15 border border-[#f2b705]/40 px-4 py-2.5 text-xs font-semibold text-[#876200]">
@@ -382,6 +411,17 @@ export default function AdminUsersView({
         hideStatusFilter={isPendingView}
         onChange={handleFilterChange}
         onReset={handleResetFilters}
+      />
+
+      {/* Top Pagination Bar */}
+      <UserPaginationBar
+        meta={meta}
+        limit={filters.limit}
+        loading={loading}
+        isBn={isBn}
+        isPendingView={isPendingView}
+        onPageChange={(nextPage) => setPage(nextPage)}
+        onLimitChange={handleLimitChange}
       />
 
       {/* Users List: Loading / Empty / Desktop Table + Mobile Cards */}
@@ -426,38 +466,16 @@ export default function AdminUsersView({
         </>
       )}
 
-      {/* Pagination Footer */}
-      {meta.total > 0 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs text-slate-600">
-          <p className="font-semibold">
-            {isBn
-              ? `মোট ${meta.total} জনের মধ্যে ${startIndex}–${endIndex} দেখানো হচ্ছে`
-              : `Showing ${startIndex}–${endIndex} of ${meta.total} users`}
-          </p>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={!meta.hasPreviousPage || loading}
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-bold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {isBn ? "← পূর্ববর্তী" : "← Previous"}
-            </button>
-            <span className="px-2.5 font-extrabold text-[var(--text)]">
-              {meta.page} / {meta.totalPages}
-            </span>
-            <button
-              type="button"
-              disabled={!meta.hasNextPage || loading}
-              onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-bold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
-            >
-              {isBn ? "পরবর্তী →" : "Next →"}
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Bottom Pagination Bar */}
+      <UserPaginationBar
+        meta={meta}
+        limit={filters.limit}
+        loading={loading}
+        isBn={isBn}
+        isPendingView={isPendingView}
+        onPageChange={(nextPage) => setPage(nextPage)}
+        onLimitChange={handleLimitChange}
+      />
 
       {/* Modals */}
       <UserDetailsModal
@@ -506,6 +524,7 @@ export default function AdminUsersView({
           }
         }}
       />
+      </div>
     </div>
   );
 }

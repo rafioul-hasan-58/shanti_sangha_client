@@ -266,31 +266,11 @@ export default function UserFilterBar({
           <span>{filters.sortOrder === "desc" ? "DESC" : "ASC"}</span>
         </button>
 
-        <ThemedSelect
-          ariaLabel={isBn ? "প্রতি পেজ" : "Items per page"}
-          value={String(filters.limit)}
-          align="right"
-          className={`h-10 sm:h-9 sm:w-auto ${
-            hasActiveFilters ? "w-full" : "col-span-2 sm:col-span-1 w-full"
-          }`}
-          icon={
-            <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          }
-          onChange={(val) => onChange("limit", Number(val))}
-          options={[
-            { value: "10", label: `10 / ${isBn ? "পেজ" : "page"}` },
-            { value: "20", label: `20 / ${isBn ? "পেজ" : "page"}` },
-            { value: "50", label: `50 / ${isBn ? "পেজ" : "page"}` },
-          ]}
-        />
-
         {hasActiveFilters && (
           <button
             type="button"
             onClick={onReset}
-            className="w-full sm:w-auto h-10 sm:h-9 px-3 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="col-span-2 sm:col-span-1 w-full sm:w-auto h-10 sm:h-9 px-3 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
