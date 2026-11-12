@@ -105,7 +105,14 @@ function NavIcon({ name, className = "w-5 h-5 shrink-0" }: { name: string; class
     case "users_cog":
       return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+          <circle cx="9" cy="7.5" r="3.5" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.5 20a6.5 6.5 0 0110.2-5.3" />
+          <circle cx="18" cy="15.5" r="2.2" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M18 11.8v1.2m0 5v1.2m3.7-3.7h-1.2m-5 0h-1.2m6.3-2.6l-.85.85m-3.9 3.9l-.85.85m5.6 0l-.85-.85m-3.9-3.9l-.85-.85"
+          />
         </svg>
       );
     case "live":
