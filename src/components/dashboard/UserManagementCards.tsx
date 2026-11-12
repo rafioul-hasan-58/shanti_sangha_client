@@ -2,6 +2,7 @@
 
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
+import ThemedSelect from "@/components/common/ThemedSelect";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -111,19 +112,14 @@ export default function UserManagementCards({
 
             {/* Role Selector */}
             <div className="flex items-center gap-2">
-              <select
-                aria-label={`${isBn ? "রোল পরিবর্তন" : "Change role for"} ${u.fullName}`}
+              <ThemedSelect
+                ariaLabel={`${isBn ? "রোল পরিবর্তন" : "Change role for"} ${u.fullName}`}
                 value={u.role}
                 disabled={isSelf || isBusy}
-                onChange={(e) => onRoleChange(u.id, e.target.value as Role)}
-                className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 focus:border-[#006a4e] outline-none disabled:opacity-50"
-              >
-                {ROLE_OPTIONS.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
+                className="flex-1"
+                onChange={(nextRole) => onRoleChange(u.id, nextRole as Role)}
+                options={ROLE_OPTIONS.map((r) => ({ value: r, label: r }))}
+              />
 
               <button
                 type="button"

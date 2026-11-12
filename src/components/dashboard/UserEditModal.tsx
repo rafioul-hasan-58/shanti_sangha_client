@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
+import ThemedSelect from "@/components/common/ThemedSelect";
 import { BLOOD_GROUP_OPTIONS, toPrismaBloodGroup } from "@/lib/bloodGroup";
 import { updateUserById } from "@/lib/api/users";
 import type {
@@ -199,18 +200,15 @@ export default function UserEditModal({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label className={LABEL_CLASS}>{isBn ? "রোল" : "Role"}</label>
-              <select
+              <ThemedSelect
+                ariaLabel={isBn ? "রোল" : "Role"}
                 disabled={isSelf}
                 value={form.role}
-                onChange={(e) => setField("role", e.target.value as Role)}
-                className={`${INPUT_CLASS} disabled:opacity-60`}
-              >
-                {ROLE_OPTIONS.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
+                size="md"
+                className="w-full bg-white"
+                onChange={(val) => setField("role", val)}
+                options={ROLE_OPTIONS.map((r) => ({ value: r, label: r }))}
+              />
               {isSelf && (
                 <p className="text-[10px] text-slate-400 mt-1">
                   {isBn ? "নিজের রোল পরিবর্তন করা যায় না" : "Cannot change your own role"}
@@ -220,17 +218,18 @@ export default function UserEditModal({
 
             <div>
               <label className={LABEL_CLASS}>{isBn ? "স্ট্যাটাস" : "Status"}</label>
-              <select
+              <ThemedSelect
+                ariaLabel={isBn ? "স্ট্যাটাস" : "Status"}
                 value={form.status}
-                onChange={(e) => setField("status", e.target.value as UserStatus)}
-                className={INPUT_CLASS}
-              >
-                {STATUS_OPTIONS.map((s) => (
-                  <option key={s} value={s} disabled={isSelf && s === "SUSPENDED"}>
-                    {s}
-                  </option>
-                ))}
-              </select>
+                size="md"
+                className="w-full bg-white"
+                onChange={(val) => setField("status", val)}
+                options={STATUS_OPTIONS.map((s) => ({
+                  value: s,
+                  label: s,
+                  disabled: isSelf && s === "SUSPENDED",
+                }))}
+              />
               {isSelf && (
                 <p className="text-[10px] text-slate-400 mt-1">
                   {isBn ? "নিজেকে সাসপেন্ড করা যায় না" : "Cannot suspend own account"}
@@ -242,19 +241,17 @@ export default function UserEditModal({
               <label className={LABEL_CLASS}>
                 {isBn ? "মেম্বারশিপ ধরন" : "Membership Type"}
               </label>
-              <select
+              <ThemedSelect
+                ariaLabel={isBn ? "মেম্বারশিপ ধরন" : "Membership Type"}
                 value={form.membershipType}
-                onChange={(e) =>
-                  setField("membershipType", e.target.value as MembershipType)
-                }
-                className={INPUT_CLASS}
-              >
-                {MEMBERSHIP_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {isBn ? opt.labelBn : opt.labelEn}
-                  </option>
-                ))}
-              </select>
+                size="md"
+                className="w-full bg-white"
+                onChange={(val) => setField("membershipType", val)}
+                options={MEMBERSHIP_OPTIONS.map((opt) => ({
+                  value: opt.value,
+                  label: isBn ? opt.labelBn : opt.labelEn,
+                }))}
+              />
             </div>
           </div>
 
@@ -297,17 +294,17 @@ export default function UserEditModal({
 
           <div>
             <label className={LABEL_CLASS}>{isBn ? "রক্তের গ্রুপ" : "Blood Group"}</label>
-            <select
+            <ThemedSelect
+              ariaLabel={isBn ? "রক্তের গ্রুপ" : "Blood Group"}
               value={form.bloodGroup}
-              onChange={(e) => setField("bloodGroup", e.target.value as BloodGroup)}
-              className={INPUT_CLASS}
-            >
-              {BLOOD_GROUP_OPTIONS.map((bg) => (
-                <option key={bg.value} value={bg.value}>
-                  {isBn ? bg.labelBn : bg.labelEn}
-                </option>
-              ))}
-            </select>
+              size="md"
+              className="w-full"
+              onChange={(val) => setField("bloodGroup", val)}
+              options={BLOOD_GROUP_OPTIONS.map((bg) => ({
+                value: bg.value,
+                label: isBn ? bg.labelBn : bg.labelEn,
+              }))}
+            />
           </div>
 
           <div>

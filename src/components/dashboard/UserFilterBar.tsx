@@ -1,5 +1,6 @@
 "use client";
 
+import ThemedSelect from "@/components/common/ThemedSelect";
 import { BLOOD_GROUP_OPTIONS } from "@/lib/bloodGroup";
 import type { SortOrder, UserSortField } from "@/lib/types/dashboard";
 import type { BloodGroup, MembershipType, Role, UserStatus } from "@/types";
@@ -42,9 +43,6 @@ interface UserFilterBarProps {
   onReset: () => void;
 }
 
-const SELECT_CLASS =
-  "h-9 px-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700 focus:bg-white focus:border-[#006a4e] outline-none cursor-pointer";
-
 export default function UserFilterBar({
   filters,
   isBn,
@@ -65,7 +63,7 @@ export default function UserFilterBar({
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <svg
-            className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            className="w-4 h-4 text-[#006a4e]/70 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -86,7 +84,7 @@ export default function UserFilterBar({
                 ? "নাম, ইমেইল, ফোন, গ্রাম বা পেশা..."
                 : "Search name, email, phone, village, profession..."
             }
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-slate-200 bg-slate-50 text-sm text-[var(--text)] placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] outline-none transition-colors"
+            className="w-full h-10 pl-10 pr-4 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/60 text-sm text-[var(--text)] placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/15 outline-none transition-all"
           />
         </div>
 
@@ -100,8 +98,8 @@ export default function UserFilterBar({
                 onClick={() => onChange("status", f.key)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
                   active
-                    ? "bg-[var(--primary)] text-white shadow-2xs"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-[#006a4e] text-white shadow-2xs"
+                    : "bg-[#f7f4ea] text-[var(--text)] hover:bg-[#006a4e]/10 hover:text-[#006a4e]"
                 }`}
               >
                 {isBn ? f.labelBn : f.labelEn}
@@ -113,82 +111,77 @@ export default function UserFilterBar({
 
       {/* Row 2: Role, Membership, Blood Group, Email Verified, Sort & Page Size */}
       <div className="flex flex-wrap items-center gap-2">
-        <select
-          aria-label={isBn ? "রোল ফিল্টার" : "Filter by role"}
+        <ThemedSelect
+          ariaLabel={isBn ? "রোল ফিল্টার" : "Filter by role"}
           value={filters.role}
-          onChange={(e) => onChange("role", e.target.value as Role | "ALL")}
-          className={SELECT_CLASS}
-        >
-          <option value="ALL">{isBn ? "সব রোল" : "All Roles"}</option>
-          {ROLE_OPTIONS.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
+          isFiltered={filters.role !== "ALL"}
+          onChange={(val) => onChange("role", val)}
+          options={[
+            { value: "ALL", label: isBn ? "সব রোল" : "All Roles" },
+            ...ROLE_OPTIONS.map((r) => ({ value: r, label: r })),
+          ]}
+        />
 
-        <select
-          aria-label={isBn ? "মেম্বারশিপ ফিল্টার" : "Filter by membership"}
+        <ThemedSelect
+          ariaLabel={isBn ? "মেম্বারশিপ ফিল্টার" : "Filter by membership"}
           value={filters.membershipType}
-          onChange={(e) =>
-            onChange("membershipType", e.target.value as MembershipType | "ALL")
-          }
-          className={SELECT_CLASS}
-        >
-          <option value="ALL">
-            {isBn ? "সব মেম্বারশিপ" : "All Memberships"}
-          </option>
-          {MEMBERSHIP_OPTIONS.map((m) => (
-            <option key={m.value} value={m.value}>
-              {isBn ? m.labelBn : m.labelEn}
-            </option>
-          ))}
-        </select>
+          isFiltered={filters.membershipType !== "ALL"}
+          onChange={(val) => onChange("membershipType", val)}
+          options={[
+            {
+              value: "ALL",
+              label: isBn ? "সব মেম্বারশিপ" : "All Memberships",
+            },
+            ...MEMBERSHIP_OPTIONS.map((m) => ({
+              value: m.value,
+              label: isBn ? m.labelBn : m.labelEn,
+            })),
+          ]}
+        />
 
-        <select
-          aria-label={isBn ? "রক্তের গ্রুপ ফিল্টার" : "Filter by blood group"}
+        <ThemedSelect
+          ariaLabel={isBn ? "রক্তের গ্রুপ ফিল্টার" : "Filter by blood group"}
           value={filters.bloodGroup}
-          onChange={(e) =>
-            onChange("bloodGroup", e.target.value as BloodGroup | "ALL")
-          }
-          className={SELECT_CLASS}
-        >
-          <option value="ALL">{isBn ? "সব রক্তের গ্রুপ" : "All Blood Groups"}</option>
-          {BLOOD_GROUP_OPTIONS.map((bg) => (
-            <option key={bg.value} value={bg.value}>
-              {bg.display}
-            </option>
-          ))}
-        </select>
+          isFiltered={filters.bloodGroup !== "ALL"}
+          onChange={(val) => onChange("bloodGroup", val)}
+          options={[
+            {
+              value: "ALL",
+              label: isBn ? "সব রক্তের গ্রুপ" : "All Blood Groups",
+            },
+            ...BLOOD_GROUP_OPTIONS.map((bg) => ({
+              value: bg.value,
+              label: bg.display,
+            })),
+          ]}
+        />
 
-        <select
-          aria-label={isBn ? "ইমেইল ভেরিফিকেশন" : "Email verification filter"}
+        <ThemedSelect
+          ariaLabel={isBn ? "ইমেইল ভেরিফিকেশন" : "Email verification filter"}
           value={filters.emailVerified}
-          onChange={(e) =>
-            onChange("emailVerified", e.target.value as "ALL" | "true" | "false")
-          }
-          className={SELECT_CLASS}
-        >
-          <option value="ALL">
-            {isBn ? "ইমেইল ভেরিফিকেশন: সব" : "Email Verified: All"}
-          </option>
-          <option value="true">{isBn ? "ভেরিফায়েড" : "Verified Only"}</option>
-          <option value="false">{isBn ? "অভেরিফায়েড" : "Unverified Only"}</option>
-        </select>
+          isFiltered={filters.emailVerified !== "ALL"}
+          onChange={(val) => onChange("emailVerified", val)}
+          options={[
+            {
+              value: "ALL",
+              label: isBn ? "ইমেইল ভেরিফিকেশন: সব" : "Email Verified: All",
+            },
+            { value: "true", label: isBn ? "ভেরিফায়েড" : "Verified Only" },
+            { value: "false", label: isBn ? "অভেরিফায়েড" : "Unverified Only" },
+          ]}
+        />
 
-        <div className="flex items-center gap-1.5 ml-auto">
-          <select
-            aria-label={isBn ? "সর্ট ফিল্ড" : "Sort by field"}
+        <div className="flex flex-wrap items-center gap-1.5 sm:ml-auto">
+          <ThemedSelect
+            ariaLabel={isBn ? "সর্ট ফিল্ড" : "Sort by field"}
             value={filters.sortBy}
-            onChange={(e) => onChange("sortBy", e.target.value as UserSortField)}
-            className={SELECT_CLASS}
-          >
-            {SORT_FIELD_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {isBn ? `সর্ট: ${opt.labelBn}` : `Sort: ${opt.labelEn}`}
-              </option>
-            ))}
-          </select>
+            align="right"
+            onChange={(val) => onChange("sortBy", val)}
+            options={SORT_FIELD_OPTIONS.map((opt) => ({
+              value: opt.value,
+              label: isBn ? `সর্ট: ${opt.labelBn}` : `Sort: ${opt.labelEn}`,
+            }))}
+          />
 
           <button
             type="button"
@@ -200,27 +193,28 @@ export default function UserFilterBar({
                 ? isBn ? "নতুন/বড় থেকে ছোট" : "Descending"
                 : isBn ? "পুরনো/ছোট থেকে বড়" : "Ascending"
             }
-            className="h-9 px-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-extrabold text-slate-700 cursor-pointer"
+            className="h-9 px-3 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/70 hover:bg-white hover:border-[#006a4e]/45 text-xs font-extrabold text-[#006a4e] transition-colors cursor-pointer"
           >
             {filters.sortOrder === "desc" ? "↓ DESC" : "↑ ASC"}
           </button>
 
-          <select
-            aria-label={isBn ? "প্রতি পেজ" : "Items per page"}
-            value={filters.limit}
-            onChange={(e) => onChange("limit", Number(e.target.value))}
-            className={SELECT_CLASS}
-          >
-            <option value={10}>10 / {isBn ? "পেজ" : "page"}</option>
-            <option value={20}>20 / {isBn ? "পেজ" : "page"}</option>
-            <option value={50}>50 / {isBn ? "পেজ" : "page"}</option>
-          </select>
+          <ThemedSelect
+            ariaLabel={isBn ? "প্রতি পেজ" : "Items per page"}
+            value={String(filters.limit)}
+            align="right"
+            onChange={(val) => onChange("limit", Number(val))}
+            options={[
+              { value: "10", label: `10 / ${isBn ? "পেজ" : "page"}` },
+              { value: "20", label: `20 / ${isBn ? "পেজ" : "page"}` },
+              { value: "50", label: `50 / ${isBn ? "পেজ" : "page"}` },
+            ]}
+          />
 
           {hasActiveFilters && (
             <button
               type="button"
               onClick={onReset}
-              className="h-9 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold cursor-pointer"
+              className="h-9 px-3 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold transition-colors cursor-pointer"
             >
               {isBn ? "রিসেট" : "Reset"}
             </button>
@@ -230,4 +224,3 @@ export default function UserFilterBar({
     </div>
   );
 }
-

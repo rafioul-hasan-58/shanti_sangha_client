@@ -2,6 +2,7 @@
 
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
+import ThemedSelect from "@/components/common/ThemedSelect";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -107,19 +108,14 @@ export default function UserManagementTable({
                 <td className="py-3.5 px-4">
                   <div className="flex items-center gap-2">
                     <RoleBadge role={u.role} isBn={isBn} />
-                    <select
-                      aria-label={`${isBn ? "রোল পরিবর্তন" : "Change role for"} ${u.fullName}`}
+                    <ThemedSelect
+                      ariaLabel={`${isBn ? "রোল পরিবর্তন" : "Change role for"} ${u.fullName}`}
                       value={u.role}
                       disabled={isSelf || isBusy}
-                      onChange={(e) => onRoleChange(u.id, e.target.value as Role)}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-bold text-slate-700 hover:border-[#006a4e]/40 focus:border-[#006a4e] outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                    >
-                      {ROLE_OPTIONS.map((r) => (
-                        <option key={r} value={r}>
-                          {r}
-                        </option>
-                      ))}
-                    </select>
+                      size="xs"
+                      onChange={(nextRole) => onRoleChange(u.id, nextRole as Role)}
+                      options={ROLE_OPTIONS.map((r) => ({ value: r, label: r }))}
+                    />
                   </div>
                 </td>
 
