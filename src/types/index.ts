@@ -33,6 +33,8 @@ export interface AuthUser {
   provider: "google" | "credentials";
   role: Role;
   status?: UserStatus;
+  emailVerified?: boolean | null;
+  adminVerified?: string | boolean | null;
 
   // Profile update fields matching Prisma schema
   fatherName?: string | null;

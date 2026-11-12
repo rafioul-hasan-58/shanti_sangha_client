@@ -99,6 +99,20 @@ export function decodeJwtPayload(token?: string | null): Record<string, unknown>
   }
 }
 
+/** Return true when a user record carries a verified admin verification value (boolean true or non-empty timestamp/string). */
+export function isAdminVerified(val?: unknown): boolean {
+  if (typeof val === "boolean") return val;
+  if (typeof val === "string") {
+    const trimmed = val.trim();
+    return (
+      trimmed.length > 0 &&
+      trimmed.toLowerCase() !== "false" &&
+      trimmed.toLowerCase() !== "null"
+    );
+  }
+  return false;
+}
+
 /**
  * Resolve role, status, and user identity fields from API JSON data and JWT claims.
  * Falls back to decoding the JWT payload whenever fields are omitted from response user JSON.
@@ -114,6 +128,7 @@ export function resolveAuthMeta(params: {
   id?: string;
   email?: string;
   name?: string;
+  adminVerified?: string | boolean | null;
 } {
   const { user, data, token, preferTokenClaims = false } = params;
   const claims = decodeJwtPayload(token);
@@ -131,6 +146,12 @@ export function resolveAuthMeta(params: {
   const rawEmail = user?.email ?? claims?.email;
   const rawName =
     user?.fullName ?? user?.name ?? claims?.fullName ?? claims?.name;
+  const rawAdminVerified =
+    user?.adminVerified ?? data?.adminVerified ?? claims?.adminVerified;
+  const resolvedAdminVerified =
+    typeof rawAdminVerified === "boolean" || typeof rawAdminVerified === "string"
+      ? rawAdminVerified
+      : undefined;
 
   return {
     role: normalizeRole(rawRole),
@@ -138,6 +159,7 @@ export function resolveAuthMeta(params: {
     id: rawId !== undefined && rawId !== null && String(rawId).trim() ? String(rawId) : undefined,
     email: typeof rawEmail === "string" && rawEmail.trim() ? rawEmail : undefined,
     name: typeof rawName === "string" && rawName.trim() ? rawName : undefined,
+    adminVerified: resolvedAdminVerified,
   };
 }
 

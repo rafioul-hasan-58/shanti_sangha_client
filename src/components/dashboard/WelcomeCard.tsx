@@ -1,6 +1,7 @@
 "use client";
 
 import React, { type ReactNode } from "react";
+import VerifiedTick from "@/components/common/VerifiedTick";
 import { FULL_BRAND_NAME_EN } from "@/lib/constants/site";
 
 interface WelcomeCardProps {
@@ -10,6 +11,7 @@ interface WelcomeCardProps {
   title?: string;
   subtitle?: string;
   rightContent?: ReactNode;
+  isVerified?: boolean;
 }
 
 export default function WelcomeCard({
@@ -19,6 +21,7 @@ export default function WelcomeCard({
   title,
   subtitle,
   rightContent,
+  isVerified = false,
 }: WelcomeCardProps) {
   const isBn = locale === "bn";
 
@@ -63,8 +66,11 @@ export default function WelcomeCard({
             <span>{resolvedBadge}</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
-            {resolvedTitle}
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight flex items-center gap-2 flex-wrap">
+            <span>{resolvedTitle}</span>
+            {isVerified && (
+              <VerifiedTick isBn={isBn} className="w-5 h-5 sm:w-6 sm:h-6" />
+            )}
           </h1>
 
           <p className="text-xs sm:text-sm text-emerald-50/90 leading-relaxed font-medium">

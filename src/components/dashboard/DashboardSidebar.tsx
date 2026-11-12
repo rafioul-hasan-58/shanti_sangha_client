@@ -6,9 +6,10 @@ import Link from "next/link";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import RoleBadge from "@/components/layout/RoleBadge";
 import UserAvatar from "@/components/layout/UserAvatar";
+import VerifiedTick from "@/components/common/VerifiedTick";
 import type { AuthUser } from "@/types";
 import navConfig from "@/data/dashboardNav.json";
-import { hasDashboardAccess, normalizeRole } from "@/lib/authRole";
+import { hasDashboardAccess, isAdminVerified, normalizeRole } from "@/lib/authRole";
 import { ADMIN_UI_COPY } from "@/lib/config/adminNav";
 import { BRAND_NAME_EN } from "@/lib/constants/site";
 
@@ -650,9 +651,14 @@ export default function DashboardSidebar({
               </div>
 
               <div className="min-w-0 flex-1 text-left">
-                <h5 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-[#006a4e] transition-colors leading-tight">
-                  {displayName}
-                </h5>
+                <div className="flex items-center gap-1 min-w-0">
+                  <h5 className="text-xs sm:text-sm font-bold text-slate-900 truncate group-hover:text-[#006a4e] transition-colors leading-tight">
+                    {displayName}
+                  </h5>
+                  {isAdminVerified(user?.adminVerified) && (
+                    <VerifiedTick isBn={isBn} className="w-3.5 h-3.5" />
+                  )}
+                </div>
                 <div className="mt-1">
                   <RoleBadge role={resolvedRole} isBn={isBn} />
                 </div>

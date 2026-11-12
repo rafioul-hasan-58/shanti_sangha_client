@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import FeatureCooking from "@/components/common/FeatureCooking";
+import VerifiedTick from "@/components/common/VerifiedTick";
 import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
 import AdminUsersView from "./AdminUsersView";
@@ -17,6 +18,7 @@ import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
 import {
   getRoleDisplayMeta,
   hasDashboardAccess,
+  isAdminVerified,
   normalizeRole,
 } from "@/lib/authRole";
 import { BRAND_NAME_EN } from "@/lib/constants/site";
@@ -286,6 +288,7 @@ export default function DashboardShell({
             isAdmin ? (
               <AdminOverviewView
                 adminName={user?.name || "Admin"}
+                adminVerified={isAdminVerified(user?.adminVerified)}
                 locale={locale}
                 onReviewPending={() => setActiveTab("admin_users_pending")}
               />
@@ -653,6 +656,9 @@ export default function DashboardShell({
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-xl sm:text-2xl font-black text-slate-900 truncate">{displayName}</h3>
+                        {isAdminVerified(user?.adminVerified) && (
+                          <VerifiedTick isBn={isBn} className="w-5 h-5" />
+                        )}
                         <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2.5 py-0.5 rounded-full">
                           {isAdmin
                             ? `👑 ${isBn ? roleMeta.labelBn : roleMeta.labelEn}`
@@ -1010,6 +1016,9 @@ export default function DashboardShell({
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <h5 className="font-extrabold text-sm sm:text-base text-slate-900">{displayName}</h5>
+                          {isAdminVerified(user?.adminVerified) && (
+                            <VerifiedTick isBn={isBn} className="w-4 h-4" />
+                          )}
                           <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
                             🩸 {formatBloodGroupDisplay(profileForm.bloodGroup)}
                           </span>
@@ -1299,7 +1308,12 @@ export default function DashboardShell({
                 </div>
 
                 <div className="min-w-0">
-                  <h4 className="font-extrabold text-sm truncate">{displayName}</h4>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <h4 className="font-extrabold text-sm truncate">{displayName}</h4>
+                    {isAdminVerified(user?.adminVerified) && (
+                      <VerifiedTick isBn={isBn} className="w-4 h-4" />
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-emerald-200">
                     <span className="font-mono">ID: SS-2026-089</span>
                     <span>•</span>

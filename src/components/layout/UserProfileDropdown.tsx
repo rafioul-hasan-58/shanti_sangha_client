@@ -8,7 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import UserAvatar from "./UserAvatar";
 import RoleBadge from "./RoleBadge";
-import { normalizeRole } from "@/lib/authRole";
+import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified, normalizeRole } from "@/lib/authRole";
 
 interface UserProfileDropdownProps {
   user: AuthUser;
@@ -177,9 +178,14 @@ export default function UserProfileDropdown({
 
               {/* Name, Email & Role / Micro-Badges */}
               <div className="min-w-0 flex-1 text-left">
-                <h4 className="text-sm font-bold text-slate-800 truncate leading-snug">
-                  {user.name}
-                </h4>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <h4 className="text-sm font-bold text-slate-800 truncate leading-snug">
+                    {user.name}
+                  </h4>
+                  {isAdminVerified(user.adminVerified) && (
+                    <VerifiedTick isBn={isBn} className="w-4 h-4" />
+                  )}
+                </div>
                 <p className="text-xs text-slate-400 truncate mt-0.5">
                   {user.email || (isBn ? "ক্লাব মেম্বার" : "Club Member")}
                 </p>

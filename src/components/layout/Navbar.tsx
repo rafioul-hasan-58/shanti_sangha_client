@@ -11,6 +11,8 @@ import { BRAND_NAME_EN, BRAND_NAME_UPPER_EN } from "@/lib/constants/site";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserProfileDropdown from "./UserProfileDropdown";
 import UserAvatar from "./UserAvatar";
+import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified } from "@/lib/authRole";
 
 export default function Navbar({
   locale,
@@ -203,7 +205,12 @@ export default function Navbar({
                   className="w-10 h-10 border border-white/40 shrink-0"
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                    {isAdminVerified(user.adminVerified) && (
+                      <VerifiedTick isBn={isBn} className="w-4 h-4" />
+                    )}
+                  </div>
                   <p className="text-xs text-white/70 truncate">{user.email}</p>
                 </div>
               </div>

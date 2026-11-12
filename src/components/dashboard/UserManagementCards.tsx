@@ -4,6 +4,7 @@ import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import ThemedSelect from "@/components/common/ThemedSelect";
 import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified } from "@/lib/authRole";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -74,7 +75,7 @@ export default function UserManagementCards({
                     <h4 className="font-bold text-sm text-[var(--text)] truncate">
                       {u.fullName}
                     </h4>
-                    {Boolean(u.adminVerified) && (
+                    {isAdminVerified(u.adminVerified) && (
                       <VerifiedTick isBn={isBn} className="w-3.5 h-3.5" />
                     )}
                     {isSelf && (

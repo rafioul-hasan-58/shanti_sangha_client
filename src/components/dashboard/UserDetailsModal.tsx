@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
+import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified } from "@/lib/authRole";
 import { fetchUserById } from "@/lib/api/users";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
 import type { ManagedUser } from "@/lib/types/dashboard";
@@ -113,6 +115,9 @@ export default function UserDetailsModal({
                 <h4 className="text-lg font-black text-[var(--text)] truncate">
                   {freshUser.fullName}
                 </h4>
+                {isAdminVerified(freshUser.adminVerified) && (
+                  <VerifiedTick isBn={isBn} className="w-4.5 h-4.5" />
+                )}
                 {isSelf && (
                   <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
                     {isBn ? "আপনি" : "You"}

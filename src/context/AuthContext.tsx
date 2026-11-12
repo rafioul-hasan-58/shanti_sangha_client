@@ -177,6 +177,11 @@ function buildAuthUser(params: {
     provider,
     role: meta.role,
     status: meta.status,
+    emailVerified:
+      typeof backendUser?.emailVerified === "boolean"
+        ? backendUser.emailVerified
+        : null,
+    adminVerified: meta.adminVerified ?? null,
     fatherName: asString(backendUser?.fatherName),
     motherName: asString(backendUser?.motherName),
     bloodGroup: asString(backendUser?.bloodGroup),
@@ -226,6 +231,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         parsed.role = restored.role;
         if (restored.status) parsed.status = restored.status;
+        if (parsed.adminVerified === undefined && restored.adminVerified !== undefined) {
+          parsed.adminVerified = restored.adminVerified;
+        }
         if (storedToken) parsed.token = storedToken;
         if (storedRefresh) parsed.refreshToken = storedRefresh;
 

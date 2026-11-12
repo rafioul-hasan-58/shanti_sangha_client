@@ -4,6 +4,7 @@ import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import ThemedSelect from "@/components/common/ThemedSelect";
 import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified } from "@/lib/authRole";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -82,7 +83,7 @@ export default function UserManagementTable({
                         <p className="font-bold text-[var(--text)] truncate group-hover:text-[var(--primary)]">
                           {u.fullName}
                         </p>
-                        {Boolean(u.adminVerified) && <VerifiedTick isBn={isBn} />}
+                        {isAdminVerified(u.adminVerified) && <VerifiedTick isBn={isBn} />}
                         {isSelf && (
                           <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 shrink-0">
                             {isBn ? "আপনি" : "You"}

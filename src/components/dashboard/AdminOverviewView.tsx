@@ -5,6 +5,8 @@ import WelcomeCard from "@/components/dashboard/WelcomeCard";
 import StatCard from "@/components/dashboard/StatCard";
 import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import UserAvatar from "@/components/layout/UserAvatar";
+import VerifiedTick from "@/components/common/VerifiedTick";
+import { isAdminVerified } from "@/lib/authRole";
 import { getDashboardStats } from "@/lib/api/dashboard";
 import { fetchUsers } from "@/lib/api/users";
 import type { DashboardStats, ManagedUser } from "@/lib/types/dashboard";
@@ -17,6 +19,7 @@ import {
 
 interface AdminOverviewViewProps {
   adminName?: string;
+  adminVerified?: boolean;
   locale?: string;
   onReviewPending?: () => void;
 }
@@ -25,6 +28,7 @@ const MAX_OVERVIEW_PENDING = 6;
 
 export default function AdminOverviewView({
   adminName = "Admin",
+  adminVerified = false,
   locale = "en",
   onReviewPending,
 }: AdminOverviewViewProps) {
@@ -64,7 +68,11 @@ export default function AdminOverviewView({
     <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
       {/* 1. WELCOME SECTION */}
       <section aria-label="Welcome section">
-        <WelcomeCard adminName={admin.name} locale={locale} />
+        <WelcomeCard
+          adminName={admin.name}
+          isVerified={adminVerified}
+          locale={locale}
+        />
       </section>
 
       {/* 2. STAT CARDS ROW (2 per row on mobile, 4 per row on xl) */}
@@ -250,9 +258,14 @@ export default function AdminOverviewView({
                                 className="h-9 w-9 shrink-0 ring-1 ring-[#006a4e]/20"
                               />
                               <div className="min-w-0">
-                                <p className="font-bold text-[#12231d] truncate max-w-[200px]">
-                                  {pendingUser.fullName}
-                                </p>
+                                <div className="flex items-center gap-1.5 min-w-0">
+                                  <p className="font-bold text-[#12231d] truncate max-w-[200px]">
+                                    {pendingUser.fullName}
+                                  </p>
+                                  {isAdminVerified(pendingUser.adminVerified) && (
+                                    <VerifiedTick isBn={isBn} className="w-3.5 h-3.5" />
+                                  )}
+                                </div>
                                 {pendingUser.profession && (
                                   <p className="text-[11px] text-slate-400 truncate max-w-[200px]">
                                     {pendingUser.profession}
@@ -346,9 +359,14 @@ export default function AdminOverviewView({
                             className="h-10 w-10 shrink-0 ring-1 ring-[#006a4e]/20"
                           />
                           <div className="min-w-0">
-                            <h4 className="text-sm font-extrabold text-[#12231d] truncate leading-snug">
-                              {pendingUser.fullName}
-                            </h4>
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <h4 className="text-sm font-extrabold text-[#12231d] truncate leading-snug">
+                                {pendingUser.fullName}
+                              </h4>
+                              {isAdminVerified(pendingUser.adminVerified) && (
+                                <VerifiedTick isBn={isBn} className="w-3.5 h-3.5" />
+                              )}
+                            </div>
                             <p className="text-[11px] text-slate-500 truncate">
                               {pendingUser.email || pendingUser.phoneNumber || "—"}
                             </p>
