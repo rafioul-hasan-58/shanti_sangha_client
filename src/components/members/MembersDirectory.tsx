@@ -61,7 +61,7 @@ export default function MembersDirectory({
   const [members, setMembers] = useState<ManagedUser[]>([]);
   const [meta, setMeta] = useState<UsersPaginationMeta>(DEFAULT_META);
   const [loading, setLoading] = useState(true);
-  const [isMockFallback, setIsMockFallback] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -90,10 +90,10 @@ export default function MembersDirectory({
 
   const loadMembers = useCallback(async () => {
     setLoading(true);
+    setErrorMessage(null);
     const params: UsersQueryParams = {
       page,
       limit,
-      status: "ACTIVE",
       sortBy,
       sortOrder,
     };
@@ -107,10 +107,12 @@ export default function MembersDirectory({
       const res = await fetchPublicMembers(params);
       setMembers(res.users);
       setMeta(res.meta);
-      setIsMockFallback(Boolean(res.isMockFallback));
-    } catch {
+    } catch (err) {
       setMembers([]);
       setMeta(DEFAULT_META);
+      setErrorMessage(
+        err instanceof Error ? err.message : "Failed to load members from backend"
+      );
     } finally {
       setLoading(false);
     }
@@ -390,11 +392,23 @@ export default function MembersDirectory({
         </div>
       </div>
 
-      {isMockFallback && (
-        <div className="mb-5 rounded-2xl bg-[#f2b705]/15 border border-[#f2b705]/40 px-4 py-2.5 text-xs font-semibold text-[#876200]">
-          {isBn
-            ? "লাইভ ডাটাবেজের সাথে সংযোগ পাওয়া যায়নি—নমুনা সদস্য তালিকা দেখানো হচ্ছে।"
-            : "Live database unavailable for current session — displaying club directory sample."}
+      {errorMessage && (
+        <div className="mb-5 rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 flex items-center justify-between gap-3 text-xs font-semibold text-rose-800">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-base shrink-0">⚠️</span>
+            <span className="truncate">
+              {isBn
+                ? `সার্ভার সংযোগ সমস্যা: ${errorMessage}`
+                : `Backend error: ${errorMessage}`}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => void loadMembers()}
+            className="px-3 py-1 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold transition-colors cursor-pointer shrink-0"
+          >
+            {isBn ? "পুনরায় চেষ্টা করুন" : "Retry"}
+          </button>
         </div>
       )}
 

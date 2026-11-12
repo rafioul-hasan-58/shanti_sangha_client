@@ -9,7 +9,7 @@
  * 5. DELETE /users/:id            (permanent delete)
  */
 
-import { API_BASE_URL, apiRequest } from "@/lib/api";
+import { API_BASE_URL, apiRequest, type ApiResponse } from "@/lib/api";
 import { normalizeRole, normalizeUserStatus } from "@/lib/authRole";
 import { toPrismaBloodGroup } from "@/lib/bloodGroup";
 import { MOCK_MANAGED_USERS } from "@/lib/mock/dashboard";
@@ -42,11 +42,14 @@ export function mapApiUser(raw: Record<string, unknown>, idx = 0): ManagedUser {
   const fullName =
     asNullableString(raw.fullName) ||
     asNullableString(raw.name) ||
+    asNullableString(raw.nameBn) ||
+    asNullableString(raw.nameEn) ||
     "Club Member";
   const profileImage =
     asNullableString(raw.profileImage) ||
     asNullableString(raw.avatar) ||
-    asNullableString(raw.picture);
+    asNullableString(raw.picture) ||
+    asNullableString(raw.image);
   const phoneNumber =
     asNullableString(raw.phoneNumber) ||
     asNullableString(raw.phone) ||
@@ -66,14 +69,30 @@ export function mapApiUser(raw: Record<string, unknown>, idx = 0): ManagedUser {
     phoneNumber,
     phone: phoneNumber,
     bloodGroup: asNullableString(raw.bloodGroup),
-    bio: asNullableString(raw.bio),
-    summary: asNullableString(raw.summary),
+    bio:
+      asNullableString(raw.bio) ||
+      asNullableString(raw.summaryBn) ||
+      asNullableString(raw.summaryEn),
+    summary:
+      asNullableString(raw.summary) ||
+      asNullableString(raw.summaryBn) ||
+      asNullableString(raw.summaryEn),
     status: normalizeUserStatus(raw.status) ?? "ACTIVE",
-    role: normalizeRole(raw.role),
-    profession: asNullableString(raw.profession),
-    village: asNullableString(raw.village),
-    currentLocation: asNullableString(raw.currentLocation),
-    whatsappNumber: asNullableString(raw.whatsappNumber),
+    role: normalizeRole(raw.role || raw.roleEn || raw.roleBn),
+    profession:
+      asNullableString(raw.profession) ||
+      asNullableString(raw.roleBn) ||
+      asNullableString(raw.roleEn),
+    village:
+      asNullableString(raw.village) ||
+      asNullableString(raw.villageBn) ||
+      asNullableString(raw.villageEn) ||
+      "সাভারচালা",
+    currentLocation:
+      asNullableString(raw.currentLocation) ||
+      asNullableString(raw.villageBn) ||
+      asNullableString(raw.villageEn),
+    whatsappNumber: asNullableString(raw.whatsappNumber) || phoneNumber,
     membershipType: normalizeMembershipType(raw.membershipType),
     facebookProfile: asNullableString(raw.facebookProfile),
     authProvider: asNullableString(raw.authProvider),
@@ -91,7 +110,11 @@ export function mapApiUser(raw: Record<string, unknown>, idx = 0): ManagedUser {
     googleId: asNullableString(raw.googleId),
     createdAt,
     updatedAt,
-    joinedAt: createdAt ? createdAt.slice(0, 10) : undefined,
+    joinedAt: createdAt
+      ? createdAt.slice(0, 10)
+      : raw.joiningYear
+        ? String(raw.joiningYear)
+        : undefined,
   };
 }
 
@@ -175,93 +198,120 @@ export function queryMockUsers(params: UsersQueryParams = {}): UsersListResponse
 }
 
 /**
- * 1. `GET /api/v1/users` — Paginated, filterable, sortable user list.
+ * 1. `GET /api/v1/users` (or fallback `/api/v1/members`) — Live backend member list.
+ * Only real user data from backend, NO dummy / static data.
  */
 export async function fetchUsers(
   params: UsersQueryParams = {}
 ): Promise<UsersListResponse> {
-  if (!API_BASE_URL) {
-    return queryMockUsers(params);
-  }
+  const query = buildUsersQueryString(params);
+  let res: ApiResponse<any> | null = null;
+  let lastError: Error | null = null;
 
+  // 1. Try /users endpoint first (primary users API)
   try {
-    const query = buildUsersQueryString(params);
-    const res = await apiRequest<{
-      users?: Record<string, unknown>[];
-      meta?: Partial<UsersPaginationMeta>;
-    }>(`/users${query}`);
-
-    const rawUsers = Array.isArray(res.data?.users)
-      ? res.data.users
-      : Array.isArray(res.data)
-        ? (res.data as unknown as Record<string, unknown>[])
-        : [];
-
-    const users = rawUsers
-      .filter((item): item is Record<string, unknown> =>
-        Boolean(item && typeof item === "object")
-      )
-      .map(mapApiUser);
-
-    const rawMeta = res.data?.meta;
-    const page = Number(rawMeta?.page ?? params.page ?? 1);
-    const limit = Number(rawMeta?.limit ?? params.limit ?? 10);
-    const total = Number(rawMeta?.total ?? users.length);
-    const totalPages = Math.max(
-      1,
-      Number(rawMeta?.totalPages ?? Math.ceil(total / Math.max(1, limit)))
-    );
-
-    return {
-      users,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages,
-        hasNextPage: Boolean(rawMeta?.hasNextPage ?? page < totalPages),
-        hasPreviousPage: Boolean(rawMeta?.hasPreviousPage ?? page > 1),
-      },
-      isMockFallback: false,
-    };
+    res = await apiRequest<any>(`/users${query}`);
   } catch (err) {
-    if (isNetworkFailure(err)) {
-      return queryMockUsers(params);
-    }
-    throw err;
+    lastError = err instanceof Error ? err : new Error(String(err));
   }
+
+  // 2. If /users was blocked (e.g. 403 Forbidden for non-admin) or not found, try /members
+  if (!res || !res.data) {
+    try {
+      res = await apiRequest<any>(`/members${query}`);
+    } catch {
+      if (lastError) throw lastError;
+    }
+  }
+
+  if (!res) {
+    throw lastError || new Error("Failed to fetch user data from backend");
+  }
+
+  const d = res.data ?? res;
+  let rawUsers: Record<string, unknown>[] = [];
+  if (Array.isArray(d)) {
+    rawUsers = d;
+  } else if (d && typeof d === "object") {
+    const obj = d as Record<string, unknown>;
+    if (Array.isArray(obj.users)) rawUsers = obj.users as Record<string, unknown>[];
+    else if (Array.isArray(obj.members)) rawUsers = obj.members as Record<string, unknown>[];
+    else if (Array.isArray(obj.data)) rawUsers = obj.data as Record<string, unknown>[];
+    else if (Array.isArray(obj.items)) rawUsers = obj.items as Record<string, unknown>[];
+    else if (Array.isArray(obj.results)) rawUsers = obj.results as Record<string, unknown>[];
+  }
+
+  const users = rawUsers
+    .filter((item): item is Record<string, unknown> =>
+      Boolean(item && typeof item === "object")
+    )
+    .map(mapApiUser);
+
+  const rawMeta =
+    (res.data && typeof res.data === "object" ? (res.data as any).meta : null) ||
+    (res.data && typeof res.data === "object" ? (res.data as any).pagination : null) ||
+    (res as any)?.meta ||
+    null;
+
+  const page = Number(rawMeta?.page ?? params.page ?? 1);
+  const limit = Number(rawMeta?.limit ?? params.limit ?? 10);
+  const total = Number(rawMeta?.total ?? users.length);
+  const totalPages = Math.max(
+    1,
+    Number(rawMeta?.totalPages ?? Math.ceil(total / Math.max(1, limit)))
+  );
+
+  return {
+    users,
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages,
+      hasNextPage: Boolean(rawMeta?.hasNextPage ?? page < totalPages),
+      hasPreviousPage: Boolean(rawMeta?.hasPreviousPage ?? page > 1),
+    },
+    isMockFallback: false,
+  };
 }
 
 /**
- * Public-safe member directory fetch: attempts `GET /users` (using current token if signed in,
- * or public access if allowed) and gracefully falls back to local sample data if offline or
- * authentication-restricted for guest visitors.
+ * Public-safe member directory fetch: always loads directly from live backend,
+ * strictly NO dummy / static data.
  */
 export async function fetchPublicMembers(
   params: UsersQueryParams = {}
 ): Promise<UsersListResponse> {
-  try {
-    return await fetchUsers(params);
-  } catch {
-    return queryMockUsers(params);
-  }
+  return await fetchUsers(params);
 }
 
 /**
- * 2. `GET /api/v1/users/:id` — Retrieve a single sanitized user by ID.
+ * 2. `GET /api/v1/users/:id` — Retrieve a single sanitized user by ID from backend.
  */
 export async function fetchUserById(id: string): Promise<ManagedUser> {
-  if (!API_BASE_URL) {
-    const found = MOCK_MANAGED_USERS.find((u) => u.id === id);
-    if (!found) throw new Error(`User with ID '${id}' was not found`);
-    return { ...found };
+  let res: ApiResponse<Record<string, unknown>> | null = null;
+  let lastError: Error | null = null;
+
+  try {
+    res = await apiRequest<Record<string, unknown>>(`/users/${id}`);
+  } catch (err) {
+    lastError = err instanceof Error ? err : new Error(String(err));
+    try {
+      res = await apiRequest<Record<string, unknown>>(`/members/${id}`);
+    } catch {
+      throw lastError;
+    }
   }
 
-  const res = await apiRequest<Record<string, unknown>>(`/users/${id}`);
-  if (!res.data || typeof res.data !== "object") {
+  const userData = (res?.data && typeof res.data === "object"
+    ? (res.data as any).user || (res.data as any).member || res.data
+    : res) as Record<string, unknown>;
+
+  if (!userData || typeof userData !== "object") {
     throw new Error("Invalid user response from server");
   }
-  return mapApiUser(res.data);
+
+  return mapApiUser(userData);
 }
 
 function sanitizeUpdatePayload(

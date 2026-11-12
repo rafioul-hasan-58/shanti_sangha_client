@@ -32,13 +32,9 @@ export default function FeatureCooking({
     : `${featureNameEn} / ${featureNameBn}`;
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center p-2 sm:p-6">
+    <div className="min-h-[60vh] sm:min-h-[70vh] flex items-center justify-center p-0 sm:p-6">
       <div
-        style={{
-          background:
-            "radial-gradient(circle at 50% 0%, rgba(247, 244, 234, 0.95) 0%, rgba(0, 166, 126, 0.05) 42%, #ffffff 78%)",
-        }}
-        className="w-full max-w-xl rounded-2xl bg-white border border-[#006a4e]/15 shadow-lg shadow-[#006a4e]/5 px-5 py-8 sm:p-10 text-center space-y-6"
+        className="w-full max-w-xl bg-transparent sm:bg-white border-0 sm:border sm:border-[#006a4e]/15 shadow-none sm:shadow-lg sm:shadow-[#006a4e]/5 rounded-none sm:rounded-2xl px-1 py-4 sm:p-10 text-center space-y-6 sm:bg-[radial-gradient(circle_at_50%_0%,rgba(247,244,234,0.95)_0%,rgba(0,166,126,0.05)_42%,#ffffff_78%)]"
       >
         {/* Pure SVG Animated Cooking Pot Scene */}
         <div className="mx-auto w-48 h-44 sm:w-56 sm:h-48 flex items-center justify-center">

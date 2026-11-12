@@ -269,10 +269,35 @@ export async function fetchWithAuth(
     }
   }
 
-  let res = await fetch(url, {
-    ...fetchOptions,
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...fetchOptions,
+      headers,
+    });
+  } catch (netErr) {
+    // If on localhost (dev environment) and primary remote URL failed to connect,
+    // gracefully attempt local backend port 5000:
+    if (
+      typeof window !== "undefined" &&
+      (window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1") &&
+      !url.includes(":5000")
+    ) {
+      const endpointPath = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+      const localUrl = `http://localhost:5000/api/v1${endpointPath}`;
+      try {
+        res = await fetch(localUrl, {
+          ...fetchOptions,
+          headers,
+        });
+      } catch {
+        throw netErr;
+      }
+    } else {
+      throw netErr;
+    }
+  }
 
   if (
     res.status === 401 &&
