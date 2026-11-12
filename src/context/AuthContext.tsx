@@ -10,9 +10,21 @@ import {
 } from "react";
 import type { AuthUser } from "@/types";
 import { useRole } from "./RoleContext";
-import { API_BASE_URL } from "@/lib/api";
+import {
+  API_BASE_URL,
+  clearStoredSession,
+  fetchWithAuth,
+  getStoredAccessToken,
+  getStoredRefreshToken,
+  getStoredUser,
+  persistStoredSession,
+  refreshAccessToken,
+  subscribeAuthState,
+} from "@/lib/api";
 import {
   decodeJwtPayload,
+  extractTokensFromAuthPayload,
+  isJwtExpiringSoon,
   normalizeRole,
   normalizeUserStatus,
   resolveAuthMeta,
@@ -36,6 +48,7 @@ interface AuthContextType {
     password: string
   ) => Promise<AuthUser>;
   updateProfile: (profileData: Partial<AuthUser>) => Promise<AuthUser>;
+  refreshSession: () => Promise<string | null>;
   logout: () => void;
   clearError: () => void;
 }
@@ -57,6 +70,7 @@ const AuthContext = createContext<AuthContextType>({
   updateProfile: async () => {
     throw new Error("AuthContext not initialized");
   },
+  refreshSession: async () => null,
   logout: () => {},
   clearError: () => {},
 });
@@ -89,22 +103,6 @@ export function ensureGoogleScript(): Promise<void> {
     script.onerror = (err) => reject(err);
     document.head.appendChild(script);
   });
-}
-
-const STORAGE_KEY = "shanti_auth_user";
-const TOKEN_KEY = "shanti_token";
-
-function extractBackendToken(
-  apiJson: Record<string, unknown> | null | undefined,
-  data: Record<string, unknown> | null | undefined
-): string | undefined {
-  const candidate =
-    data?.token ??
-    data?.accessToken ??
-    data?.access_token ??
-    apiJson?.token ??
-    apiJson?.accessToken;
-  return typeof candidate === "string" && candidate.trim() ? candidate : undefined;
 }
 
 function asString(value: unknown): string | undefined {
@@ -143,6 +141,7 @@ function buildAuthUser(params: {
   backendUser?: Record<string, unknown> | null;
   data?: Record<string, unknown> | null;
   token?: string;
+  refreshToken?: string;
   accessToken?: string;
   fallbackId?: string;
   fallbackName?: string;
@@ -154,6 +153,7 @@ function buildAuthUser(params: {
     backendUser,
     data,
     token,
+    refreshToken,
     accessToken,
     fallbackId,
     fallbackName,
@@ -172,6 +172,7 @@ function buildAuthUser(params: {
       fallbackPicture,
     accessToken,
     token,
+    refreshToken,
     provider,
     role: meta.role,
     status: meta.status,
@@ -195,37 +196,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { setRole } = useRole();
 
   const persistSession = useCallback(
-    (authUser: AuthUser, token?: string) => {
-      const viewRole = toViewRole(authUser.role);
-      setUser(authUser);
-      setRole(viewRole);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(authUser));
-        localStorage.setItem("role", viewRole);
-        if (token) {
-          localStorage.setItem(TOKEN_KEY, token);
-        }
-      } catch {}
+    (authUser: AuthUser, token?: string, refreshToken?: string) => {
+      const resolvedAccess = token || authUser.token;
+      const resolvedRefresh = refreshToken || authUser.refreshToken;
+      const nextUser: AuthUser = {
+        ...authUser,
+        ...(resolvedAccess ? { token: resolvedAccess } : {}),
+        ...(resolvedRefresh ? { refreshToken: resolvedRefresh } : {}),
+      };
+      setUser(nextUser);
+      setRole(toViewRole(nextUser.role));
+      persistStoredSession(nextUser, resolvedAccess, resolvedRefresh);
     },
     [setRole]
   );
 
-  // Load saved user session on mount
+  // Load saved user session on mount and subscribe to token refresh/expiration events
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed: AuthUser = JSON.parse(saved);
-        const storedToken = localStorage.getItem(TOKEN_KEY);
+      const parsed = getStoredUser();
+      if (parsed) {
+        const storedToken = parsed.token || getStoredAccessToken();
+        const storedRefresh = parsed.refreshToken || getStoredRefreshToken();
         const restored = resolveAuthMeta({
           user: parsed as unknown as Record<string, unknown>,
-          token: parsed.token || storedToken,
+          token: storedToken,
           preferTokenClaims: true,
         });
         parsed.role = restored.role;
         if (restored.status) parsed.status = restored.status;
+        if (storedToken) parsed.token = storedToken;
+        if (storedRefresh) parsed.refreshToken = storedRefresh;
+
         setUser(parsed);
         setRole(toViewRole(parsed.role));
+
+        if (storedRefresh && (!storedToken || isJwtExpiringSoon(storedToken))) {
+          void refreshAccessToken();
+        }
       }
     } catch (err) {
       console.error("Failed to restore auth session:", err);
@@ -233,8 +241,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
 
+    const unsubscribe = subscribeAuthState((syncedUser) => {
+      setUser(syncedUser);
+      setRole(syncedUser ? toViewRole(syncedUser.role) : "user");
+    });
+
     // Preload GSI script in background for fast response
     ensureGoogleScript().catch(() => {});
+
+    return unsubscribe;
   }, [setRole]);
 
   const clearError = useCallback(() => setError(null), []);
@@ -269,7 +284,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           string,
           unknown
         >;
-        const backendToken = extractBackendToken(apiJson, backendData);
+        const {
+          accessToken: backendToken,
+          refreshToken: backendRefreshToken,
+        } = extractTokensFromAuthPayload(apiJson, backendData);
         const backendUser =
           backendData.user && typeof backendData.user === "object"
             ? (backendData.user as Record<string, unknown>)
@@ -283,6 +301,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           backendUser,
           data: backendData,
           token: backendToken,
+          refreshToken: backendRefreshToken,
           fallbackId: asString(googleClaims?.sub),
           fallbackName:
             asString(googleClaims?.name) ||
@@ -292,7 +311,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           fallbackPicture: asString(googleClaims?.picture),
         });
 
-        persistSession(authUser, backendToken);
+        persistSession(authUser, backendToken, backendRefreshToken);
         return authUser;
       } catch (fetchErr: unknown) {
         const msg =
@@ -325,18 +344,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               data.user && typeof data.user === "object"
                 ? (data.user as Record<string, unknown>)
                 : undefined;
-            const backendToken = extractBackendToken(apiJson, data);
+            const {
+              accessToken: backendToken,
+              refreshToken: backendRefreshToken,
+            } = extractTokensFromAuthPayload(apiJson, data);
 
             const authUser = buildAuthUser({
               provider: "credentials",
               backendUser,
               data,
               token: backendToken,
+              refreshToken: backendRefreshToken,
               fallbackName: email.split("@")[0],
               fallbackEmail: email,
             });
 
-            persistSession(authUser, backendToken);
+            persistSession(authUser, backendToken, backendRefreshToken);
             return authUser;
           } else {
             const msg = extractApiErrorMessage(
@@ -391,18 +414,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             data.user && typeof data.user === "object"
               ? (data.user as Record<string, unknown>)
               : undefined;
-          const backendToken = extractBackendToken(apiJson, data);
+          const {
+            accessToken: backendToken,
+            refreshToken: backendRefreshToken,
+          } = extractTokensFromAuthPayload(apiJson, data);
 
           const authUser = buildAuthUser({
             provider: "credentials",
             backendUser,
             data,
             token: backendToken,
+            refreshToken: backendRefreshToken,
             fallbackName: fullName,
             fallbackEmail: email,
           });
 
-          persistSession(authUser, backendToken);
+          persistSession(authUser, backendToken, backendRefreshToken);
           return authUser;
         } else {
           const msg = extractApiErrorMessage(apiJson, "Registration failed");
@@ -426,14 +453,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
 
       // Merge with existing user
-      let currentUser = user;
-      if (!currentUser && typeof window !== "undefined") {
-        try {
-          const s = localStorage.getItem(STORAGE_KEY);
-          if (s) currentUser = JSON.parse(s);
-        } catch {}
-      }
-
+      const currentUser = user ?? getStoredUser();
       if (!currentUser) {
         throw new Error("No authenticated user session found");
       }
@@ -443,11 +463,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...profileData,
       };
 
-      // 1. Send update to backend API if token or endpoint is reachable
-      const token =
-        updatedUser.token ||
-        (typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null);
-
+      // 1. Send update to backend API (fetchWithAuth attaches token and handles 401 refresh)
       try {
         const payload = {
           name: profileData.name ?? updatedUser.name,
@@ -463,18 +479,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           facebookProfile: profileData.facebookProfile !== undefined ? profileData.facebookProfile : updatedUser.facebookProfile,
         };
 
-        const headers: Record<string, string> = {
-          "Content-Type": "application/json",
-        };
-        if (token) {
-          headers["Authorization"] = `Bearer ${token}`;
-        }
-
         let apiSuccess = false;
         try {
-          const res = await fetch(`${API_BASE_URL}/users/profile`, {
+          const res = await fetchWithAuth("/users/profile", {
             method: "PATCH",
-            headers,
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
           if (res.ok) {
@@ -488,9 +497,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (!apiSuccess) {
           try {
-            const res2 = await fetch(`${API_BASE_URL}/user/profile`, {
+            const res2 = await fetchWithAuth("/user/profile", {
               method: "PUT",
-              headers,
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify(payload),
             });
             if (res2.ok) {
@@ -505,16 +514,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn("Backend profile sync notice (saved locally):", err);
       }
 
+      // Preserve any refreshed/rotated tokens updated in storage during fetchWithAuth
+      const latestAccess = getStoredAccessToken();
+      const latestRefresh = getStoredRefreshToken();
+      if (latestAccess) {
+        updatedUser.token = latestAccess;
+      }
+      if (latestRefresh) {
+        updatedUser.refreshToken = latestRefresh;
+      }
+
       updatedUser.role = normalizeRole(updatedUser.role);
       if (updatedUser.status) {
         updatedUser.status = normalizeUserStatus(updatedUser.status);
       }
 
-      // 2. Persist in local state & localStorage
+      // 2. Persist in local state & storage
       setUser(updatedUser);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser));
-      } catch {}
+      persistStoredSession(updatedUser);
 
       return updatedUser;
     },
@@ -525,10 +542,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     setUser(null);
     setRole("user");
+    clearStoredSession();
     try {
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem("role");
       if (window.google?.accounts?.id) {
         window.google.accounts.id.disableAutoSelect();
       }
@@ -546,6 +561,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginWithCredentials,
         registerWithCredentials,
         updateProfile,
+        refreshSession: refreshAccessToken,
         logout,
         clearError,
       }}

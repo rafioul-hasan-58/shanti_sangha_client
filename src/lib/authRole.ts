@@ -160,3 +160,53 @@ export function getRoleDisplayMeta(role?: unknown): RoleDisplayMeta {
   return ROLE_META_MAP[normalizeRole(role)];
 }
 
+/** Check whether a JWT access token has an `exp` claim expiring within `bufferSeconds`. */
+export function isJwtExpiringSoon(
+  token?: string | null,
+  bufferSeconds = 30
+): boolean {
+  const claims = decodeJwtPayload(token);
+  const exp = claims?.exp;
+  if (typeof exp !== "number" || !Number.isFinite(exp)) return false;
+  return Date.now() >= (exp - bufferSeconds) * 1000;
+}
+
+/** Extract access and refresh tokens across common backend JSON shapes. */
+export function extractTokensFromAuthPayload(
+  apiJson: Record<string, unknown> | null | undefined,
+  data: Record<string, unknown> | null | undefined
+): { accessToken?: string; refreshToken?: string } {
+  const nestedTokens =
+    data?.tokens && typeof data.tokens === "object"
+      ? (data.tokens as Record<string, unknown>)
+      : undefined;
+
+  const rawAccess =
+    nestedTokens?.accessToken ??
+    nestedTokens?.token ??
+    nestedTokens?.access_token ??
+    data?.token ??
+    data?.accessToken ??
+    data?.access_token ??
+    apiJson?.token ??
+    apiJson?.accessToken ??
+    apiJson?.access_token;
+
+  const rawRefresh =
+    nestedTokens?.refreshToken ??
+    nestedTokens?.refresh_token ??
+    data?.refreshToken ??
+    data?.refresh_token ??
+    apiJson?.refreshToken ??
+    apiJson?.refresh_token;
+
+  return {
+    accessToken:
+      typeof rawAccess === "string" && rawAccess.trim() ? rawAccess : undefined,
+    refreshToken:
+      typeof rawRefresh === "string" && rawRefresh.trim()
+        ? rawRefresh
+        : undefined,
+  };
+}
+

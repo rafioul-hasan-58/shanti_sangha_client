@@ -28,6 +28,7 @@ export interface AuthUser {
   picture?: string;
   accessToken?: string;
   token?: string;
+  refreshToken?: string;
   provider: "google" | "credentials";
   role: Role;
   status?: UserStatus;
