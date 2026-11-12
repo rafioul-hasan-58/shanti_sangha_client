@@ -12,15 +12,6 @@ import { formatMonthLabel } from "@/lib/constants/categories";
  * When real API is connected, only `lib/api/dashboard.ts` needs updating.
  */
 
-export const MOCK_DASHBOARD_STATS: DashboardStats = {
-  totalMembers: 248,
-  pendingMembers: 12,
-  totalExpenditure: 485000,
-  membersTrend: 8.5,      // +8.5% growth vs last month
-  pendingTrend: -14.2,    // -14.2% pending vs last month (cleared quickly)
-  expenditureTrend: 5.3,  // +5.3% expense vs last month
-};
-
 /**
  * 24 months of historical expenses (Dec 2024 to Nov 2026)
  * Varied seasonal spikes and zeros in certain categories.
@@ -194,4 +185,22 @@ export const MOCK_YEARLY_EXPENSES: YearlyExpense[] = RAW_YEARLY_DATA.map((item) 
     byCategory: item.byCategory,
   };
 });
+
+const latestMonthSpent =
+  MOCK_MONTHLY_EXPENSES[MOCK_MONTHLY_EXPENSES.length - 1]?.total ?? 105400;
+const latestYearSpent =
+  MOCK_YEARLY_EXPENSES[MOCK_YEARLY_EXPENSES.length - 1]?.total ?? 1422000;
+
+export const MOCK_DASHBOARD_STATS: DashboardStats = {
+  totalMembers: 248,
+  pendingMembers: 12,
+  monthlySpent: latestMonthSpent,
+  yearlySpent: latestYearSpent,
+  totalExpenditure: latestYearSpent,
+  membersTrend: 8.5,
+  pendingTrend: -14.2,
+  monthlySpentTrend: 11.4,
+  yearlySpentTrend: 11.9,
+  expenditureTrend: 5.3,
+};
 

@@ -14,10 +14,14 @@ export type ExpenseCategory =
 export interface DashboardStats {
   totalMembers: number;
   pendingMembers: number;
-  totalExpenditure: number;
+  monthlySpent: number;
+  yearlySpent: number;
+  totalExpenditure?: number;
   membersTrend?: number;      // e.g. +8.5 (% vs last month)
   pendingTrend?: number;      // e.g. -14.2 (% vs last month)
-  expenditureTrend?: number;  // e.g. +5.3 (% vs last month)
+  monthlySpentTrend?: number; // e.g. +11.4 (% vs last month)
+  yearlySpentTrend?: number;  // e.g. +11.9 (% vs last year)
+  expenditureTrend?: number;
 }
 
 export interface MonthlyExpense {
