@@ -8,6 +8,12 @@ import { isAdminVerified } from "@/lib/authRole";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { UserStatus } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
+import {
+  DeleteActionIcon,
+  EditActionIcon,
+  SuspendActionIcon,
+  ViewActionIcon,
+} from "./UserActionIcons";
 
 interface UserManagementCardsProps {
   users: ManagedUser[];
@@ -246,7 +252,7 @@ export default function UserManagementCards({
                 {isMenuOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 top-full mt-1 z-30 w-32 rounded-xl bg-white border border-slate-200 shadow-xl py-1 text-xs animate-in fade-in zoom-in-95 duration-100"
+                    className="absolute right-0 top-full mt-1 z-30 w-36 rounded-xl bg-white border border-slate-200 shadow-xl py-1 text-xs animate-in fade-in zoom-in-95 duration-100"
                   >
                     <button
                       type="button"
@@ -255,9 +261,10 @@ export default function UserManagementCards({
                         setOpenMenuUserId(null);
                         onView(u);
                       }}
-                      className="w-full px-3 py-2 text-left font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
+                      className="w-full px-3 py-2 text-left font-bold text-slate-700 hover:bg-slate-50 inline-flex items-center gap-2 cursor-pointer"
                     >
-                      {isBn ? "দেখুন" : "View"}
+                      <ViewActionIcon />
+                      <span>{isBn ? "দেখুন" : "View"}</span>
                     </button>
                     <button
                       type="button"
@@ -266,9 +273,10 @@ export default function UserManagementCards({
                         setOpenMenuUserId(null);
                         onEdit(u);
                       }}
-                      className="w-full px-3 py-2 text-left font-bold text-[#006a4e] hover:bg-[#006a4e]/10 cursor-pointer"
+                      className="w-full px-3 py-2 text-left font-bold text-[#006a4e] hover:bg-[#006a4e]/10 inline-flex items-center gap-2 cursor-pointer"
                     >
-                      {isBn ? "এডিট" : "Edit"}
+                      <EditActionIcon />
+                      <span>{isBn ? "এডিট" : "Edit"}</span>
                     </button>
                     <button
                       type="button"
@@ -278,15 +286,18 @@ export default function UserManagementCards({
                         setOpenMenuUserId(null);
                         onToggleBlock(u);
                       }}
-                      className="w-full px-3 py-2 text-left font-bold text-amber-800 hover:bg-amber-50 disabled:opacity-45 cursor-pointer"
+                      className="w-full px-3 py-2 text-left font-bold text-amber-800 hover:bg-amber-50 disabled:opacity-45 inline-flex items-center gap-2 cursor-pointer"
                     >
-                      {isBlocked
-                        ? isBn
-                          ? "আনব্লক"
-                          : "Unblock"
-                        : isBn
-                          ? "ব্লক"
-                          : "Block"}
+                      <SuspendActionIcon suspended={isBlocked} />
+                      <span>
+                        {isBlocked
+                          ? isBn
+                            ? "সক্রিয় করুন"
+                            : "Unsuspend"
+                          : isBn
+                            ? "স্থগিত"
+                            : "Suspend"}
+                      </span>
                     </button>
                     <button
                       type="button"
@@ -296,9 +307,10 @@ export default function UserManagementCards({
                         setOpenMenuUserId(null);
                         onDelete(u);
                       }}
-                      className="w-full px-3 py-2 text-left font-bold text-[#f42a41] hover:bg-[#f42a41]/10 disabled:opacity-45 cursor-pointer"
+                      className="w-full px-3 py-2 text-left font-bold text-[#f42a41] hover:bg-[#f42a41]/10 disabled:opacity-45 inline-flex items-center gap-2 cursor-pointer"
                     >
-                      {isBn ? "মুছুন" : "Delete"}
+                      <DeleteActionIcon />
+                      <span>{isBn ? "মুছুন" : "Delete"}</span>
                     </button>
                   </div>
                 )}

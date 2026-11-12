@@ -352,7 +352,7 @@ export default function AdminUsersView({
       <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs space-y-5">
         {/* Sub-Tabs Switcher: All Users | Pending Users */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-          <div className="grid grid-cols-2 sm:inline-flex items-center gap-1.5 p-1 rounded-2xl bg-[#f7f4ea] border border-[#006a4e]/15 w-full sm:w-auto">
+          <div className="grid grid-cols-2 sm:inline-flex items-center gap-1.5 p-1 rounded-2xl bg-emerald-50/70 border border-emerald-200/80 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => switchSubTab("all")}

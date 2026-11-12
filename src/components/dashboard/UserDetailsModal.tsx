@@ -7,6 +7,11 @@ import VerifiedTick from "@/components/common/VerifiedTick";
 import { isAdminVerified } from "@/lib/authRole";
 import { fetchUserById } from "@/lib/api/users";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
+import {
+  DeleteActionIcon,
+  EditActionIcon,
+  SuspendActionIcon,
+} from "./UserActionIcons";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import {
   MEMBERSHIP_BADGE_MAP,
@@ -241,29 +246,34 @@ export default function UserDetailsModal({
           <button
             type="button"
             onClick={() => onEdit(freshUser)}
-            className="px-4 py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors cursor-pointer"
+            className="px-4 py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
           >
-            {isBn ? "তথ্য এডিট করুন" : "Edit User"}
+            <EditActionIcon />
+            <span>{isBn ? "তথ্য এডিট করুন" : "Edit User"}</span>
           </button>
 
           <button
             type="button"
             disabled={isSelf}
             onClick={() => onToggleBlock(freshUser)}
-            className="px-4 py-2 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isBlocked
-              ? isBn ? "আনব্লক করুন" : "Unblock"
-              : isBn ? "ব্লক করুন" : "Block"}
+            <SuspendActionIcon suspended={isBlocked} />
+            <span>
+              {isBlocked
+                ? isBn ? "সক্রিয় করুন" : "Unsuspend"
+                : isBn ? "স্থগিত করুন" : "Suspend"}
+            </span>
           </button>
 
           <button
             type="button"
             disabled={isSelf}
             onClick={() => onDelete(freshUser)}
-            className="px-4 py-2 rounded-xl border border-[#f42a41]/30 bg-[#f42a41]/10 hover:bg-[#f42a41] hover:text-white text-[var(--accent)] text-xs font-bold transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
+            className="px-4 py-2 rounded-xl border border-[#f42a41]/30 bg-[#f42a41]/10 hover:bg-[#f42a41] hover:text-white text-[var(--accent)] text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
           >
-            {isBn ? "ডিলিট" : "Delete"}
+            <DeleteActionIcon />
+            <span>{isBn ? "ডিলিট" : "Delete"}</span>
           </button>
         </div>
       </div>

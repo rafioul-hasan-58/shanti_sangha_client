@@ -132,7 +132,7 @@ export default function ThemedSelect<T extends string = string>({
     ? "bg-white border-[#006a4e] text-[#006a4e] ring-2 ring-[#006a4e]/15"
     : isFiltered
       ? "bg-[#006a4e]/10 border-[#006a4e]/45 text-[#004d38]"
-      : "bg-[#f7f4ea]/70 border-[#006a4e]/20 text-[var(--text)] hover:bg-white hover:border-[#006a4e]/45";
+      : "bg-emerald-50/55 border-emerald-200/80 text-[var(--text)] hover:bg-emerald-100/60 hover:border-[#006a4e]/40";
 
   return (
     <>
@@ -208,7 +208,7 @@ export default function ThemedSelect<T extends string = string>({
                       ? "opacity-40 cursor-not-allowed text-slate-400"
                       : selected
                         ? "bg-[#006a4e] text-white shadow-2xs cursor-pointer"
-                        : "text-[var(--text)] hover:bg-[#f7f4ea] hover:text-[#006a4e] cursor-pointer"
+                        : "text-[var(--text)] hover:bg-emerald-50 hover:text-[#006a4e] cursor-pointer"
                   }`}
                 >
                   <span className="truncate">{opt.label}</span>

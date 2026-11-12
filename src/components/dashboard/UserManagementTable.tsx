@@ -9,6 +9,12 @@ import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
 import {
+  DeleteActionIcon,
+  EditActionIcon,
+  SuspendActionIcon,
+  ViewActionIcon,
+} from "./UserActionIcons";
+import {
   MEMBERSHIP_BADGE_MAP,
   ROLE_OPTIONS,
   STATUS_BADGE_MAP,
@@ -160,38 +166,44 @@ export default function UserManagementTable({
                     <button
                       type="button"
                       onClick={() => onView(u)}
-                      className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      {isBn ? "দেখুন" : "View"}
+                      <ViewActionIcon />
+                      <span>{isBn ? "দেখুন" : "View"}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => onEdit(u)}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#006a4e]/10 hover:bg-[#006a4e] text-[var(--primary)] hover:text-white text-xs font-bold transition-colors cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-xl bg-[#006a4e]/10 hover:bg-[#006a4e] text-[var(--primary)] hover:text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      {isBn ? "এডিট" : "Edit"}
+                      <EditActionIcon />
+                      <span>{isBn ? "এডিট" : "Edit"}</span>
                     </button>
                     <button
                       type="button"
                       disabled={isSelf || isBusy}
                       onClick={() => onToggleBlock(u)}
-                      className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer ${
+                      className={`px-2.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer ${
                         isBlocked
                           ? "bg-[#006a4e] hover:bg-[#004d38] text-white"
                           : "bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200"
                       }`}
                     >
-                      {isBlocked
-                        ? isBn ? "আনব্লক" : "Unblock"
-                        : isBn ? "ব্লক" : "Block"}
+                      <SuspendActionIcon suspended={isBlocked} />
+                      <span>
+                        {isBlocked
+                          ? isBn ? "সক্রিয়" : "Unsuspend"
+                          : isBn ? "স্থগিত" : "Suspend"}
+                      </span>
                     </button>
                     <button
                       type="button"
                       disabled={isSelf || isBusy}
                       onClick={() => onDelete(u)}
-                      className="px-2.5 py-1.5 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
+                      className="px-2.5 py-1.5 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
-                      {isBn ? "মুছুন" : "Delete"}
+                      <DeleteActionIcon />
+                      <span>{isBn ? "মুছুন" : "Delete"}</span>
                     </button>
                   </div>
                 </td>

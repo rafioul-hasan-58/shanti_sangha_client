@@ -67,7 +67,7 @@ export default function UserPaginationBar({
     : isBn ? "ব্যবহারকারী" : "Users";
 
   return (
-    <div className="rounded-2xl border border-[#006a4e]/15 bg-[#f7f4ea]/45 px-3.5 sm:px-4 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+    <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/45 px-3.5 sm:px-4 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
       {/* Left: Showing range + Page X of Y */}
       <div className="flex flex-wrap items-center gap-2 text-slate-600">
         <p className="font-medium">
@@ -117,7 +117,7 @@ export default function UserPaginationBar({
             type="button"
             disabled={!meta.hasPreviousPage || loading}
             onClick={() => onPageChange(Math.max(1, meta.page - 1))}
-            className="h-8 px-2.5 rounded-xl border border-slate-200 bg-white hover:bg-[#f7f4ea] hover:border-[#006a4e]/35 text-[var(--text)] font-bold inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="h-8 px-2.5 rounded-xl border border-emerald-200/80 bg-white hover:bg-emerald-50 hover:border-[#006a4e]/35 text-[var(--text)] font-bold inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <span>‹</span>
             <span>{isBn ? "পূর্ববর্তী" : "Prev"}</span>
@@ -141,7 +141,7 @@ export default function UserPaginationBar({
                 className={`h-8 min-w-[32px] px-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer disabled:cursor-not-allowed ${
                   item === meta.page
                     ? "bg-[#006a4e] text-white shadow-xs shadow-[#006a4e]/25"
-                    : "bg-white border border-slate-200/90 text-[var(--text)] hover:bg-[#f7f4ea] hover:border-[#006a4e]/35 hover:text-[#006a4e]"
+                    : "bg-white border border-emerald-200/80 text-[var(--text)] hover:bg-emerald-50 hover:border-[#006a4e]/35 hover:text-[#006a4e]"
                 }`}
               >
                 {item}
@@ -153,7 +153,7 @@ export default function UserPaginationBar({
             type="button"
             disabled={!meta.hasNextPage || loading}
             onClick={() => onPageChange(meta.page + 1)}
-            className="h-8 px-2.5 rounded-xl border border-slate-200 bg-white hover:bg-[#f7f4ea] hover:border-[#006a4e]/35 text-[var(--text)] font-bold inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            className="h-8 px-2.5 rounded-xl border border-emerald-200/80 bg-white hover:bg-emerald-50 hover:border-[#006a4e]/35 text-[var(--text)] font-bold inline-flex items-center gap-1 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             <span>{isBn ? "পরবর্তী" : "Next"}</span>
             <span>›</span>

@@ -35,16 +35,6 @@ function StatusFilterIcon({ status }: { status: UserStatus | "ALL" }) {
   }
 }
 
-const STATUS_FILTERS: Array<{
-  key: UserStatus | "ALL";
-  labelEn: string;
-  labelBn: string;
-}> = [
-  { key: "ALL", labelEn: "All", labelBn: "সবাই" },
-  { key: "ACTIVE", labelEn: "Active", labelBn: "সক্রিয়" },
-  { key: "SUSPENDED", labelEn: "Suspended", labelBn: "স্থগিত" },
-];
-
 export interface UserFiltersState {
   search: string;
   status: UserStatus | "ALL";
@@ -110,30 +100,67 @@ export default function UserFilterBar({
                 ? "নাম, ইমেইল, ফোন, গ্রাম বা পেশা..."
                 : "Search name, email, phone, village, profession..."
             }
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/60 text-sm text-[var(--text)] placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/15 outline-none transition-all"
+            className="w-full h-10 pl-10 pr-4 rounded-xl border border-emerald-200/80 bg-emerald-50/55 text-sm text-[var(--text)] placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/15 outline-none transition-all"
           />
         </div>
 
         {!hideStatusFilter && (
-          <div className="grid grid-cols-3 sm:flex sm:items-center gap-1.5">
-            {STATUS_FILTERS.map((f) => {
-              const active = filters.status === f.key;
-              return (
-                <button
-                  key={f.key}
-                  type="button"
-                  onClick={() => onChange("status", f.key)}
-                  className={`h-9 px-3 rounded-xl text-xs font-bold inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer border ${
-                    active
-                      ? "bg-[#006a4e] border-[#006a4e] text-white shadow-2xs"
-                      : "bg-[#f7f4ea]/80 border-[#006a4e]/15 text-[var(--text)] hover:bg-[#006a4e]/10 hover:text-[#006a4e]"
-                  }`}
-                >
-                  <StatusFilterIcon status={f.key} />
-                  <span>{isBn ? f.labelBn : f.labelEn}</span>
-                </button>
-              );
-            })}
+          <div className="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-1.5">
+            <button
+              type="button"
+              onClick={() => onChange("status", "ALL")}
+              className={`w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl text-xs font-bold inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer border ${
+                filters.status === "ALL"
+                  ? "bg-[#006a4e] border-[#006a4e] text-white shadow-2xs"
+                  : "bg-emerald-50/55 border-emerald-200/80 text-[var(--text)] hover:bg-emerald-100/60 hover:text-[#006a4e]"
+              }`}
+            >
+              <StatusFilterIcon status="ALL" />
+              <span>{isBn ? "সবাই" : "All"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() =>
+                onChange(
+                  "status",
+                  filters.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE"
+                )
+              }
+              title={
+                filters.status === "SUSPENDED"
+                  ? isBn
+                    ? "সক্রিয় সদস্য দেখাতে ক্লিক করুন"
+                    : "Click to show Active"
+                  : filters.status === "ACTIVE"
+                    ? isBn
+                      ? "স্থগিত সদস্য দেখাতে ক্লিক করুন"
+                      : "Click to show Suspended"
+                    : isBn
+                      ? "সক্রিয় / স্থগিত ফিল্টার করুন"
+                      : "Toggle Active / Suspended"
+              }
+              className={`w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl text-xs font-extrabold inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer border ${
+                filters.status === "SUSPENDED"
+                  ? "bg-[#f42a41] border-[#f42a41] text-white shadow-2xs"
+                  : filters.status === "ACTIVE"
+                    ? "bg-[#006a4e] border-[#006a4e] text-white shadow-2xs"
+                    : "bg-emerald-50/55 border-emerald-200/80 text-[#006a4e] hover:bg-emerald-100/60 hover:border-[#006a4e]/40"
+              }`}
+            >
+              <StatusFilterIcon
+                status={filters.status === "SUSPENDED" ? "SUSPENDED" : "ACTIVE"}
+              />
+              <span>
+                {filters.status === "SUSPENDED"
+                  ? isBn
+                    ? "স্থগিত"
+                    : "Suspended"
+                  : isBn
+                    ? "সক্রিয়"
+                    : "Active"}
+              </span>
+            </button>
           </div>
         )}
       </div>
@@ -251,7 +278,7 @@ export default function UserFilterBar({
               ? isBn ? "নতুন/বড় থেকে ছোট" : "Descending"
               : isBn ? "পুরনো/ছোট থেকে বড়" : "Ascending"
           }
-          className="w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/70 hover:bg-white hover:border-[#006a4e]/45 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
+          className="w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl border border-emerald-200/80 bg-emerald-50/55 hover:bg-emerald-100/60 hover:border-[#006a4e]/40 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
         >
           <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
