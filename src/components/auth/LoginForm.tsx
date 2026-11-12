@@ -175,20 +175,12 @@ export default function LoginForm({
               >
                 {dict.auth.password}
               </label>
-              <a
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  alert(
-                    isBn
-                      ? "পাসওয়ার্ড রিসেট লিঙ্ক আপনার নিবন্ধিত ইমেইলে পাঠানো হবে।"
-                      : "Password reset link will be sent to your registered email."
-                  );
-                }}
+              <Link
+                href={`/${locale}/forgot-password`}
                 className="text-xs text-[#006a4e] hover:text-[#004d38] font-semibold hover:underline leading-relaxed"
               >
                 {dict.auth.forgotPassword}
-              </a>
+              </Link>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-[#006a4e]/70">

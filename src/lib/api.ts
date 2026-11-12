@@ -306,12 +306,79 @@ export async function apiRequest<T = unknown>(
   }));
 
   if (!res.ok || json.success === false) {
+    const firstDetail = json.errorMessages?.[0] as
+      | string
+      | { message?: string }
+      | undefined;
+    const detailMsg =
+      typeof firstDetail === "string" ? firstDetail : firstDetail?.message;
     const errorMsg =
       json.message ||
-      json.errorMessages?.[0] ||
+      detailMsg ||
       `Request failed with status ${res.status}`;
     throw new Error(errorMsg);
   }
 
   return json;
+}
+
+/**
+ * Request a password reset OTP for an email via `POST /auth/forgot-password`.
+ */
+export async function requestPasswordReset(email: string): Promise<string> {
+  const res = await apiRequest<{ message?: string }>("/auth/forgot-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify({ email: email.trim() }),
+  });
+  return res.message || "";
+}
+
+/**
+ * Verify a password reset OTP via `POST /auth/verify-otp`.
+ */
+export async function verifyPasswordResetOtp(params: {
+  email: string;
+  otp: string;
+}): Promise<{ message: string; resetToken?: string }> {
+  const res = await apiRequest<{ resetToken?: string; token?: string }>(
+    "/auth/verify-otp",
+    {
+      method: "POST",
+      skipAuth: true,
+      body: JSON.stringify({
+        email: params.email.trim(),
+        otp: params.otp.trim(),
+      }),
+    }
+  );
+  const resetToken =
+    (typeof res.data?.resetToken === "string" && res.data.resetToken.trim()) ||
+    (typeof res.data?.token === "string" && res.data.token.trim()) ||
+    undefined;
+  return { message: res.message || "", resetToken };
+}
+
+/**
+ * Complete a password reset via `POST /auth/reset-password`.
+ */
+export async function confirmPasswordReset(params: {
+  email?: string;
+  otp?: string;
+  token?: string;
+  newPassword: string;
+}): Promise<string> {
+  const payload: Record<string, string> = {
+    newPassword: params.newPassword,
+  };
+  if (params.email?.trim()) payload.email = params.email.trim();
+  if (params.otp?.trim()) payload.otp = params.otp.trim();
+  if (params.token?.trim()) payload.token = params.token.trim();
+
+  const res = await apiRequest<{ message?: string }>("/auth/reset-password", {
+    method: "POST",
+    skipAuth: true,
+    body: JSON.stringify(payload),
+  });
+  return res.message || "";
 }

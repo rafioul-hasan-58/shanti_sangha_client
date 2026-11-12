@@ -26,7 +26,11 @@ export default function Footer({
   const isDashboardRoute =
     pathname?.includes("/dashboard") || pathname?.includes("/admin");
   const isAuthRoute =
-    pathname?.includes("/login") || pathname?.includes("/register");
+    pathname?.includes("/login") ||
+    pathname?.includes("/register") ||
+    pathname?.includes("/forgot-password") ||
+    pathname?.includes("/verify-otp") ||
+    pathname?.includes("/reset-password");
 
   if (isDashboardRoute) {
     return null;
