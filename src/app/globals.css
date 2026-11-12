@@ -129,3 +129,101 @@
     animation: none;
   }
 }
+
+/* ==========================================================================
+   FEATURE COOKING & MOBILE SHEET ANIMATIONS (transform & opacity only, 60fps)
+   ========================================================================== */
+@keyframes cookLidBounce {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-2.5px) rotate(-1.5deg); }
+  50% { transform: translateY(0px) rotate(0.5deg); }
+  75% { transform: translateY(-2px) rotate(1.5deg); }
+}
+
+@keyframes cookFlameFlicker {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.92; }
+  40% { transform: scaleY(1.16) scaleX(0.92); opacity: 1; }
+  75% { transform: scaleY(0.88) scaleX(1.06); opacity: 0.78; }
+}
+
+@keyframes cookSteamRise {
+  0% { transform: translateY(6px) scale(0.85); opacity: 0; }
+  30% { opacity: 0.75; }
+  100% { transform: translateY(-24px) scale(1.15); opacity: 0; }
+}
+
+@keyframes cookBubblePop {
+  0%, 100% { transform: translateY(2px) scale(0.5); opacity: 0; }
+  45% { transform: translateY(-5px) scale(1.15); opacity: 0.9; }
+  75% { transform: translateY(-9px) scale(0.9); opacity: 0.4; }
+}
+
+@keyframes cookSpoonStir {
+  0%, 100% { transform: translateX(0px) rotate(-8deg); }
+  50% { transform: translateX(8px) rotate(10deg); }
+}
+
+@keyframes cookIngredientHop {
+  0%, 100% { transform: translateY(4px) scale(0.85); opacity: 0; }
+  35% { transform: translateY(-16px) scale(1.08); opacity: 1; }
+  70% { transform: translateY(0px) scale(0.95); opacity: 0.85; }
+}
+
+@keyframes cookProgressSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes cookDotFade {
+  0%, 80%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+
+@keyframes mobileSheetSlideUp {
+  0% { transform: translateY(100%); opacity: 0.6; }
+  100% { transform: translateY(0%); opacity: 1; }
+}
+
+.cook-lid { animation: cookLidBounce 1.3s ease-in-out infinite; transform-origin: 100px 76px; }
+.cook-flame-1 { animation: cookFlameFlicker 0.65s ease-in-out infinite; transform-origin: 86px 158px; }
+.cook-flame-2 { animation: cookFlameFlicker 0.55s ease-in-out 0.15s infinite; transform-origin: 100px 158px; }
+.cook-flame-3 { animation: cookFlameFlicker 0.7s ease-in-out 0.3s infinite; transform-origin: 114px 158px; }
+.cook-steam-1 { animation: cookSteamRise 2.4s ease-out infinite; }
+.cook-steam-2 { animation: cookSteamRise 2.4s ease-out 0.7s infinite; }
+.cook-steam-3 { animation: cookSteamRise 2.4s ease-out 1.4s infinite; }
+.cook-bubble-1 { animation: cookBubblePop 1.5s ease-out infinite; }
+.cook-bubble-2 { animation: cookBubblePop 1.7s ease-out 0.5s infinite; }
+.cook-bubble-3 { animation: cookBubblePop 1.6s ease-out 1s infinite; }
+.cook-spoon { animation: cookSpoonStir 1.9s ease-in-out infinite; transform-origin: 128px 80px; }
+.cook-item-1 { animation: cookIngredientHop 2.3s ease-in-out infinite; }
+.cook-item-2 { animation: cookIngredientHop 2.5s ease-in-out 0.8s infinite; }
+.cook-item-3 { animation: cookIngredientHop 2.2s ease-in-out 1.5s infinite; }
+.cook-progress-bar { animation: cookProgressSlide 2.2s ease-in-out infinite; }
+.cook-dot-1 { animation: cookDotFade 1.4s ease-in-out infinite; }
+.cook-dot-2 { animation: cookDotFade 1.4s ease-in-out 0.25s infinite; }
+.cook-dot-3 { animation: cookDotFade 1.4s ease-in-out 0.5s infinite; }
+.animate-sheet-up { animation: mobileSheetSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cook-lid,
+  .cook-flame-1,
+  .cook-flame-2,
+  .cook-flame-3,
+  .cook-steam-1,
+  .cook-steam-2,
+  .cook-steam-3,
+  .cook-bubble-1,
+  .cook-bubble-2,
+  .cook-bubble-3,
+  .cook-spoon,
+  .cook-item-1,
+  .cook-item-2,
+  .cook-item-3,
+  .cook-progress-bar,
+  .cook-dot-1,
+  .cook-dot-2,
+  .cook-dot-3,
+  .animate-sheet-up {
+    animation: none !important;
+  }
+}

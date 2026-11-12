@@ -18,6 +18,7 @@ export default async function AdminDashboardPage({
       stats={dict.dashboard.adminStats}
       dict={dict}
       locale={locale}
+      embeddedInAdminLayout
     />
   );
 }

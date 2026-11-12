@@ -25,6 +25,7 @@ interface Props {
   stats?: string[];
   dict: Dictionary;
   locale?: string;
+  embeddedInAdminLayout?: boolean;
 }
 
 type TabType =
@@ -43,6 +44,7 @@ type TabType =
 export default function DashboardShell({
   dict,
   locale = "bn",
+  embeddedInAdminLayout = false,
 }: Props) {
   const router = useRouter();
   const pathname = usePathname();
@@ -185,65 +187,97 @@ export default function DashboardShell({
 
   return (
     <div className="min-h-screen bg-[#f7f4ea] flex flex-col md:flex-row font-sans text-slate-800">
-      {/* MODULAR DASHBOARD SIDEBAR (Tabs loaded dynamically from src/data/dashboardNav.json) */}
-      <DashboardSidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        locale={locale}
-        user={user}
-        isAdmin={Boolean(isAdmin)}
-        displayName={displayName}
-        pendingCount={pendingMembers.length}
-        mobileOpen={mobileSidebarOpen}
-        setMobileOpen={setMobileSidebarOpen}
-        onLogout={logout}
-      />
+      {/* MODULAR DASHBOARD SIDEBAR (Skipped when rendered inside AdminLayout) */}
+      {!embeddedInAdminLayout && (
+        <DashboardSidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          locale={locale}
+          user={user}
+          isAdmin={Boolean(isAdmin)}
+          displayName={displayName}
+          pendingCount={pendingMembers.length}
+          mobileOpen={mobileSidebarOpen}
+          setMobileOpen={setMobileSidebarOpen}
+          onLogout={logout}
+        />
+      )}
 
       {/* ======================================================== */}
       {/* MAIN CONTENT AREA                                         */}
       {/* ======================================================== */}
       <div className="flex-1 min-w-0 flex flex-col">
-        {/* Mobile Top Header (Visible only on screens < md; hidden on desktop matching Fluentia reference design) */}
-        <header className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 flex items-center justify-between gap-4 shadow-2xs">
-          {/* Left: Brand Logo + Club Name + Subtitle (Current Theme Green) */}
-          <Link href={`/${locale}`} className="flex items-center gap-2.5 select-none">
-            <div className="relative h-10 w-10 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-1.5 flex items-center justify-center shadow-xs">
-              <Image
-                src="/logo.png"
-                alt={BRAND_NAME_EN}
-                fill
-                className="object-contain p-0.5 drop-shadow-xs"
-              />
-            </div>
-            <div className="text-left">
-              <h2 className="font-black text-sm text-slate-900 tracking-tight leading-tight">
-                {isBn ? "সাভারচালা শান্তি সংঘ" : BRAND_NAME_EN}
-              </h2>
-              <p className="text-[10px] font-bold text-[#006a4e] leading-tight">
-                {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
-              </p>
-            </div>
-          </Link>
+        {/* Mobile Top Header (Skipped when rendered inside AdminLayout) */}
+        {!embeddedInAdminLayout && (
+          <header className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 py-2.5 flex items-center justify-between gap-4 shadow-2xs">
+            {/* Left: Brand Logo + Club Name + Subtitle (Current Theme Green) */}
+            <Link href={`/${locale}`} className="flex items-center gap-2.5 select-none">
+              <div className="relative h-10 w-10 shrink-0 rounded-2xl bg-gradient-to-tr from-[#006a4e] to-[#059669] p-1.5 flex items-center justify-center shadow-xs">
+                <Image
+                  src="/logo.png"
+                  alt={BRAND_NAME_EN}
+                  fill
+                  className="object-contain p-0.5 drop-shadow-xs"
+                />
+              </div>
+              <div className="text-left">
+                <h2 className="font-black text-sm text-slate-900 tracking-tight leading-tight">
+                  {isBn ? "সাভারচালা শান্তি সংঘ" : BRAND_NAME_EN}
+                </h2>
+                <p className="text-[10px] font-bold text-[#006a4e] leading-tight">
+                  {isBn ? "ক্লাব পোর্টাল হাব" : "Club Portal Hub"}
+                </p>
+              </div>
+            </Link>
 
-          {/* Right: Language Switcher + Hamburger Drawer Button */}
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher locale={locale as any} variant="toggle" />
+            {/* Right: Language Switcher + Hamburger Drawer Button */}
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher locale={locale as any} variant="toggle" />
 
-            <button
-              type="button"
-              onClick={() => setMobileSidebarOpen(true)}
-              aria-label="Open navigation drawer"
-              className="p-2 rounded-2xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </header>
+              <button
+                type="button"
+                onClick={() => setMobileSidebarOpen(true)}
+                aria-label="Open navigation drawer"
+                className="p-2 rounded-2xl text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </header>
+        )}
 
         {/* Dashboard Main Body */}
         <main className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
+          {embeddedInAdminLayout && (
+            <div className="inline-flex items-center gap-1.5 p-1 rounded-2xl bg-white border border-[#006a4e]/15 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setActiveTab("overview")}
+                className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                  activeTab === "overview"
+                    ? "bg-[#006a4e] text-white shadow-xs"
+                    : "text-[#12231d] hover:text-[#006a4e]"
+                }`}
+              >
+                {isBn ? "ওভারভিউ" : "Overview"}
+              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("admin_users")}
+                  className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
+                    activeTab === "admin_users"
+                      ? "bg-[#006a4e] text-white shadow-xs"
+                      : "text-[#12231d] hover:text-[#006a4e]"
+                  }`}
+                >
+                  {isBn ? "ইউজার ম্যানেজমেন্ট" : "User Management"}
+                </button>
+              )}
+            </div>
+          )}
           {/* ===================================================== */}
           {/* TAB 1: OVERVIEW                                       */}
           {/* ===================================================== */}
