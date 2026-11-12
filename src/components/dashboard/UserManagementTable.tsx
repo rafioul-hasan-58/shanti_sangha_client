@@ -3,6 +3,7 @@
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import ThemedSelect from "@/components/common/ThemedSelect";
+import VerifiedTick from "@/components/common/VerifiedTick";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -77,12 +78,13 @@ export default function UserManagementTable({
                       className="h-10 w-10 border border-slate-200 shrink-0"
                     />
                     <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1.5 min-w-0">
                         <p className="font-bold text-[var(--text)] truncate group-hover:text-[var(--primary)]">
                           {u.fullName}
                         </p>
+                        {Boolean(u.adminVerified) && <VerifiedTick isBn={isBn} />}
                         {isSelf && (
-                          <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">
+                          <span className="text-[10px] font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 shrink-0">
                             {isBn ? "আপনি" : "You"}
                           </span>
                         )}
@@ -124,17 +126,11 @@ export default function UserManagementTable({
                 </td>
 
                 <td className="py-3.5 px-4">
-                  <div className="flex flex-col items-start gap-1">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${statusMeta.className}`}
-                    >
-                      {isBn ? statusMeta.labelBn : statusMeta.labelEn}
-                    </span>
-                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-slate-500">
-                      <span>{u.emailVerified ? "✓ Email" : "✕ Email"}</span>
-                      {u.adminVerified && <span className="text-[#006a4e]">• ✓ Admin</span>}
-                    </div>
-                  </div>
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border ${statusMeta.className}`}
+                  >
+                    {isBn ? statusMeta.labelBn : statusMeta.labelEn}
+                  </span>
                 </td>
 
                 <td className="py-3.5 px-4 text-xs text-slate-600">

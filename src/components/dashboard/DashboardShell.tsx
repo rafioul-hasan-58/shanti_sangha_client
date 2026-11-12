@@ -5,13 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { Dictionary } from "@/i18n/getDictionary";
-import type { Locale } from "@/i18n/config";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import FeatureCooking from "@/components/common/FeatureCooking";
-import PioneersSection from "@/components/home/PioneersSection";
-import CommitteeSection from "@/components/home/CommitteeSection";
 import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
 import AdminUsersView from "./AdminUsersView";
@@ -1093,61 +1090,15 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB 3: SPORTS & SPL                                  */}
+          {/* TAB 3: SPORTS & SPL (Cooking)                        */}
           {/* ===================================================== */}
           {activeTab === "sports" && (
-            <div className="space-y-6">
-              <div className="bg-gradient-to-r from-[#005a42] via-[#006a4e] to-[#0A3123] text-white rounded-3xl p-6 sm:p-8 shadow-md">
-                <span className="bg-white/20 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-widest border border-white/25">
-                  SPL SEASON 5 • 2026
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-black mt-2">
-                  {isBn ? "সাভারচালা প্রিমিয়ার লিগ (এসপিএল)" : "Shavarchala Premier League (SPL)"}
-                </h2>
-                <p className="text-xs sm:text-sm text-emerald-100 mt-1 max-w-xl">
-                  {isBn
-                    ? "শান্তি সংঘ আয়োজিত ঐতিহাসিক গ্রামীণ ক্রিকেট উৎসব। আগামী ম্যাচ ও দলগুলোর অবস্থান।"
-                    : `Official village cricket championship organized by ${BRAND_NAME_EN}. Track schedules and team rosters.`}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs">
-                  <h4 className="font-extrabold text-base text-slate-900 mb-3">
-                    {isBn ? "আগামী সেমিফাইনাল ফিক্সচার" : "Upcoming Semi-Final Fixture"}
-                  </h4>
-                  <div className="p-4 rounded-2xl bg-[#006a4e]/5 border border-[#006a4e]/15 text-center space-y-2">
-                    <p className="text-xs text-[#006a4e] font-bold uppercase">{isBn ? "শুক্রবার • সকাল ৮:৩০" : "Friday • 8:30 AM"}</p>
-                    <div className="flex items-center justify-center gap-4 text-sm sm:text-base font-black text-slate-900">
-                      <span>সাভারচালা রয়্যালস</span>
-                      <span className="text-red-500 font-extrabold">VS</span>
-                      <span>সাভারচালা কিংস</span>
-                    </div>
-                    <p className="text-xs text-slate-500">{isBn ? "ভেন্যু: সাভারচালা হাই স্কুল মাঠ" : "Venue: High School Ground"}</p>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs">
-                  <h4 className="font-extrabold text-base text-slate-900 mb-3">
-                    {isBn ? "টুর্নামেন্ট লিডারবোর্ড" : "Tournament Leaderboard"}
-                  </h4>
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
-                      <span>১. সাভারচালা রয়্যালস</span>
-                      <span className="text-emerald-600">১০ পয়েন্ট (NRR +1.42)</span>
-                    </div>
-                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
-                      <span>২. সাভারচালা কিংস</span>
-                      <span className="text-emerald-600">৮ পয়েন্ট (NRR +0.85)</span>
-                    </div>
-                    <div className="flex justify-between p-2 rounded-xl bg-slate-50 font-bold text-slate-800">
-                      <span>৩. ভাইকিংস একাদশ</span>
-                      <span className="text-slate-600">৬ পয়েন্ট (NRR -0.21)</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <FeatureCooking
+              featureNameEn="Sports & SPL"
+              featureNameBn="স্পোর্টস ও এসপিএল"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
 
           {/* ===================================================== */}
@@ -1256,30 +1207,26 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB 7: LEADERSHIP — PIONEERS                          */}
+          {/* COOKING FEATURE TABS (Leadership / Notices / Expenses) */}
           {/* ===================================================== */}
           {activeTab === "leadership_pioneers" && (
-            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs">
-              <div className="-mt-12">
-                <PioneersSection locale={locale as Locale} />
-              </div>
-            </div>
+            <FeatureCooking
+              featureNameEn="Pioneers"
+              featureNameBn="অগ্রপথিক"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
 
-          {/* ===================================================== */}
-          {/* TAB 8: LEADERSHIP — COMMITTEE                         */}
-          {/* ===================================================== */}
           {activeTab === "leadership_committee" && (
-            <div className="bg-white rounded-3xl p-4 sm:p-6 border border-slate-100 shadow-xs">
-              <div className="-mt-12">
-                <CommitteeSection locale={locale as Locale} />
-              </div>
-            </div>
+            <FeatureCooking
+              featureNameEn="Committee"
+              featureNameBn="কমিটি"
+              locale={locale}
+              onDashboardClick={() => setActiveTab("overview")}
+            />
           )}
 
-          {/* ===================================================== */}
-          {/* COOKING FEATURE TABS (Admins / Notices / Expenses)     */}
-          {/* ===================================================== */}
           {activeTab === "leadership_admins" && (
             <FeatureCooking
               featureNameEn="Admins"

@@ -19,7 +19,7 @@
           "labelEn": "Sports & SPL",
           "icon": "sports",
           "type": "tab",
-          "status": "ready"
+          "status": "cooking"
         },
         {
           "id": "notices",
@@ -59,7 +59,7 @@
               "labelEn": "Pioneers",
               "icon": "award",
               "type": "tab",
-              "status": "ready"
+              "status": "cooking"
             },
             {
               "id": "leadership_committee",
@@ -67,7 +67,7 @@
               "labelEn": "Committee",
               "icon": "users",
               "type": "tab",
-              "status": "ready"
+              "status": "cooking"
             },
             {
               "id": "leadership_admins",

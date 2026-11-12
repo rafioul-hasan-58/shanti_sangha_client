@@ -3,6 +3,7 @@
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import ThemedSelect from "@/components/common/ThemedSelect";
+import VerifiedTick from "@/components/common/VerifiedTick";
 import type { ManagedUser } from "@/lib/types/dashboard";
 import type { Role } from "@/types";
 import { formatBloodGroupDisplay } from "@/lib/bloodGroup";
@@ -69,12 +70,15 @@ export default function UserManagementCards({
                   className="h-10 w-10 border border-slate-200 shrink-0"
                 />
                 <div className="min-w-0">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <h4 className="font-bold text-sm text-[var(--text)] truncate">
                       {u.fullName}
                     </h4>
+                    {Boolean(u.adminVerified) && (
+                      <VerifiedTick isBn={isBn} className="w-3.5 h-3.5" />
+                    )}
                     {isSelf && (
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 shrink-0">
                         {isBn ? "আপনি" : "You"}
                       </span>
                     )}
@@ -107,10 +111,6 @@ export default function UserManagementCards({
                 <span className="font-bold text-slate-700 shrink-0">
                   🩸 {formatBloodGroupDisplay(u.bloodGroup)}
                 </span>
-              </div>
-              <div className="flex items-center gap-2 text-[10px] text-slate-500">
-                <span>{u.emailVerified ? "✓ Email Verified" : "✕ Email Unverified"}</span>
-                {u.adminVerified && <span className="text-[#006a4e]">• ✓ Admin Verified</span>}
               </div>
             </div>
 

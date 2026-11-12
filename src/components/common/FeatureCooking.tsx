@@ -215,16 +215,32 @@ export default function FeatureCooking({
             <button
               type="button"
               onClick={onDashboardClick}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] cursor-pointer leading-relaxed"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] cursor-pointer leading-relaxed"
             >
-              {isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}
+              <svg
+                className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M14.71 6.71a.996.996 0 0 0-1.41 0L8.71 11.3a.996.996 0 0 0 0 1.41l4.59 4.59a.996.996 0 1 0 1.41-1.41L10.83 12l3.88-3.88c.38-.38.38-1.02 0-1.41z" />
+              </svg>
+              <span>{isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}</span>
             </button>
           ) : (
             <Link
               href={withLocaleHref("/admin/dashboard", locale)}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] leading-relaxed"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs sm:text-sm font-extrabold shadow-sm shadow-[#006a4e]/20 transition-colors focus-visible:ring-2 focus-visible:ring-[#f2b705] leading-relaxed"
             >
-              {isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}
+              <svg
+                className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover:-translate-x-0.5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M14.71 6.71a.996.996 0 0 0-1.41 0L8.71 11.3a.996.996 0 0 0 0 1.41l4.59 4.59a.996.996 0 1 0 1.41-1.41L10.83 12l3.88-3.88c.38-.38.38-1.02 0-1.41z" />
+              </svg>
+              <span>{isBn ? copy.dashboardBtnBn : copy.dashboardBtnEn}</span>
             </Link>
           )}
 
