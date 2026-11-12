@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { requestPasswordReset, verifyPasswordResetOtp } from "@/lib/api";
 import AuthBrandHeader from "./AuthBrandHeader";
+import OtpInput from "./OtpInput";
+
+const OTP_LENGTH = 5;
 
 export default function VerifyOtpForm({
   locale,
@@ -22,12 +25,31 @@ export default function VerifyOtpForm({
 
   const [email, setEmail] = useState(emailFromUrl);
   const [otp, setOtp] = useState("");
+  const [shakeKey, setShakeKey] = useState(0);
+  const [hasOtpError, setHasOtpError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [infoMsg, setInfoMsg] = useState<string | null>(null);
+  const discardTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const labelClass = `block text-xs font-bold text-[#12231d] mb-1.5 leading-relaxed ${
+  useEffect(() => {
+    return () => {
+      if (discardTimerRef.current) clearTimeout(discardTimerRef.current);
+    };
+  }, []);
+
+  const triggerWrongOtp = (message: string) => {
+    setError(message);
+    setHasOtpError(true);
+    setShakeKey((k) => k + 1);
+    if (discardTimerRef.current) clearTimeout(discardTimerRef.current);
+    discardTimerRef.current = setTimeout(() => {
+      setOtp("");
+    }, 380);
+  };
+
+  const labelClass = `block text-xs font-bold text-[#12231d] mb-2 leading-relaxed ${
     isBn ? "" : "uppercase tracking-wider"
   }`;
 
@@ -42,8 +64,8 @@ export default function VerifyOtpForm({
       setError(dict.auth.emailRequiredError);
       return;
     }
-    if (!activeOtp) {
-      setError(dict.auth.otpRequiredError);
+    if (activeOtp.length !== OTP_LENGTH) {
+      triggerWrongOtp(dict.auth.otpRequiredError);
       return;
     }
 
@@ -60,7 +82,9 @@ export default function VerifyOtpForm({
       });
       router.push(`/${locale}/reset-password?${query.toString()}`);
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : dict.auth.otpRequiredError);
+      triggerWrongOtp(
+        err instanceof Error ? err.message : dict.auth.otpRequiredError
+      );
     } finally {
       setLoading(false);
     }
@@ -69,6 +93,7 @@ export default function VerifyOtpForm({
   const handleResend = async () => {
     setError(null);
     setInfoMsg(null);
+    setHasOtpError(false);
     const activeEmail = (emailFromUrl || email).trim();
     if (!activeEmail) {
       setError(dict.auth.emailRequiredError);
@@ -77,6 +102,7 @@ export default function VerifyOtpForm({
     setResending(true);
     try {
       const apiMsg = await requestPasswordReset(activeEmail);
+      setOtp("");
       setInfoMsg(apiMsg || dict.auth.otpResentMsg);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : dict.auth.otpRequiredError);
@@ -99,17 +125,17 @@ export default function VerifyOtpForm({
 
       <div className="w-full rounded-2xl bg-white shadow-md border border-gray-100 p-5 sm:p-6">
         {error && (
-          <div className="mb-3.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed">
+          <div className="mb-3.5 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-semibold leading-relaxed text-center">
             {error}
           </div>
         )}
         {infoMsg && (
-          <div className="mb-3.5 p-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs font-semibold leading-relaxed">
+          <div className="mb-3.5 p-3 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs font-semibold leading-relaxed text-center">
             {infoMsg}
           </div>
         )}
 
-        <form onSubmit={handleVerify} className="flex flex-col gap-3.5 md:gap-4">
+        <form onSubmit={handleVerify} className="flex flex-col gap-4">
           {!emailFromUrl && (
             <div>
               <label className={labelClass}>{dict.auth.email}</label>
@@ -125,17 +151,25 @@ export default function VerifyOtpForm({
           )}
 
           <div>
-            <label className={labelClass}>{dict.auth.otpLabel}</label>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={8}
+            <label className={`${labelClass} text-center`}>
+              {dict.auth.otpLabel}
+            </label>
+            <OtpInput
+              length={OTP_LENGTH}
               value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder={dict.auth.otpPlaceholder}
-              required
-              className="w-full h-12 px-4 rounded-xl border border-gray-200 bg-[#f7f4ea]/40 text-[#12231d] text-center text-base font-bold tracking-[0.35em] placeholder:tracking-normal placeholder:font-normal placeholder:text-sm placeholder:text-gray-400 focus:bg-white focus:border-[#00a67e] focus:ring-2 focus:ring-[#00a67e] transition-all outline-none"
+              hasError={hasOtpError}
+              shakeKey={shakeKey}
+              disabled={loading}
+              ariaLabelPrefix={dict.auth.otpLabel}
+              onChange={(next) => {
+                if (discardTimerRef.current) {
+                  clearTimeout(discardTimerRef.current);
+                  discardTimerRef.current = null;
+                }
+                setOtp(next);
+                if (hasOtpError) setHasOtpError(false);
+                if (error) setError(null);
+              }}
             />
           </div>
 
@@ -177,4 +211,3 @@ export default function VerifyOtpForm({
     </div>
   );
 }
-
