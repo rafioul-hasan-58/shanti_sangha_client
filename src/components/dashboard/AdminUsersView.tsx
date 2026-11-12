@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   fetchUsers,
   toggleBlockUserById,
@@ -18,7 +19,6 @@ import UserManagementTable from "./UserManagementTable";
 import UserManagementCards from "./UserManagementCards";
 import UserFilterBar, { type UserFiltersState } from "./UserFilterBar";
 import UserPaginationBar from "./UserPaginationBar";
-import UserDetailsModal from "./UserDetailsModal";
 import UserEditModal from "./UserEditModal";
 import UserDeleteConfirmModal from "./UserDeleteConfirmModal";
 
@@ -58,6 +58,7 @@ export default function AdminUsersView({
   subTab: controlledSubTab,
   onSubTabChange,
 }: AdminUsersViewProps) {
+  const router = useRouter();
   const isBn = locale === "bn";
   const [internalSubTab, setInternalSubTab] =
     useState<UserManagementSubTab>("all");
@@ -81,7 +82,6 @@ export default function AdminUsersView({
     text: string;
   } | null>(null);
 
-  const [viewingUser, setViewingUser] = useState<ManagedUser | null>(null);
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
   const [deletingUser, setDeletingUser] = useState<ManagedUser | null>(null);
 
@@ -95,6 +95,14 @@ export default function AdminUsersView({
   }, [filters.search]);
 
   const isPendingView = activeSubTab === "pending";
+
+  const handleViewUser = useCallback(
+    (target: ManagedUser) => {
+      const suffix = isPendingView ? "?from=pending" : "";
+      router.push(`/${locale}/dashboard/users/${encodeURIComponent(target.id)}${suffix}`);
+    },
+    [router, locale, isPendingView]
+  );
 
   const loadUsers = useCallback(async () => {
     setLoading(true);
@@ -233,7 +241,6 @@ export default function AdminUsersView({
       setUsers((prev) =>
         prev.map((u) => (u.id === target.id ? result.user : u))
       );
-      if (viewingUser?.id === target.id) setViewingUser(result.user);
       setFeedback({ type: "success", text: result.message });
     } catch (err) {
       setUsers(previous);
@@ -459,7 +466,7 @@ export default function AdminUsersView({
             onApprove={handleApproveUser}
             onRoleChange={handleRoleChange}
             onToggleBlock={handleToggleBlock}
-            onView={(u) => setViewingUser(u)}
+            onView={handleViewUser}
             onEdit={(u) => setEditingUser(u)}
             onDelete={(u) => setDeletingUser(u)}
           />
@@ -471,7 +478,7 @@ export default function AdminUsersView({
             isPendingView={isPendingView}
             onApprove={handleApproveUser}
             onToggleBlock={handleToggleBlock}
-            onView={(u) => setViewingUser(u)}
+            onView={handleViewUser}
             onEdit={(u) => setEditingUser(u)}
             onDelete={(u) => setDeletingUser(u)}
           />
@@ -490,22 +497,6 @@ export default function AdminUsersView({
       />
 
       {/* Modals */}
-      <UserDetailsModal
-        user={viewingUser}
-        isBn={isBn}
-        isSelf={Boolean(currentUserId && viewingUser?.id === currentUserId)}
-        onClose={() => setViewingUser(null)}
-        onEdit={(u) => {
-          setViewingUser(null);
-          setEditingUser(u);
-        }}
-        onToggleBlock={(u) => void handleToggleBlock(u)}
-        onDelete={(u) => {
-          setViewingUser(null);
-          setDeletingUser(u);
-        }}
-      />
-
       <UserEditModal
         user={editingUser}
         isBn={isBn}
@@ -515,7 +506,6 @@ export default function AdminUsersView({
           setUsers((prev) =>
             prev.map((u) => (u.id === updated.id ? updated : u))
           );
-          if (viewingUser?.id === updated.id) setViewingUser(updated);
           setEditingUser(null);
           setFeedback({ type: "success", text: message });
         }}
