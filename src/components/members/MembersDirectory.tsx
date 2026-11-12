@@ -49,7 +49,13 @@ const DEFAULT_META: UsersPaginationMeta = {
 
 const ICON_CLS = "w-3.5 h-3.5 shrink-0";
 
-export default function MembersDirectory({ locale }: { locale: Locale }) {
+export default function MembersDirectory({
+  locale,
+  inDashboard = false,
+}: {
+  locale: Locale;
+  inDashboard?: boolean;
+}) {
   const isBn = locale === "bn";
 
   const [members, setMembers] = useState<ManagedUser[]>([]);
@@ -169,23 +175,48 @@ export default function MembersDirectory({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 py-8 sm:py-14">
-      {/* Page Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3 mb-8 sm:mb-10">
-        <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-widest border border-[#006a4e]/20">
-          {isBn
-            ? "সাভারচালা শান্তি সংঘ সদস্য ডিরেক্টরি"
-            : `${BRAND_NAME_UPPER_EN} MEMBER DIRECTORY`}
-        </span>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-pitch tracking-tight">
-          {isBn ? "আমাদের সম্মানিত সদস্যবৃন্দ" : "Our Respected Members"}
-        </h1>
-        <p className="text-sm sm:text-base text-brand-700 leading-relaxed font-sans">
-          {isBn
-            ? "২০০৭ সাল থেকে সাভারচালা শান্তি সংঘের অগ্রযাত্রায় নিবেদিত সকল নিবন্ধিত ও সক্রিয় সদস্যদের তালিকা।"
-            : `Registered and active members powering ${FULL_BRAND_NAME_EN} since 2007.`}
-        </p>
-      </div>
+    <div
+      className={
+        inDashboard
+          ? "space-y-6"
+          : "mx-auto max-w-7xl px-3.5 sm:px-6 lg:px-8 py-8 sm:py-14"
+      }
+    >
+      {/* Header */}
+      {!inDashboard ? (
+        <div className="text-center max-w-3xl mx-auto space-y-3 mb-8 sm:mb-10">
+          <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] text-xs font-extrabold uppercase px-3 py-1 rounded-sm tracking-widest border border-[#006a4e]/20">
+            {isBn
+              ? "সাভারচালা শান্তি সংঘ সদস্য ডিরেক্টরি"
+              : `${BRAND_NAME_UPPER_EN} MEMBER DIRECTORY`}
+          </span>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-pitch tracking-tight">
+            {isBn ? "আমাদের সম্মানিত সদস্যবৃন্দ" : "Our Respected Members"}
+          </h1>
+          <p className="text-sm sm:text-base text-brand-700 leading-relaxed font-sans">
+            {isBn
+              ? "২০০৭ সাল থেকে সাভারচালা শান্তি সংঘের অগ্রযাত্রায় নিবেদিত সকল নিবন্ধিত ও সক্রিয় সদস্যদের তালিকা।"
+              : `Registered and active members powering ${FULL_BRAND_NAME_EN} since 2007.`}
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1 border-b border-slate-200/60">
+          <div>
+            <div className="inline-flex items-center gap-1.5 text-xs font-black text-[#006a4e] bg-[#006a4e]/10 px-2.5 py-0.5 rounded-full mb-1">
+              <span>👥</span>
+              <span>{isBn ? "সদস্য ডিরেক্টরি" : "Member Directory"}</span>
+            </div>
+            <h1 className="font-display text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {isBn ? "ক্লাব সদস্যবৃন্দ" : "Club Members"}
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 font-sans mt-0.5">
+              {isBn
+                ? "সাভারচালা শান্তি সংঘের সকল নিবন্ধিত সদস্যের তথ্য ডিরেক্টরি"
+                : "Directory of all registered members of Shanti Sangho"}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Search & Filter Toolbar */}
       <div className="rounded-3xl bg-white border border-emerald-200/80 p-3.5 sm:p-5 shadow-xs mb-6 space-y-3">

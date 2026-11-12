@@ -13,6 +13,7 @@ import VerifiedTick from "@/components/common/VerifiedTick";
 import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
 import AdminUsersView from "./AdminUsersView";
+import MembersDirectory from "@/components/members/MembersDirectory";
 import type { BloodGroup } from "@/types";
 import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
 import {
@@ -87,9 +88,58 @@ export default function DashboardShell({
   const { role, setRole } = useRole();
   const isBn = locale === "bn";
 
-  const [activeTab, setActiveTab] = useState<TabType>("overview");
+  // Role & dashboard access logic:
+  // USER sees member view; MODERATOR, ADMIN, and SUPER_ADMIN get management/dashboard access.
+  const isAdminRoute = pathname?.includes("/admin");
+  const resolvedRole = user
+    ? normalizeRole(user.role)
+    : isAdminRoute || role === "admin"
+      ? "ADMIN"
+      : "USER";
+  const roleMeta = getRoleDisplayMeta(resolvedRole);
+  const isAdmin = hasDashboardAccess(resolvedRole);
+
+  const [activeTab, setActiveTab] = useState<TabType>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab") as TabType | null;
+      if (
+        tab &&
+        [
+          "overview",
+          "profile",
+          "sports",
+          "members",
+          "notices",
+          "leadership_pioneers",
+          "leadership_committee",
+          "leadership_admins",
+          "admin_users",
+          "admin_users_all",
+          "admin_users_pending",
+          "admin_members",
+          "admin_live",
+          "admin_finance",
+          "admin_expenses",
+        ].includes(tab)
+      ) {
+        return tab;
+      }
+      try {
+        const stored = localStorage.getItem("auth_user");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed?.role && hasDashboardAccess(parsed.role)) {
+            return "overview";
+          }
+        }
+      } catch {
+        // fallback
+      }
+    }
+    return "members";
+  });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [historyCategory, setHistoryCategory] = useState<"all" | "spl" | "football" | "community">("all");
 
   const buildProfileForm = (u: typeof user) => ({
     name: u?.name || "",
@@ -139,6 +189,7 @@ export default function DashboardShell({
           "overview",
           "profile",
           "sports",
+          "members",
           "notices",
           "leadership_pioneers",
           "leadership_committee",
@@ -152,10 +203,21 @@ export default function DashboardShell({
           "admin_expenses",
         ].includes(tab)
       ) {
-        setActiveTab(tab as TabType);
+        if (tab === "overview" && !isAdmin) {
+          setActiveTab("members");
+        } else {
+          setActiveTab(tab as TabType);
+        }
       }
     }
-  }, []);
+  }, [isAdmin]);
+
+  // Guard: Ensure non-admin users never stay on "overview" tab
+  useEffect(() => {
+    if (!isAdmin && activeTab === "overview") {
+      setActiveTab("members");
+    }
+  }, [isAdmin, activeTab]);
 
   const handleSaveProfile = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -188,16 +250,7 @@ export default function DashboardShell({
     }
   };
 
-  // Role & dashboard access logic:
-  // USER sees member view; MODERATOR, ADMIN, and SUPER_ADMIN get management/dashboard access.
-  const isAdminRoute = pathname?.includes("/admin");
-  const resolvedRole = user
-    ? normalizeRole(user.role)
-    : isAdminRoute || role === "admin"
-      ? "ADMIN"
-      : "USER";
-  const roleMeta = getRoleDisplayMeta(resolvedRole);
-  const isAdmin = hasDashboardAccess(resolvedRole);
+  
 
   const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";
@@ -314,353 +367,22 @@ export default function DashboardShell({
             </div>
           )}
           {/* ===================================================== */}
-          {/* TAB 1: OVERVIEW                                       */}
+          {/* TAB 1: OVERVIEW (Admin Only)                          */}
           {/* ===================================================== */}
-          {activeTab === "overview" && (
-            isAdmin ? (
-              <AdminOverviewView
-                adminName={user?.name || "Admin"}
-                adminVerified={isAdminVerified(user?.adminVerified)}
-                locale={locale}
-                onReviewPending={() => setActiveTab("admin_users_pending")}
-              />
-            ) : (
-              <div className="space-y-6">
-              {/* TOP STATS CARDS (4 Cards matching the reference layout) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Stat 1: Total Matches & Events */}
-                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      {isBn ? "মোট ম্যাচ ও সেশন" : "TOTAL CLUB MATCHES"}
-                    </span>
-                    <span className="text-[#006a4e] bg-[#006a4e]/10 p-1.5 rounded-xl text-xs">🎤</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
-                    24 {isBn ? "টি" : "Sessions"}
-                  </h3>
-                  <p className="text-xs text-[#006a4e] font-semibold mt-1">
-                    {isBn ? "এসপিএল ও প্রীতি ম্যাচ" : "Matches & Tournaments"}
-                  </p>
-                </div>
+          {activeTab === "overview" && isAdmin && (
+            <AdminOverviewView
+              adminName={user?.name || "Admin"}
+              adminVerified={isAdminVerified(user?.adminVerified)}
+              locale={locale}
+              onReviewPending={() => setActiveTab("admin_users_pending")}
+            />
+          )}
 
-                {/* Stat 2: Membership Status */}
-                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      {isBn ? "সদস্য স্ট্যাটাস" : "MEMBERSHIP STATUS"}
-                    </span>
-                    <span className="text-emerald-600 bg-emerald-50 p-1.5 rounded-xl text-xs">📖</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-emerald-600">
-                    {isBn ? "সক্রিয়" : "Active"}
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium mt-1">
-                    {isBn ? "ভেরিফাইড ক্লাব সদস্য" : "Verified Member"}
-                  </p>
-                </div>
-
-                {/* Stat 3: Club Sessions & Attendance */}
-                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      {isBn ? "উপস্থিতির হার" : "ATTENDANCE RATE"}
-                    </span>
-                    <span className="text-blue-600 bg-blue-50 p-1.5 rounded-xl text-xs">⚡</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
-                    92%
-                  </h3>
-                  <p className="text-xs text-blue-600 font-semibold mt-1">
-                    {isBn ? "নিয়মিত অংশগ্রহণকারী" : "Regular Participation"}
-                  </p>
-                </div>
-
-                {/* Stat 4: Overall Performance / Accuracy */}
-                <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between text-slate-400 mb-2">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                      {isBn ? "পারফরম্যান্স স্কোর" : "OVERALL CLUB SCORE"}
-                    </span>
-                    <span className="text-amber-600 bg-amber-50 p-1.5 rounded-xl text-xs">🎯</span>
-                  </div>
-                  <h3 className="text-2xl sm:text-3xl font-black text-slate-900">
-                    88%
-                  </h3>
-                  <p className="text-xs text-slate-500 font-medium mt-1">
-                    {isBn ? "শীর্ষ ১০% সদস্য তালিকায়" : "Top 10% Member"}
-                  </p>
-                </div>
-              </div>
-
-              {/* ADMIN SPECIAL KPI ROW (Only visible to Admin) */}
-              {isAdmin && (
-                <div className="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-300/40 rounded-3xl p-4 sm:p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-black text-amber-800 uppercase tracking-wider">
-                      <span>👑</span>
-                      <span>{isBn ? "অ্যাডমিন এক্সক্লুসিভ স্ট্যাটাস" : "Admin Executive Insights"}</span>
-                    </span>
-                    <span className="text-xs font-bold text-amber-700 bg-amber-100/80 px-2.5 py-0.5 rounded-full">
-                      {isBn ? "সিস্টেম রানিং" : "System Live"}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center sm:text-left">
-                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "মোট সদস্য" : "Total Members"}</p>
-                      <p className="text-xl font-black text-slate-900">128 {isBn ? "জন" : ""}</p>
-                    </div>
-                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "অপেক্ষমাণ অনুমোদন" : "Pending Approvals"}</p>
-                      <p className="text-xl font-black text-amber-600">{pendingMembers.length} {isBn ? "জন" : ""}</p>
-                    </div>
-                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "তহবিল স্থিতি" : "Fund Balance"}</p>
-                      <p className="text-xl font-black text-emerald-600">৳ ৪৮,৫০০</p>
-                    </div>
-                    <div className="bg-white/80 rounded-2xl p-3 border border-amber-200/50">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase">{isBn ? "লাইভ ম্যাচ" : "Live Matches"}</p>
-                      <p className="text-xl font-black text-blue-600">১ {isBn ? "টি রানিং" : "Active"}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* LATEST MATCH RESULT & EVALUATION */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs flex flex-col justify-between">
-                <div>
-                  {/* Header */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full mb-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        <span>{isBn ? "সর্বশেষ ম্যাচ ফলাফল • Nov 8, 2026" : "Latest SPL Match • Nov 8, 2026"}</span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-extrabold text-slate-900">
-                        {isBn ? "সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ (এসপিএল সিজন ৫)" : "Shavarchala Royals vs Vikings XI (SPL Season 5)"}
-                      </h3>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("sports")}
-                        className="px-3.5 py-1.5 rounded-full bg-[#006a4e]/10 text-[#006a4e] hover:bg-[#006a4e]/20 text-xs font-bold transition-colors cursor-pointer"
-                      >
-                        {isBn ? "পূর্ণ রিপোর্ট" : "Full Report"}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Chips Row (Accuracy, Time, Level equivalent) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
-                    <div className="p-3.5 rounded-2xl bg-[#006a4e]/10 border border-[#006a4e]/20 flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-[#006a4e] text-white font-black flex items-center justify-center text-xs">
-                        WIN
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase text-[#006a4e]">{isBn ? "ম্যাচ রেজাল্ট" : "Result"}</p>
-                        <p className="text-sm font-extrabold text-slate-900">{isBn ? "৬ উইকেটে জয়ী" : "Won by 6 Wkts"}</p>
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-blue-600 text-white font-black flex items-center justify-center text-xs">
-                        MOM
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase text-blue-600">{isBn ? "সেরা পারফরমার" : "Top Performer"}</p>
-                        <p className="text-xs font-extrabold text-slate-900 truncate">{isBn ? "রাকিবুল ইসলাম" : "Rakibul Islam"}</p>
-                      </div>
-                    </div>
-
-                    <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-xs">
-                        #1
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold uppercase text-emerald-600">{isBn ? "পয়েন্ট টেবিল" : "Table Rank"}</p>
-                        <p className="text-xs font-extrabold text-slate-900">{isBn ? "শীর্ষস্থান (১০ পয়েন্ট)" : "1st Place (10 pts)"}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Recommendation / Directive Box */}
-                  <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 leading-relaxed">
-                    <p className="font-bold text-slate-800 flex items-center gap-1.5 mb-1">
-                      <span>📢</span>
-                      <span>{isBn ? "কমিটি ও কোচিং স্টাফদের নির্দেশনা:" : "Club Committee Directive:"}</span>
-                    </p>
-                    <p>
-                      {isBn
-                        ? "আগামী শুক্রবার সকাল ৮:৩০ মিনিটে সাভারচালা হাই স্কুল মাঠে এসপিএল টুর্নামেন্টের সেমিফাইনাল ম্যাচ অনুষ্ঠিত হবে। সকল খেলোয়াড় ও শুভানুধ্যায়ী সদস্যদের নির্ধারিত সময়ের পূর্বেই মাঠে উপস্থিত হওয়ার আহ্বান জানানো হচ্ছে।"
-                        : "Semi-final match scheduled for this Friday at 8:30 AM at Shavarchala High School Ground. All members and supporters are requested to be present on time."}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* BOTTOM SECTION: ACTIVITY HISTORY & ATTEMPTS (Matching table in reference image) */}
-              <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900">
-                      {isBn ? "ক্লাবের সাম্প্রতিক ইভেন্ট ও কার্যক্রম রেকর্ড" : "Recent Events & Activity History"}
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      {isBn ? "টুর্নামেন্ট, ম্যাচ ও সামাজিক উন্নয়নমূলক কাজের বিবরণী" : "Track match records, tournament updates, and club milestones"}
-                    </p>
-                  </div>
-
-                  {/* Filter Tabs */}
-                  <div className="flex items-center gap-1.5 flex-wrap">
-                    <button
-                      type="button"
-                      onClick={() => setHistoryCategory("all")}
-                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
-                        historyCategory === "all"
-                          ? "bg-slate-900 text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                    >
-                      {isBn ? "সকল (৪)" : "All (4)"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHistoryCategory("spl")}
-                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
-                        historyCategory === "spl"
-                          ? "bg-[#006a4e] text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                    >
-                      {isBn ? "এসপিএল ক্রিকেট" : "SPL Cricket"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setHistoryCategory("football")}
-                      className={`px-3 py-1 rounded-full text-xs font-bold transition-colors cursor-pointer ${
-                        historyCategory === "football"
-                          ? "bg-emerald-600 text-white"
-                          : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                      }`}
-                    >
-                      {isBn ? "ফুটবল" : "Football"}
-                    </button>
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => setActiveTab("admin_members")}
-                        className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-2xs transition-colors cursor-pointer"
-                      >
-                        {isBn ? "+ অ্যাডমিন টুলস" : "+ Admin Tools"}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Table */}
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs sm:text-sm">
-                    <thead>
-                      <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase">
-                        <th className="py-3 px-3">{isBn ? "ইভেন্ট / ম্যাচ" : "Event / Match"}</th>
-                        <th className="py-3 px-3">{isBn ? "ক্যাটাগরি" : "Category"}</th>
-                        <th className="py-3 px-3">{isBn ? "তারিখ" : "Date"}</th>
-                        <th className="py-3 px-3">{isBn ? "ফলাফল / অবস্থা" : "Status / Result"}</th>
-                        <th className="py-3 px-3 text-right">{isBn ? "অ্যাকশন" : "Action"}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100 font-medium">
-                      <tr className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3.5 px-3">
-                          <p className="font-bold text-slate-900">{isBn ? "এসপিএল সিজন ৫ - গ্রুপ ম্যাচ ৪" : "SPL Season 5 - Group Match 4"}</p>
-                          <p className="text-[11px] text-slate-400">সাভারচালা রয়্যালস বনাম ভাইকিংস একাদশ</p>
-                        </td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-block bg-[#006a4e]/10 text-[#006a4e] px-2 py-0.5 rounded-md text-xs font-bold">
-                            Cricket
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-slate-600">Nov 8, 2026</td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-flex items-center gap-1 text-emerald-600 font-bold text-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                            {isBn ? "জয়ী (৬ উইকেটে)" : "Won by 6 wkts"}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-right">
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("sports")}
-                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
-                          >
-                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3.5 px-3">
-                          <p className="font-bold text-slate-900">{isBn ? "বিজয় দিবস প্রীতি ফুটবল ম্যাচ" : "Victory Day Football Match"}</p>
-                          <p className="text-[11px] text-slate-400">সাভারচালা একাদশ বনাম সখিপুর একাদশ</p>
-                        </td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-block bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-md text-xs font-bold">
-                            Football
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-slate-600">Nov 1, 2026</td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-flex items-center gap-1 text-blue-600 font-bold text-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                            {isBn ? "ড্র (১ - ১)" : "Draw (1 - 1)"}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-right">
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("sports")}
-                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
-                          >
-                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
-                          </button>
-                        </td>
-                      </tr>
-
-                      <tr className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3.5 px-3">
-                          <p className="font-bold text-slate-900">{isBn ? "ক্লাবের বার্ষিক সাধারণ সভা ও রক্তদান কর্মসূচি" : "Annual General Meeting & Blood Drive"}</p>
-                          <p className="text-[11px] text-slate-400">সাভারচালা শান্তি সংঘ প্রাঙ্গণ</p>
-                        </td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-block bg-blue-50 text-blue-700 px-2 py-0.5 rounded-md text-xs font-bold">
-                            Community
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-slate-600">Oct 25, 2026</td>
-                        <td className="py-3.5 px-3">
-                          <span className="inline-flex items-center gap-1 text-slate-600 font-bold text-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                            {isBn ? "সম্পন্ন" : "Completed"}
-                          </span>
-                        </td>
-                        <td className="py-3.5 px-3 text-right">
-                          <button
-                            type="button"
-                            onClick={() => setActiveTab("sports")}
-                            className="text-[#006a4e] hover:text-[#005a42] font-bold text-xs"
-                          >
-                            {isBn ? "বিস্তারিত দেখুন →" : "View →"}
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            )
+          {/* ===================================================== */}
+          {/* TAB: MEMBERS DIRECTORY (Read-only for all members)    */}
+          {/* ===================================================== */}
+          {activeTab === "members" && (
+            <MembersDirectory locale={locale as any} inDashboard />
           )}
 
           {/* ===================================================== */}
@@ -1206,7 +928,7 @@ export default function DashboardShell({
               featureNameEn="Sports & SPL"
               featureNameBn="স্পোর্টস ও এসপিএল"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1299,7 +1021,7 @@ export default function DashboardShell({
               featureNameEn="Live Score"
               featureNameBn="লাইভ স্কোর"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1311,7 +1033,7 @@ export default function DashboardShell({
               featureNameEn="Club Finance"
               featureNameBn="তহবিল ও হিসাব"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1323,7 +1045,7 @@ export default function DashboardShell({
               featureNameEn="Pioneers"
               featureNameBn="অগ্রপথিক"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1332,7 +1054,7 @@ export default function DashboardShell({
               featureNameEn="Committee"
               featureNameBn="কমিটি"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1341,7 +1063,7 @@ export default function DashboardShell({
               featureNameEn="Admins"
               featureNameBn="অ্যাডমিন"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1350,7 +1072,7 @@ export default function DashboardShell({
               featureNameEn="Notices & Welfare"
               featureNameBn="নোটিশ ও কল্যাণ"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
 
@@ -1359,7 +1081,7 @@ export default function DashboardShell({
               featureNameEn="Expenses"
               featureNameBn="ব্যয় হিসাব"
               locale={locale}
-              onDashboardClick={() => setActiveTab("overview")}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
             />
           )}
         </main>

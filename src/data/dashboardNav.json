@@ -11,6 +11,15 @@
           "labelEn": "Overview",
           "icon": "dashboard",
           "type": "tab",
+          "status": "ready",
+          "adminOnly": true
+        },
+        {
+          "id": "members",
+          "labelBn": "সদস্যবৃন্দ",
+          "labelEn": "Members",
+          "icon": "members",
+          "type": "tab",
           "status": "ready"
         },
         {
