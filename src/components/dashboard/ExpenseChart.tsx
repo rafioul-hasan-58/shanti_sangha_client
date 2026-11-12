@@ -343,281 +343,278 @@ export default function ExpenseChart({ locale = "en" }: ExpenseChartProps) {
         />
       </div>
 
-      {/* 3. CHART MAIN AREA (Loading / Error / Empty / Chart) */}
-      <div className="relative min-h-[340px] w-full flex flex-col justify-center">
-        {/* Loading Skeleton */}
-        {loading && (
-          <div
-            role="status"
-            aria-live="polite"
-            className="w-full h-80 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center space-y-3 animate-pulse"
+      {/* 3. CHART & CATEGORY BREAKDOWN (50/50 split on desktop, stacked on mobile) */}
+      {loading && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="w-full h-80 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center justify-center space-y-3 animate-pulse"
+        >
+          <div className="h-6 w-36 bg-slate-200 rounded-full" />
+          <div className="flex items-end gap-6 h-40 w-4/5 justify-center">
+            {[40, 75, 55, 90, 65, 80].map((h, i) => (
+              <div
+                key={i}
+                style={{ height: `${h}%` }}
+                className="w-12 bg-slate-200 rounded-t-lg"
+              />
+            ))}
+          </div>
+          <p className="text-xs text-slate-400 font-bold">
+            {isBn ? "ব্যয় রিপোর্ট লোড হচ্ছে..." : "Loading expenditure overview..."}
+          </p>
+        </div>
+      )}
+
+      {!loading && error && (
+        <div
+          role="alert"
+          className="w-full py-12 px-6 rounded-2xl bg-rose-50 border border-rose-200 text-center space-y-3"
+        >
+          <div className="w-10 h-10 rounded-full bg-rose-100 text-[#f42a41] flex items-center justify-center mx-auto text-lg font-black">
+            !
+          </div>
+          <h4 className="text-sm font-black text-rose-900">
+            {isBn ? "তথ্য লোড করতে সমস্যা হয়েছে" : "Failed to load expenditure data"}
+          </h4>
+          <p className="text-xs text-rose-700 max-w-md mx-auto">{error}</p>
+          <button
+            type="button"
+            onClick={fetchData}
+            className="px-4 py-2 rounded-xl bg-[#006a4e] text-white text-xs font-bold hover:bg-[#004d38] transition-colors shadow-xs"
           >
-            <div className="h-6 w-36 bg-slate-200 rounded-full" />
-            <div className="flex items-end gap-6 h-40 w-4/5 justify-center">
-              {[40, 75, 55, 90, 65, 80].map((h, i) => (
-                <div
-                  key={i}
-                  style={{ height: `${h}%` }}
-                  className="w-12 bg-slate-200 rounded-t-lg"
-                />
-              ))}
-            </div>
-            <p className="text-xs text-slate-400 font-bold">
-              {isBn ? "ব্যয় রিপোর্ট লোড হচ্ছে..." : "Loading expenditure overview..."}
-            </p>
-          </div>
-        )}
+            {isBn ? "পুনরায় চেষ্টা করুন" : "Try Again"}
+          </button>
+        </div>
+      )}
 
-        {/* Error State with Retry Button */}
-        {!loading && error && (
-          <div
-            role="alert"
-            className="w-full py-12 px-6 rounded-2xl bg-rose-50 border border-rose-200 text-center space-y-3"
-          >
-            <div className="w-10 h-10 rounded-full bg-rose-100 text-[#f42a41] flex items-center justify-center mx-auto text-lg font-black">
-              !
-            </div>
-            <h4 className="text-sm font-black text-rose-900">
-              {isBn ? "তথ্য লোড করতে সমস্যা হয়েছে" : "Failed to load expenditure data"}
-            </h4>
-            <p className="text-xs text-rose-700 max-w-md mx-auto">{error}</p>
-            <button
-              type="button"
-              onClick={fetchData}
-              className="px-4 py-2 rounded-xl bg-[#006a4e] text-white text-xs font-bold hover:bg-[#004d38] transition-colors shadow-xs"
-            >
-              {isBn ? "পুনরায় চেষ্টা করুন" : "Try Again"}
-            </button>
-          </div>
-        )}
+      {!loading && !error && chartData.length === 0 && (
+        <div className="w-full py-16 text-center space-y-2 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+          <span className="text-3xl">📊</span>
+          <p className="text-sm font-bold text-slate-700">
+            {isBn ? "এই সময়কালের জন্য কোন ব্যয় রেকর্ড নেই" : "No expenses recorded for this period"}
+          </p>
+          <p className="text-xs text-slate-400">
+            {isBn ? "অন্য সময়কাল বা ফিল্টার নির্বাচন করুন।" : "Try navigating to another time window or changing the category filter."}
+          </p>
+        </div>
+      )}
 
-        {/* Empty State */}
-        {!loading && !error && chartData.length === 0 && (
-          <div className="w-full py-16 text-center space-y-2 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
-            <span className="text-3xl">📊</span>
-            <p className="text-sm font-bold text-slate-700">
-              {isBn ? "এই সময়কালের জন্য কোন ব্যয় রেকর্ড নেই" : "No expenses recorded for this period"}
-            </p>
-            <p className="text-xs text-slate-400">
-              {isBn ? "অন্য সময়কাল বা ফিল্টার নির্বাচন করুন।" : "Try navigating to another time window or changing the category filter."}
-            </p>
-          </div>
-        )}
+      {!loading && !error && chartData.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7 items-stretch pt-1">
+          {/* Left 50%: Recharts Stacked Bar Chart */}
+          <div className="w-full flex flex-col justify-center">
+            {isMounted && (
+              <div className="w-full h-80 sm:h-96 lg:h-[380px]">
+                <p className="sr-only">
+                  {`Expenditure chart for ${rangeLabel}, total ${formatBDT(visibleTotal)}.`}
+                </p>
 
-        {/* Recharts Stacked Bar Chart */}
-        {!loading && !error && chartData.length > 0 && isMounted && (
-          <div className="w-full h-80 sm:h-96">
-            <p className="sr-only">
-              {`Expenditure chart for ${rangeLabel}, total ${formatBDT(visibleTotal)}.`}
-            </p>
-
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 12, left: -4, bottom: 8 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis
-                  dataKey="label"
-                  axisLine={{ stroke: "#cbd5e1" }}
-                  tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }}
-                />
-                <YAxis
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fill: "#64748b", fontSize: 11, fontWeight: 600 }}
-                  tickFormatter={(val: number) => {
-                    if (val >= 100000) return `${(val / 100000).toFixed(1)}L`;
-                    if (val >= 1000) return `${Math.round(val / 1000)}k`;
-                    return String(val);
-                  }}
-                />
-                <Tooltip
-                  cursor={{ fill: "rgba(0, 106, 78, 0.04)" }}
-                  content={({ active, payload, label }) => {
-                    if (!active || !payload || payload.length === 0) return null;
-
-                    // Calculate period total
-                    const totalAmount = payload.reduce(
-                      (acc, p) => acc + (typeof p.value === "number" ? p.value : 0),
-                      0
-                    );
-
-                    return (
-                      <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200 text-xs min-w-[210px] space-y-2">
-                        <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
-                          <span className="font-extrabold text-slate-900">{label}</span>
-                          <span className="font-black text-[#006a4e]">
-                            {formatBDT(totalAmount)}
-                          </span>
-                        </div>
-
-                        <div className="space-y-1.5">
-                          {payload.map((entry, idx) => {
-                            const val = typeof entry.value === "number" ? entry.value : 0;
-                            if (val === 0 && selectedCategory === "ALL") return null;
-
-                            const catKey = entry.dataKey as ExpenseCategory;
-                            const catLabel =
-                              isBn && CATEGORY_CONFIG[catKey]
-                                ? CATEGORY_CONFIG[catKey].labelBn
-                                : CATEGORY_CONFIG[catKey]?.label || entry.name;
-
-                            return (
-                              <div
-                                key={idx}
-                                className="flex items-center justify-between gap-3 text-[11px]"
-                              >
-                                <span className="flex items-center gap-1.5 text-slate-600 font-semibold truncate">
-                                  <span
-                                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                                    style={{ backgroundColor: entry.color }}
-                                  />
-                                  <span>{catLabel}</span>
-                                </span>
-                                <span className="font-bold text-slate-900 shrink-0">
-                                  {formatBDT(val)}
-                                </span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  }}
-                />
-                <Legend
-                  verticalAlign="top"
-                  align="right"
-                  iconType="circle"
-                  wrapperStyle={{ paddingBottom: "12px", fontSize: "11px", fontWeight: "700" }}
-                  formatter={(value) => {
-                    const catKey = value as ExpenseCategory;
-                    return (
-                      <span className="text-slate-700">
-                        {isBn && CATEGORY_CONFIG[catKey]
-                          ? CATEGORY_CONFIG[catKey].labelBn
-                          : CATEGORY_CONFIG[catKey]?.label || value}
-                      </span>
-                    );
-                  }}
-                />
-
-                {/* Render stacked bars for categories */}
-                {EXPENSE_CATEGORIES.map((cat, idx) => {
-                  if (selectedCategory !== "ALL" && selectedCategory !== cat) {
-                    return null;
-                  }
-
-                  const isLastCategory =
-                    selectedCategory !== "ALL" || idx === EXPENSE_CATEGORIES.length - 1;
-
-                  return (
-                    <Bar
-                      key={cat}
-                      dataKey={cat}
-                      name={cat}
-                      stackId="a"
-                      fill={CATEGORY_CONFIG[cat].color}
-                      radius={isLastCategory ? [6, 6, 0, 0] : [0, 0, 0, 0]}
-                    />
-                  );
-                })}
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </div>
-
-      {/* 4. CATEGORY SHARE (Donut chart & proportional cards) */}
-      {!loading && !error && categoryShare.length > 0 && (
-        <div className="pt-6 border-t border-slate-100">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
-              <span>{isBn ? "খাতওয়ারী ব্যয়ের অনুপাত (Category Share)" : "Category Share & Breakdown"}</span>
-              <span className="text-xs text-slate-400 font-medium">({rangeLabel})</span>
-            </h3>
-            <span className="text-xs font-extrabold text-[#006a4e]">
-              100% {isBn ? "হিসাব" : "Allocated"}
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            {/* Donut Chart (lg:col-span-4) */}
-            <div className="lg:col-span-4 h-52 sm:h-60 relative flex items-center justify-center">
-              {isMounted && (
                 <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={categoryShare}
-                      dataKey="amount"
-                      nameKey="label"
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={55}
-                      outerRadius={80}
-                      paddingAngle={3}
-                    >
-                      {categoryShare.map((entry) => (
-                        <Cell key={entry.key} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip
-                      formatter={(val) => [formatBDT(Number(val) || 0), isBn ? "ব্যয়" : "Expense"]}
+                  <BarChart
+                    data={chartData}
+                    margin={{ top: 16, right: 10, left: -6, bottom: 8 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                    <XAxis
+                      dataKey="label"
+                      axisLine={{ stroke: "#cbd5e1" }}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12, fontWeight: 600 }}
                     />
-                  </PieChart>
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 11, fontWeight: 600 }}
+                      tickFormatter={(val: number) => {
+                        if (val >= 100000) return `${(val / 100000).toFixed(1)}L`;
+                        if (val >= 1000) return `${Math.round(val / 1000)}k`;
+                        return String(val);
+                      }}
+                    />
+                    <Tooltip
+                      cursor={{ fill: "rgba(0, 106, 78, 0.04)" }}
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload || payload.length === 0) return null;
+
+                        const totalAmount = payload.reduce(
+                          (acc, p) => acc + (typeof p.value === "number" ? p.value : 0),
+                          0
+                        );
+
+                        return (
+                          <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 shadow-xl border border-slate-200 text-xs min-w-[210px] space-y-2">
+                            <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                              <span className="font-extrabold text-slate-900">{label}</span>
+                              <span className="font-black text-[#006a4e]">
+                                {formatBDT(totalAmount)}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1.5">
+                              {payload.map((entry, idx) => {
+                                const val = typeof entry.value === "number" ? entry.value : 0;
+                                if (val === 0 && selectedCategory === "ALL") return null;
+
+                                const catKey = entry.dataKey as ExpenseCategory;
+                                const catLabel =
+                                  isBn && CATEGORY_CONFIG[catKey]
+                                    ? CATEGORY_CONFIG[catKey].labelBn
+                                    : CATEGORY_CONFIG[catKey]?.label || entry.name;
+
+                                return (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center justify-between gap-3 text-[11px]"
+                                  >
+                                    <span className="flex items-center gap-1.5 text-slate-600 font-semibold truncate">
+                                      <span
+                                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                                        style={{ backgroundColor: entry.color }}
+                                      />
+                                      <span>{catLabel}</span>
+                                    </span>
+                                    <span className="font-bold text-slate-900 shrink-0">
+                                      {formatBDT(val)}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      }}
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      align="right"
+                      iconType="circle"
+                      wrapperStyle={{ paddingBottom: "12px", fontSize: "11px", fontWeight: "700" }}
+                      formatter={(value) => {
+                        const catKey = value as ExpenseCategory;
+                        return (
+                          <span className="text-slate-700">
+                            {isBn && CATEGORY_CONFIG[catKey]
+                              ? CATEGORY_CONFIG[catKey].labelBn
+                              : CATEGORY_CONFIG[catKey]?.label || value}
+                          </span>
+                        );
+                      }}
+                    />
+
+                    {EXPENSE_CATEGORIES.map((cat, idx) => {
+                      if (selectedCategory !== "ALL" && selectedCategory !== cat) {
+                        return null;
+                      }
+
+                      const isLastCategory =
+                        selectedCategory !== "ALL" || idx === EXPENSE_CATEGORIES.length - 1;
+
+                      return (
+                        <Bar
+                          key={cat}
+                          dataKey={cat}
+                          name={cat}
+                          stackId="a"
+                          fill={CATEGORY_CONFIG[cat].color}
+                          radius={isLastCategory ? [6, 6, 0, 0] : [0, 0, 0, 0]}
+                        />
+                      );
+                    })}
+                  </BarChart>
                 </ResponsiveContainer>
-              )}
-              {/* Center Donut Label */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">
-                  {isBn ? "মোট" : "TOTAL"}
-                </span>
-                <span className="text-xs font-black text-[#12231d]">
-                  {formatBDT(visibleTotal)}
+              </div>
+            )}
+          </div>
+
+          {/* Right 50%: Category Share & Breakdown */}
+          {categoryShare.length > 0 && (
+            <div className="w-full pt-6 border-t border-slate-100 lg:pt-0 lg:border-t-0 lg:border-l lg:border-slate-100 lg:pl-7 flex flex-col justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-3">
+                <h3 className="text-sm font-black text-slate-900 flex items-center gap-1.5 flex-wrap">
+                  <span>{isBn ? "খাতওয়ারী ব্যয়ের অনুপাত (Category Share)" : "Category Share & Breakdown"}</span>
+                  <span className="text-xs text-slate-400 font-medium">({rangeLabel})</span>
+                </h3>
+                <span className="text-xs font-extrabold text-[#006a4e] shrink-0">
+                  100% {isBn ? "হিসাব" : "Allocated"}
                 </span>
               </div>
-            </div>
 
-            {/* Proportional Category Share Cards (lg:col-span-8) */}
-            <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {categoryShare.map((item) => (
-                <div
-                  key={item.key}
-                  className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition-colors"
-                >
-                  <div className="flex items-center justify-between gap-1 mb-1">
-                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
-                      <span
-                        className="w-2.5 h-2.5 rounded-full shrink-0"
-                        style={{ backgroundColor: item.color }}
+              {/* Donut Chart */}
+              <div className="h-44 sm:h-48 relative flex items-center justify-center mb-3">
+                {isMounted && (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={categoryShare}
+                        dataKey="amount"
+                        nameKey="label"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={48}
+                        outerRadius={72}
+                        paddingAngle={3}
+                      >
+                        {categoryShare.map((entry) => (
+                          <Cell key={entry.key} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(val) => [formatBDT(Number(val) || 0), isBn ? "ব্যয়" : "Expense"]}
                       />
-                      <span className="truncate">{item.label}</span>
-                    </span>
-                    <span className="text-[11px] font-black text-slate-500">
-                      {item.percentage}%
-                    </span>
-                  </div>
-
-                  <p className="text-sm font-black text-[#12231d]">
-                    {formatBDT(item.amount)}
-                  </p>
-
-                  {/* Tiny progress bar */}
-                  <div className="w-full h-1.5 bg-slate-200 rounded-full mt-2 overflow-hidden">
-                    <div
-                      style={{
-                        width: `${item.percentage}%`,
-                        backgroundColor: item.color,
-                      }}
-                      className="h-full rounded-full transition-all duration-300"
-                    />
-                  </div>
+                    </PieChart>
+                  </ResponsiveContainer>
+                )}
+                {/* Center Donut Label */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase">
+                    {isBn ? "মোট" : "TOTAL"}
+                  </span>
+                  <span className="text-xs font-black text-[#12231d]">
+                    {formatBDT(visibleTotal)}
+                  </span>
                 </div>
-              ))}
+              </div>
+
+              {/* Proportional Category Share Cards */}
+              <div className="grid grid-cols-2 xl:grid-cols-3 gap-2.5">
+                {categoryShare.map((item) => (
+                  <div
+                    key={item.key}
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-200/70 hover:bg-slate-100/70 transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-1 mb-1">
+                      <span className="flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate">
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span className="truncate">{item.label}</span>
+                      </span>
+                      <span className="text-[11px] font-black text-slate-500 shrink-0">
+                        {item.percentage}%
+                      </span>
+                    </div>
+
+                    <p className="text-sm font-black text-[#12231d]">
+                      {formatBDT(item.amount)}
+                    </p>
+
+                    {/* Tiny progress bar */}
+                    <div className="w-full h-1.5 bg-slate-200 rounded-full mt-2 overflow-hidden">
+                      <div
+                        style={{
+                          width: `${item.percentage}%`,
+                          backgroundColor: item.color,
+                        }}
+                        className="h-full rounded-full transition-all duration-300"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>
