@@ -147,7 +147,12 @@ export function resolveAuthMeta(params: {
   const rawName =
     user?.fullName ?? user?.name ?? claims?.fullName ?? claims?.name;
   const rawAdminVerified =
-    user?.adminVerified ?? data?.adminVerified ?? claims?.adminVerified;
+    user?.adminVerified ??
+    user?.adminApproved ??
+    data?.adminVerified ??
+    data?.adminApproved ??
+    claims?.adminVerified ??
+    claims?.adminApproved;
   const resolvedAdminVerified =
     typeof rawAdminVerified === "boolean" || typeof rawAdminVerified === "string"
       ? rawAdminVerified

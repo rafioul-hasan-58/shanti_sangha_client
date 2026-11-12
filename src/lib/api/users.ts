@@ -84,8 +84,9 @@ export function mapApiUser(raw: Record<string, unknown>, idx = 0): ManagedUser {
         ? raw.phoneVerified
         : null,
     adminVerified:
-      typeof raw.adminVerified === "string" || typeof raw.adminVerified === "boolean"
-        ? raw.adminVerified
+      typeof (raw.adminVerified ?? raw.adminApproved) === "string" ||
+      typeof (raw.adminVerified ?? raw.adminApproved) === "boolean"
+        ? (raw.adminVerified ?? raw.adminApproved) as string | boolean
         : null,
     googleId: asNullableString(raw.googleId),
     createdAt,

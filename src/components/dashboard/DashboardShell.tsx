@@ -62,43 +62,38 @@ export default function DashboardShell({
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [historyCategory, setHistoryCategory] = useState<"all" | "spl" | "football" | "community">("all");
-  const [showMemberIdModal, setShowMemberIdModal] = useState(false);
+
+  const buildProfileForm = (u: typeof user) => ({
+    name: u?.name || "",
+    fatherName: u?.fatherName || "",
+    motherName: u?.motherName || "",
+    bloodGroup: u?.bloodGroup || "UNKNOWN",
+    bio: u?.bio || "",
+    summary: u?.summary || "",
+    profession: u?.profession || "",
+    village: u?.village || "সাভারচালা",
+    currentLocation: u?.currentLocation || "সাভারচালা, সখিপুর, টাঙ্গাইল",
+    whatsappNumber: u?.whatsappNumber || "",
+    facebookProfile: u?.facebookProfile || "",
+  });
 
   // Profile form state matching Prisma User model fields
-  const [profileForm, setProfileForm] = useState({
-    name: user?.name || "",
-    fatherName: user?.fatherName || "",
-    motherName: user?.motherName || "",
-    bloodGroup: user?.bloodGroup || "UNKNOWN",
-    bio: user?.bio || "",
-    summary: user?.summary || "",
-    profession: user?.profession || "",
-    village: user?.village || "সাভারচালা",
-    currentLocation: user?.currentLocation || "সাভারচালা, সখিপুর, টাঙ্গাইল",
-    whatsappNumber: user?.whatsappNumber || "",
-    facebookProfile: user?.facebookProfile || "",
-  });
+  const [profileForm, setProfileForm] = useState(() => buildProfileForm(user));
+  const [savedProfileForm, setSavedProfileForm] = useState(() => buildProfileForm(user));
 
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileSaveSuccess, setProfileSaveSuccess] = useState(false);
 
-  // Sync profile form when user updates or loads from storage
+  const isProfileDirty = (
+    Object.keys(profileForm) as Array<keyof typeof profileForm>
+  ).some((key) => profileForm[key] !== savedProfileForm[key]);
+
+  // Sync profile form & saved baseline when user updates or loads from storage
   useEffect(() => {
     if (user) {
-      setProfileForm((prev) => ({
-        ...prev,
-        name: user.name || prev.name,
-        fatherName: user.fatherName ?? prev.fatherName,
-        motherName: user.motherName ?? prev.motherName,
-        bloodGroup: user.bloodGroup ?? prev.bloodGroup,
-        bio: user.bio ?? prev.bio,
-        summary: user.summary ?? prev.summary,
-        profession: user.profession ?? prev.profession,
-        village: user.village ?? prev.village,
-        currentLocation: user.currentLocation ?? prev.currentLocation,
-        whatsappNumber: user.whatsappNumber ?? prev.whatsappNumber,
-        facebookProfile: user.facebookProfile ?? prev.facebookProfile,
-      }));
+      const next = buildProfileForm(user);
+      setProfileForm(next);
+      setSavedProfileForm(next);
     }
   }, [user]);
 
@@ -151,6 +146,7 @@ export default function DashboardShell({
         facebookProfile: profileForm.facebookProfile || null,
       });
 
+      setSavedProfileForm(profileForm);
       setProfileSaveSuccess(true);
       setTimeout(() => setProfileSaveSuccess(false), 4000);
     } catch (err) {
@@ -174,6 +170,11 @@ export default function DashboardShell({
 
   const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";
+
+  const isGoogleConnected =
+    user?.provider === "google" ||
+    Boolean(user?.authProvider?.toUpperCase().includes("GOOGLE")) ||
+    Boolean(user?.googleId);
 
   // Mock pending members for Admin
   const [pendingMembers, setPendingMembers] = useState([
@@ -638,27 +639,41 @@ export default function DashboardShell({
             <div className="space-y-6">
               {/* Profile Header Card */}
               <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
-                  <div className="flex items-start sm:items-center gap-4">
-                    <div className="relative shrink-0">
+                <div
+                  className={`flex flex-col md:flex-row md:items-center justify-between gap-6 ${
+                    profileSaveSuccess ? "pb-6 border-b border-slate-100" : ""
+                  }`}
+                >
+                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-4 sm:gap-5 w-full min-w-0">
+                    <div className="relative shrink-0 mx-auto sm:mx-0">
                       {user?.picture ? (
-                        <div className="relative h-18 w-18 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20 shadow-md">
+                        <div className="relative h-20 w-20 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20 shadow-md">
                           <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
                         </div>
                       ) : (
-                        <div className="h-18 w-18 sm:h-20 sm:w-20 rounded-full bg-[#006a4e] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-md">
+                        <div className="h-20 w-20 sm:h-20 sm:w-20 rounded-full bg-[#006a4e] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-md">
                           {displayName.charAt(0).toUpperCase()}
                         </div>
                       )}
-                      <span className="absolute bottom-0 right-0 h-5 w-5 rounded-full bg-emerald-500 ring-2 ring-white" title="Active Member" />
+                      <span
+                        className={`absolute bottom-0 right-0 h-5 w-5 rounded-full ring-2 ring-white ${
+                          user?.status === "SUSPENDED" ? "bg-rose-500" : "bg-emerald-500"
+                        }`}
+                        title={user?.status === "SUSPENDED" ? "Suspended" : "Active Member"}
+                      />
                     </div>
 
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
+                    <div className="min-w-0 flex flex-col items-center sm:items-start w-full">
+                      <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                         <h3 className="text-xl sm:text-2xl font-black text-slate-900 truncate">{displayName}</h3>
-                        {isAdminVerified(user?.adminVerified) && (
+                        {isAdminVerified(user?.adminVerified ?? user?.adminApproved) && (
                           <VerifiedTick isBn={isBn} className="w-5 h-5" />
                         )}
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1 font-medium">{displayEmail}</p>
+
+                      <div className="flex items-center justify-center sm:justify-start gap-2 mt-2.5 flex-wrap text-xs">
+                        {/* Role Badge */}
                         <span className="bg-[#006a4e]/10 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold px-2.5 py-0.5 rounded-full">
                           {isAdmin
                             ? `👑 ${isBn ? roleMeta.labelBn : roleMeta.labelEn}`
@@ -666,19 +681,43 @@ export default function DashboardShell({
                               ? "⭐ রেজিস্টার্ড মেম্বার"
                               : "⭐ Club Member"}
                         </span>
-                      </div>
-                      <p className="text-xs text-slate-400 mt-0.5 font-medium">{displayEmail}</p>
 
-                      <div className="flex items-center gap-2 mt-2 flex-wrap text-xs">
+                        {/* Google or Email Icon/Badge */}
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700 shadow-2xs text-[11px] font-bold">
+                          {isGoogleConnected ? (
+                            <>
+                              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 shrink-0" aria-hidden="true">
+                                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.66v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.15z" />
+                                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.27v3.15C3.3 21.45 7.36 24 12 24z" />
+                                <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.27C.46 8.2.01 10.04.01 12s.45 3.8 1.26 5.42l4.01-3.15z" />
+                                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.36 0 3.3 2.55 1.27 6.58l4.01 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
+                              </svg>
+                              <span>Google</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="font-extrabold text-xs text-slate-700">@</span>
+                              <span>{isBn ? "ইমেইল" : "Email"}</span>
+                            </>
+                          )}
+                        </span>
+
                         {/* Blood Group Badge */}
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200 font-bold">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">
                           <span>🩸</span>
-                          <span>{formatBloodGroupDisplay(profileForm.bloodGroup)}</span>
+                          <span>
+                            {(() => {
+                              const formatted = formatBloodGroupDisplay(profileForm.bloodGroup);
+                              return !formatted || formatted.trim().toUpperCase() === "UNKNOWN"
+                                ? "N/A"
+                                : formatted;
+                            })()}
+                          </span>
                         </span>
 
                         {/* Village Badge */}
                         {profileForm.village && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-50 text-[#006a4e] border border-[#006a4e]/20 font-bold">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#006a4e] border border-[#006a4e]/20 font-bold">
                             <span>🏡</span>
                             <span>{profileForm.village}</span>
                           </span>
@@ -686,30 +725,13 @@ export default function DashboardShell({
 
                         {/* Profession Badge */}
                         {profileForm.profession && (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 font-semibold">
                             <span>💼</span>
                             <span>{profileForm.profession}</span>
                           </span>
                         )}
-
-                        {user?.provider === "google" && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-100 font-semibold text-[11px]">
-                            <span>✓ Google Connected</span>
-                          </span>
-                        )}
                       </div>
                     </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 self-start md:self-auto">
-                    <button
-                      type="button"
-                      onClick={() => setShowMemberIdModal(true)}
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#006a4e]/20 transition-all cursor-pointer"
-                    >
-                      <span>🪪</span>
-                      <span>{isBn ? "সদস্য আইডি কার্ড" : "Member ID Card"}</span>
-                    </button>
                   </div>
                 </div>
 
@@ -732,26 +754,28 @@ export default function DashboardShell({
               </div>
 
               {/* Main Profile Form */}
-              <form onSubmit={handleSaveProfile} className="space-y-6">
+              <form onSubmit={handleSaveProfile} className="space-y-7">
                 {/* 1. Personal & Family Identity */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
-                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                    <span className="text-lg">👤</span>
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                    <span className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/80 flex items-center justify-center text-lg shrink-0">
+                      👤
+                    </span>
                     <div>
-                      <h4 className="font-extrabold text-base text-slate-900">
+                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
                         {isBn ? "ব্যক্তিগত ও পারিবারিক তথ্য" : "Personal & Family Information"}
                       </h4>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         {isBn ? "আপনার নাম, পিতামাতার নাম ও রক্তের গ্রুপ" : "Personal identity, parents' names and blood group"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                     {/* Full Name */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                        {isBn ? "পুরো নাম" : "Full Name"} <span className="text-red-500">*</span>
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                        {isBn ? "পুরো নাম" : "Full Name"} <span className="text-rose-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -759,31 +783,31 @@ export default function DashboardShell({
                         onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                         required
                         placeholder={isBn ? "আপনার পুরো নাম" : "Your full name"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* Email (Read only) */}
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
                           {isBn ? "ইমেইল ঠিকানা" : "Email Address"}
                         </label>
-                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.2 rounded">
-                          {isBn ? "যাচাইকৃত" : "Verified"}
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
+                          {isBn ? "✓ যাচাইকৃত" : "✓ Verified"}
                         </span>
                       </div>
                       <input
                         type="email"
                         value={displayEmail}
                         disabled
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-100/80 border border-slate-200 text-sm font-medium text-slate-500 cursor-not-allowed outline-none select-all"
                       />
                     </div>
 
                     {/* fatherName (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "বাবার নাম" : "Father's Name"}
                       </label>
                       <input
@@ -791,13 +815,13 @@ export default function DashboardShell({
                         value={profileForm.fatherName}
                         onChange={(e) => setProfileForm({ ...profileForm, fatherName: e.target.value })}
                         placeholder={isBn ? "বাবার পুরো নাম লিখুন" : "Enter father's name"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* motherName (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "মায়ের নাম" : "Mother's Name"}
                       </label>
                       <input
@@ -805,14 +829,14 @@ export default function DashboardShell({
                         value={profileForm.motherName}
                         onChange={(e) => setProfileForm({ ...profileForm, motherName: e.target.value })}
                         placeholder={isBn ? "মায়ের পুরো নাম লিখুন" : "Enter mother's name"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* bloodGroup (BloodGroup @default(UNKNOWN)) */}
                     <div className="sm:col-span-2">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
                           {isBn ? "রক্তের গ্রুপ" : "Blood Group"}
                         </label>
                         <span className="text-[11px] text-rose-600 font-bold">
@@ -823,7 +847,7 @@ export default function DashboardShell({
                         <select
                           value={profileForm.bloodGroup}
                           onChange={(e) => setProfileForm({ ...profileForm, bloodGroup: e.target.value as BloodGroup })}
-                          className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800 focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none cursor-pointer appearance-none"
+                          className="w-full h-12 px-4 pr-11 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-bold text-slate-800 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none cursor-pointer appearance-none shadow-2xs hover:bg-slate-50"
                         >
                           {BLOOD_GROUP_OPTIONS.map((opt) => (
                             <option key={opt.value} value={opt.value} className="text-slate-800 font-medium">
@@ -833,7 +857,7 @@ export default function DashboardShell({
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M19 9l-7 7-7-7" />
                           </svg>
                         </div>
                       </div>
@@ -842,23 +866,25 @@ export default function DashboardShell({
                 </div>
 
                 {/* 2. Profession, Summary & Bio */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
-                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                    <span className="text-lg">💼</span>
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                    <span className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center justify-center text-lg shrink-0">
+                      💼
+                    </span>
                     <div>
-                      <h4 className="font-extrabold text-base text-slate-900">
+                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
                         {isBn ? "পেশা, সারসংক্ষেপ ও জীবনবৃত্তান্ত" : "Profession, Summary & Biography"}
                       </h4>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         {isBn ? "ক্লাবে আপনার পেশাগত পরিচিতি ও বায়ো" : "Your professional identity, short bio, and summary"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     {/* profession (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "পেশা / বর্তমান পদবি" : "Profession / Designation"}
                       </label>
                       <input
@@ -866,13 +892,13 @@ export default function DashboardShell({
                         value={profileForm.profession}
                         onChange={(e) => setProfileForm({ ...profileForm, profession: e.target.value })}
                         placeholder={isBn ? "যেমন: সফটওয়্যার ইঞ্জিনিয়ার / ব্যবসায়ী / শিক্ষার্থী / শিক্ষক" : "e.g. Software Engineer, Business Owner, Student"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* summary (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "সংক্ষিপ্ত সারসংক্ষেপ (এক লাইন)" : "Short Summary (One-liner)"}
                       </label>
                       <input
@@ -880,44 +906,46 @@ export default function DashboardShell({
                         value={profileForm.summary}
                         onChange={(e) => setProfileForm({ ...profileForm, summary: e.target.value })}
                         placeholder={isBn ? "শান্তি সংঘের নিবেদিত সমাজকর্মী ও ক্রীড়াপ্রেমী..." : "Dedicated community advocate and sports enthusiast..."}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* bio (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "বিস্তারিত বায়ো / পরিচিতি" : "Detailed Biography"}
                       </label>
                       <textarea
-                        rows={3}
+                        rows={4}
                         value={profileForm.bio}
                         onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
                         placeholder={isBn ? "আপনার সম্পর্কে বিস্তারিত লিখুন... ক্লাবের সাথে আপনার সম্পৃক্ততা ও লক্ষ্য।" : "Write about yourself, your contributions to the village club, and goals..."}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none resize-y"
+                        className="w-full p-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none resize-y shadow-2xs hover:bg-slate-50 min-h-[110px] leading-relaxed"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* 3. Address & Social Links */}
-                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-5">
-                  <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
-                    <span className="text-lg">📍</span>
+                <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-xs space-y-6">
+                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
+                    <span className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-700 border border-sky-200/80 flex items-center justify-center text-lg shrink-0">
+                      📍
+                    </span>
                     <div>
-                      <h4 className="font-extrabold text-base text-slate-900">
+                      <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
                         {isBn ? "ঠিকানা ও সামাজিক যোগাযোগ" : "Location & Contact Channels"}
                       </h4>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 mt-0.5">
                         {isBn ? "স্থায়ী গ্রাম, বর্তমান অবস্থান ও যোগাযোগ মাধ্যম" : "Village origin, current location and social links"}
                       </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                     {/* village (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "গ্রাম / স্থায়ী এলাকা" : "Village / Native Area"}
                       </label>
                       <input
@@ -925,13 +953,13 @@ export default function DashboardShell({
                         value={profileForm.village}
                         onChange={(e) => setProfileForm({ ...profileForm, village: e.target.value })}
                         placeholder={isBn ? "যেমন: সাভারচালা, বহেড়াতলী, সখিপুর" : "e.g. Shavarchala, Sakhipur"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* currentLocation (String?) */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
                         {isBn ? "বর্তমান বাসস্থান / ঠিকানা" : "Current Location"}
                       </label>
                       <input
@@ -939,22 +967,22 @@ export default function DashboardShell({
                         value={profileForm.currentLocation}
                         onChange={(e) => setProfileForm({ ...profileForm, currentLocation: e.target.value })}
                         placeholder={isBn ? "যেমন: ঢাকা, বাংলাদেশ" : "e.g. Dhaka, Bangladesh"}
-                        className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                        className="w-full h-12 px-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                       />
                     </div>
 
                     {/* whatsappNumber (String?) */}
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
                           {isBn ? "হোয়াটসঅ্যাপ নম্বর" : "WhatsApp Number"}
                         </label>
-                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.2 rounded">
+                        <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200/70 px-2 py-0.5 rounded-full">
                           WhatsApp
                         </span>
                       </div>
                       <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-emerald-600 font-bold text-sm">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-emerald-600 font-bold text-base">
                           💬
                         </div>
                         <input
@@ -962,23 +990,23 @@ export default function DashboardShell({
                           value={profileForm.whatsappNumber}
                           onChange={(e) => setProfileForm({ ...profileForm, whatsappNumber: e.target.value })}
                           placeholder="+8801700000000"
-                          className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                          className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                         />
                       </div>
                     </div>
 
                     {/* facebookProfile (String?) */}
                     <div>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <label className="block text-xs font-bold text-slate-700">
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs sm:text-sm font-bold text-slate-700">
                           {isBn ? "ফেসবুক প্রোফাইল লিংক" : "Facebook Profile"}
                         </label>
-                        <span className="text-[10px] text-blue-700 font-bold bg-blue-50 px-2 py-0.2 rounded">
+                        <span className="text-[10px] text-blue-700 font-bold bg-blue-50 border border-blue-200/70 px-2 py-0.5 rounded-full">
                           Facebook
                         </span>
                       </div>
                       <div className="relative">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-blue-600 font-bold text-sm">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-blue-600 font-bold text-base">
                           🌐
                         </div>
                         <input
@@ -986,114 +1014,56 @@ export default function DashboardShell({
                           value={profileForm.facebookProfile}
                           onChange={(e) => setProfileForm({ ...profileForm, facebookProfile: e.target.value })}
                           placeholder="https://facebook.com/username"
-                          className="w-full pl-10 pr-3.5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200 text-sm font-medium focus:bg-white focus:border-[#006a4e] focus:ring-2 focus:ring-[#006a4e]/20 transition-all outline-none"
+                          className="w-full h-12 pl-12 pr-4 rounded-2xl bg-slate-50/70 border border-slate-200/90 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#006a4e] focus:ring-4 focus:ring-[#006a4e]/10 transition-all outline-none shadow-2xs hover:bg-slate-50"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Real-time Member Card Preview */}
-                <div className="p-6 rounded-3xl bg-slate-50/80 border border-slate-200/80 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500">
-                      {isBn ? "লাইভ কার্ড প্রিভিউ" : "LIVE MEMBER CARD PREVIEW"}
-                    </span>
-                    <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">
-                      {isBn ? "সদস্য ডিরেক্টরিতে যেমন দেখাবে" : "Public Member Preview"}
-                    </span>
-                  </div>
+                {/* Form Action Controls (shown only when data changes or saving/saved) */}
+                {(isProfileDirty || isSavingProfile || profileSaveSuccess) && (
+                  <div className="sticky bottom-4 z-20 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-emerald-200/80 shadow-lg flex items-center justify-between gap-4 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                    <div className="text-xs text-slate-500">
+                      {profileSaveSuccess && !isProfileDirty ? (
+                        <span className="text-emerald-700 font-bold">
+                          ✓ {isBn ? "সকল তথ্য সংরক্ষিত হয়েছে" : "All changes saved"}
+                        </span>
+                      ) : (
+                        <span className="font-medium">
+                          {isBn
+                            ? "পরিবর্তনগুলো সংরক্ষণ করতে বাটনে ক্লিক করুন"
+                            : "Click Save to apply your updates"}
+                        </span>
+                      )}
+                    </div>
 
-                  <div className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/70 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex items-center gap-3.5">
-                      <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#006a4e] text-white font-black text-lg flex items-center justify-center shrink-0 ring-2 ring-[#006a4e]/20 overflow-hidden relative">
-                        {user?.picture ? (
-                          <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
-                        ) : (
-                          displayName.charAt(0).toUpperCase()
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h5 className="font-extrabold text-sm sm:text-base text-slate-900">{displayName}</h5>
-                          {isAdminVerified(user?.adminVerified) && (
-                            <VerifiedTick isBn={isBn} className="w-4 h-4" />
+                    {(isProfileDirty || isSavingProfile) && (
+                      <div className="flex items-center gap-3 shrink-0 justify-end">
+                        <button
+                          type="submit"
+                          disabled={isSavingProfile}
+                          className="px-6 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] disabled:opacity-60 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#006a4e]/20 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
+                        >
+                          {isSavingProfile ? (
+                            <>
+                              <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                              </svg>
+                              <span>{isBn ? "সংরক্ষণ করা হচ্ছে..." : "Saving..."}</span>
+                            </>
+                          ) : (
+                            <>
+                              <span>💾</span>
+                              <span>{isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}</span>
+                            </>
                           )}
-                          <span className="text-[10px] font-bold px-2 py-0.2 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
-                            🩸 {formatBloodGroupDisplay(profileForm.bloodGroup)}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-500 mt-0.5 font-medium">
-                          {profileForm.profession || (isBn ? "ক্লাব মেম্বার" : "Club Member")} • 📍 {profileForm.village || "সাভারচালা"}
-                        </p>
-                        {profileForm.summary && (
-                          <p className="text-[11px] text-slate-400 mt-1 italic line-clamp-1">
-                            &quot;{profileForm.summary}&quot;
-                          </p>
-                        )}
+                        </button>
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
-                      {profileForm.whatsappNumber && (
-                        <a
-                          href={`https://wa.me/${profileForm.whatsappNumber.replace(/[^0-9]/g, "")}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold transition-colors inline-flex items-center gap-1.5"
-                        >
-                          <span>💬</span>
-                          <span>WhatsApp</span>
-                        </a>
-                      )}
-                      {profileForm.facebookProfile && (
-                        <a
-                          href={profileForm.facebookProfile}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-colors inline-flex items-center gap-1.5"
-                        >
-                          <span>🌐</span>
-                          <span>Facebook</span>
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Form Action Controls */}
-                <div className="sticky bottom-4 z-20 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-slate-200 shadow-lg flex items-center justify-between gap-4">
-                  <div className="text-xs text-slate-500 hidden sm:block">
-                    {profileSaveSuccess ? (
-                      <span className="text-emerald-700 font-bold">✓ {isBn ? "সকল তথ্য সংরক্ষিত আছে" : "All changes saved"}</span>
-                    ) : (
-                      <span>{isBn ? "পরিবর্তনগুলো সংরক্ষণ করতে বাটনে ক্লিক করুন" : "Click Save to apply your updates"}</span>
                     )}
                   </div>
-
-                  <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
-                    <button
-                      type="submit"
-                      disabled={isSavingProfile}
-                      className="w-full sm:w-auto px-7 py-2.5 rounded-2xl bg-[#006a4e] hover:bg-[#005a42] disabled:opacity-60 text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#006a4e]/20 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-                    >
-                      {isSavingProfile ? (
-                        <>
-                          <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                          </svg>
-                          <span>{isBn ? "সংরক্ষণ করা হচ্ছে..." : "Saving..."}</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>💾</span>
-                          <span>{isBn ? "তথ্য সংরক্ষণ করুন" : "Save Changes"}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
+                )}
               </form>
             </div>
           )}
@@ -1264,99 +1234,6 @@ export default function DashboardShell({
           )}
         </main>
       </div>
-
-      {/* ===================================================== */}
-      {/* DIGITAL MEMBER ID CARD MODAL                          */}
-      {/* ===================================================== */}
-      {showMemberIdModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative border border-slate-100">
-            <button
-              type="button"
-              onClick={() => setShowMemberIdModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            {/* ID Card Front */}
-            <div className="bg-gradient-to-tr from-[#006a4e] via-[#059669] to-[#1877F2] text-white p-6 rounded-2xl shadow-md space-y-4">
-              <div className="flex items-center justify-between border-b border-white/20 pb-3">
-                <div className="flex items-center gap-2">
-                  <div className="relative h-7 w-7">
-                    <Image src="/logo.png" alt="Logo" fill className="object-contain" />
-                  </div>
-                  <div>
-                    <h5 className="font-black text-xs uppercase tracking-wider">সাভারচালা শান্তি সংঘ</h5>
-                    <p className="text-[9px] text-emerald-200">OFFICIAL MEMBER CARD</p>
-                  </div>
-                </div>
-                <span className="text-[10px] font-black bg-white/20 px-2 py-0.5 rounded">2026</span>
-              </div>
-
-              <div className="flex items-center gap-3.5">
-                <div className="relative h-14 w-14 rounded-xl overflow-hidden ring-2 ring-white/60 shrink-0 bg-white">
-                  {user?.picture ? (
-                    <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
-                  ) : (
-                    <div className="h-full w-full flex items-center justify-center font-black text-lg text-[#006a4e]">
-                      {displayName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <h4 className="font-extrabold text-sm truncate">{displayName}</h4>
-                    {isAdminVerified(user?.adminVerified) && (
-                      <VerifiedTick isBn={isBn} className="w-4 h-4" />
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-emerald-200">
-                    <span className="font-mono">ID: SS-2026-089</span>
-                    <span>•</span>
-                    <span className="font-bold">🩸 {formatBloodGroupDisplay(profileForm.bloodGroup)}</span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-1 flex-wrap">
-                    <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded font-bold">
-                      {isAdmin ? `👑 ${roleMeta.shortEn}` : "⭐ GENERAL MEMBER"}
-                    </span>
-                    {profileForm.village && (
-                      <span className="text-[9px] bg-white/15 px-1.5 py-0.5 rounded font-semibold truncate max-w-[120px]">
-                        📍 {profileForm.village}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="border-t border-white/20 pt-2 flex items-center justify-between text-[9px] text-emerald-100">
-                <span>ESTD: 2007 • SHAVARCHALA</span>
-                <span>STATUS: {user?.status || "VERIFIED"}</span>
-              </div>
-            </div>
-
-            <div className="mt-4 flex gap-2">
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="flex-1 py-2 rounded-xl bg-[#006a4e] hover:bg-[#005a42] text-white font-bold text-xs transition-colors cursor-pointer"
-              >
-                {isBn ? "প্রিন্ট / ডাউনলোড করুন" : "Print ID Card"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowMemberIdModal(false)}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
-              >
-                {isBn ? "বন্ধ করুন" : "Close"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
