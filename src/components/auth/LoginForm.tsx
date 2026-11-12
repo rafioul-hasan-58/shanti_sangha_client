@@ -63,10 +63,12 @@ export default function LoginForm({
       router.push(getPostLoginRedirect(loggedInUser.role, locale));
     } catch (err: unknown) {
       console.error("Google sign in error:", err);
+      const msg = err instanceof Error ? err.message : null;
       setError(
-        isBn
-          ? "গুগল সাইন-ইন সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
-          : "Google sign-in could not be completed. Please try again."
+        msg ||
+          (isBn
+            ? "গুগল সাইন-ইন সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+            : "Google sign-in could not be completed. Please try again.")
       );
     } finally {
       setGoogleLoading(false);

@@ -159,3 +159,4 @@ export function getPostLoginRedirect(role: unknown, locale: string): string {
 export function getRoleDisplayMeta(role?: unknown): RoleDisplayMeta {
   return ROLE_META_MAP[normalizeRole(role)];
 }
+

@@ -92,10 +92,12 @@ export default function RegisterForm({
       router.push(`/${locale}/dashboard`);
     } catch (err: unknown) {
       console.error("Google sign up error:", err);
+      const msg = err instanceof Error ? err.message : null;
       setError(
-        isBn
-          ? "গুগল সাইন-আপ সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
-          : "Google sign-up could not be completed. Please try again."
+        msg ||
+          (isBn
+            ? "গুগল সাইন-আপ সম্পন্ন করা সম্ভব হয়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+            : "Google sign-up could not be completed. Please try again.")
       );
     } finally {
       setGoogleLoading(false);

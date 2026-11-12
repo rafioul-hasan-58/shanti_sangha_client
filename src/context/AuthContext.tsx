@@ -111,6 +111,33 @@ function asString(value: unknown): string | undefined {
   return typeof value === "string" && value.trim() ? value : undefined;
 }
 
+function extractApiErrorMessage(
+  apiJson: Record<string, unknown> | null | undefined,
+  fallback: string
+): string {
+  const rawMessage = apiJson?.message;
+  if (typeof rawMessage === "string" && rawMessage.trim()) return rawMessage;
+  if (Array.isArray(rawMessage) && typeof rawMessage[0] === "string") {
+    return rawMessage.join(", ");
+  }
+
+  const errList = apiJson?.errorMessages;
+  if (Array.isArray(errList) && errList.length > 0) {
+    const first = errList[0];
+    if (typeof first === "string" && first.trim()) return first;
+    if (
+      first &&
+      typeof first === "object" &&
+      "message" in first &&
+      typeof (first as { message?: unknown }).message === "string"
+    ) {
+      return (first as { message: string }).message;
+    }
+  }
+
+  return fallback;
+}
+
 function buildAuthUser(params: {
   provider: "google" | "credentials";
   backendUser?: Record<string, unknown> | null;
@@ -230,53 +257,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           client_id: GOOGLE_CLIENT_ID,
           scope: "email profile openid",
           callback: async (response) => {
-            if (response.error) {
-              const errMsg = response.error_description || response.error;
+            if (response.error || !response.access_token) {
+              const errMsg =
+                response.error_description ||
+                response.error ||
+                "Google access token was not returned";
               setError(errMsg);
               return reject(new Error(errMsg));
             }
 
-            // Log access token to browser console
-            console.log("Google OAuth Access Token:", response.access_token);
-
             try {
-              // Fetch user profile from Google UserInfo endpoint
-              const userInfoRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
-                headers: {
-                  Authorization: `Bearer ${response.access_token}`,
-                },
+              const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: response.access_token }),
               });
 
-              if (!userInfoRes.ok) {
-                throw new Error("Failed to fetch Google profile details");
+              const apiJson = await apiRes.json().catch(() => null);
+
+              if (!apiRes.ok || !apiJson?.success) {
+                throw new Error(
+                  extractApiErrorMessage(apiJson, "Google login failed")
+                );
               }
 
-              const profile = await userInfoRes.json();
+              const backendData = (apiJson.data || apiJson) as Record<
+                string,
+                unknown
+              >;
+              const backendToken = extractBackendToken(apiJson, backendData);
+              const backendUser =
+                backendData.user && typeof backendData.user === "object"
+                  ? (backendData.user as Record<string, unknown>)
+                  : {};
 
-              // Send access token to backend API if available
-              let backendToken: string | undefined;
-              let backendData: Record<string, unknown> = {};
-              let backendUser: Record<string, unknown> = {};
+              // Enrich missing Google profile details after backend authentication succeeds
+              let profile: {
+                sub?: string;
+                name?: string;
+                email?: string;
+                picture?: string;
+              } = {};
+              const needsGoogleProfile =
+                (!asString(backendUser.name) &&
+                  !asString(backendUser.fullName)) ||
+                !asString(backendUser.email) ||
+                (!asString(backendUser.picture) &&
+                  !asString(backendUser.avatar));
 
-              try {
-                const apiRes = await fetch(`${API_BASE_URL}/auth/google`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ accessToken: response.access_token }),
-                });
-
-                if (apiRes.ok) {
-                  const apiJson = await apiRes.json().catch(() => null);
-                  if (apiJson?.success) {
-                    backendData = (apiJson.data || apiJson) as Record<string, unknown>;
-                    backendToken = extractBackendToken(apiJson, backendData);
-                    if (backendData.user && typeof backendData.user === "object") {
-                      backendUser = backendData.user as Record<string, unknown>;
+              if (needsGoogleProfile) {
+                try {
+                  const userInfoRes = await fetch(
+                    "https://www.googleapis.com/oauth2/v3/userinfo",
+                    {
+                      headers: {
+                        Authorization: `Bearer ${response.access_token}`,
+                      },
                     }
+                  );
+                  if (userInfoRes.ok) {
+                    profile = await userInfoRes.json();
                   }
-                }
-              } catch (apiErr) {
-                console.warn("Backend auth/google sync notice:", apiErr);
+                } catch {}
               }
 
               const authUser = buildAuthUser({
@@ -287,7 +329,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 accessToken: response.access_token,
                 fallbackId: profile.sub,
                 fallbackName:
-                  profile.name || profile.email?.split("@")[0] || "Google Member",
+                  profile.name ||
+                  profile.email?.split("@")[0] ||
+                  "Google Member",
                 fallbackEmail: profile.email || "",
                 fallbackPicture: profile.picture,
               });
@@ -295,9 +339,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               persistSession(authUser, backendToken);
               resolve(authUser);
             } catch (fetchErr: unknown) {
-              const msg = fetchErr instanceof Error ? fetchErr.message : "Error fetching Google profile";
+              const msg =
+                fetchErr instanceof Error
+                  ? fetchErr.message
+                  : "Google login failed";
               setError(msg);
-              reject(fetchErr);
+              reject(fetchErr instanceof Error ? fetchErr : new Error(msg));
             }
           },
           error_callback: (err: unknown) => {
@@ -352,10 +399,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             persistSession(authUser, backendToken);
             return authUser;
           } else {
-            const msg =
-              apiJson?.message ||
-              apiJson?.errorMessages?.[0] ||
-              "Invalid email or password";
+            const msg = extractApiErrorMessage(
+              apiJson,
+              "Invalid email or password"
+            );
             setError(msg);
             throw new Error(msg);
           }
@@ -418,10 +465,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           persistSession(authUser, backendToken);
           return authUser;
         } else {
-          const msg =
-            apiJson?.message ||
-            apiJson?.errorMessages?.[0] ||
-            "Registration failed";
+          const msg = extractApiErrorMessage(apiJson, "Registration failed");
           setError(msg);
           throw new Error(msg);
         }
