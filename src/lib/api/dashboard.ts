@@ -12,22 +12,25 @@
 import type {
   DashboardStats,
   ExpenseCategory,
-  ManagedUser,
   MonthlyExpense,
   YearlyExpense,
   MonthlyExpenseParams,
   YearlyExpenseParams,
 } from "@/lib/types/dashboard";
-import type { Role, UserStatus } from "@/types";
 import {
   MOCK_DASHBOARD_STATS,
-  MOCK_MANAGED_USERS,
   MOCK_MONTHLY_EXPENSES,
   MOCK_YEARLY_EXPENSES,
 } from "@/lib/mock/dashboard";
-import { fetchWithAuth } from "@/lib/api";
-import { normalizeRole, normalizeUserStatus } from "@/lib/authRole";
 import { formatMonthLabel } from "@/lib/constants/categories";
+
+export {
+  fetchUsers,
+  fetchUserById,
+  updateUserById,
+  toggleBlockUserById,
+  deleteUserById,
+} from "@/lib/api/users";
 
 /**
  * Fetch top-level dashboard statistics (total members, pending, total expenditure, trends)
@@ -171,85 +174,5 @@ export async function getAvailableRangeBounds(): Promise<{
     earliestYear: MOCK_YEARLY_EXPENSES[0]?.year ?? 2019,
     latestYear: MOCK_YEARLY_EXPENSES[MOCK_YEARLY_EXPENSES.length - 1]?.year ?? 2026,
   };
-}
-
-function mapRawUser(raw: Record<string, unknown>, idx: number): ManagedUser {
-  const id = String(raw.id ?? raw._id ?? `user-${idx + 1}`);
-  const picture =
-    (typeof raw.avatar === "string" && raw.avatar.trim()) ||
-    (typeof raw.picture === "string" && raw.picture.trim()) ||
-    undefined;
-
-  return {
-    id,
-    name: typeof raw.name === "string" && raw.name.trim() ? raw.name : "Club Member",
-    email: typeof raw.email === "string" ? raw.email : "",
-    picture,
-    role: normalizeRole(raw.role),
-    status: normalizeUserStatus(raw.status) ?? "ACTIVE",
-    phone:
-      typeof raw.whatsappNumber === "string"
-        ? raw.whatsappNumber
-        : typeof raw.phone === "string"
-          ? raw.phone
-          : null,
-    bloodGroup: typeof raw.bloodGroup === "string" ? raw.bloodGroup : null,
-    village: typeof raw.village === "string" ? raw.village : null,
-    joinedAt:
-      typeof raw.createdAt === "string"
-        ? raw.createdAt.slice(0, 10)
-        : undefined,
-  };
-}
-
-/**
- * Fetch all club users for Admin User Management (`GET /users`), falling back to mock data if offline.
- */
-export async function getManagedUsers(): Promise<ManagedUser[]> {
-  try {
-    const res = await fetchWithAuth("/users");
-    if (res.ok) {
-      const json = (await res.json().catch(() => null)) as Record<string, unknown> | null;
-      const dataObj = json?.data;
-      const list = Array.isArray(dataObj)
-        ? dataObj
-        : Array.isArray((dataObj as Record<string, unknown> | undefined)?.users)
-          ? ((dataObj as Record<string, unknown>).users as unknown[])
-          : Array.isArray(json?.users)
-            ? (json.users as unknown[])
-            : null;
-      if (list) {
-        return list
-          .filter((item): item is Record<string, unknown> => Boolean(item && typeof item === "object"))
-          .map(mapRawUser);
-      }
-    }
-  } catch {
-    // Fallback to mock users when backend is unreachable
-  }
-
-  return MOCK_MANAGED_USERS.map((u) => ({ ...u }));
-}
-
-export async function updateManagedUserRole(userId: string, role: Role): Promise<void> {
-  try {
-    await fetchWithAuth(`/users/${userId}/role`, {
-      method: "PATCH",
-      body: JSON.stringify({ role }),
-    });
-  } catch {
-    // Allow optimistic local update in offline/mock mode
-  }
-}
-
-export async function updateManagedUserStatus(userId: string, status: UserStatus): Promise<void> {
-  try {
-    await fetchWithAuth(`/users/${userId}/status`, {
-      method: "PATCH",
-      body: JSON.stringify({ status }),
-    });
-  } catch {
-    // Allow optimistic local update in offline/mock mode
-  }
 }
 

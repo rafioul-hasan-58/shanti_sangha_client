@@ -1112,7 +1112,7 @@ export default function DashboardShell({
           {/* TAB 4A: ADMIN: USER MANAGEMENT (Admin Only)          */}
           {/* ===================================================== */}
           {activeTab === "admin_users" && isAdmin && (
-            <AdminUsersView locale={locale} />
+            <AdminUsersView locale={locale} currentUserId={user?.id} />
           )}
 
           {/* ===================================================== */}

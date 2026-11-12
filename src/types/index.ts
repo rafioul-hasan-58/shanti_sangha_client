@@ -1,6 +1,7 @@
 export type Role = "USER" | "MODERATOR" | "ADMIN" | "SUPER_ADMIN";
 export type ViewRole = "user" | "admin";
 export type UserStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
+export type MembershipType = "PERMANENT" | "PLAYER_QUOTA";
 
 export type BloodGroup =
   | "UNKNOWN"

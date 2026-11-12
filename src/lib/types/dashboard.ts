@@ -3,7 +3,7 @@
  * Used by UI components and the data layer (lib/api/dashboard.ts)
  */
 
-import type { Role, UserStatus } from "@/types";
+import type { BloodGroup, MembershipType, Role, UserStatus } from "@/types";
 
 export type ExpenseCategory =
   | "GPL"
@@ -56,16 +56,95 @@ export interface YearlyExpenseParams extends ExpenseFilterParams {
   years: number;
 }
 
+export type UserSortField =
+  | "createdAt"
+  | "updatedAt"
+  | "fullName"
+  | "email"
+  | "role"
+  | "status";
+
+export type SortOrder = "asc" | "desc";
+
 export interface ManagedUser {
   id: string;
+  fullName: string;
+  /** Alias for compatibility with components reading `user.name`. */
   name: string;
+  fatherName?: string | null;
+  motherName?: string | null;
   email: string;
+  profileImage?: string | null;
   picture?: string;
-  role: Role;
-  status: UserStatus;
+  phoneNumber?: string | null;
   phone?: string | null;
   bloodGroup?: string | null;
+  bio?: string | null;
+  summary?: string | null;
+  status: UserStatus;
+  role: Role;
+  profession?: string | null;
   village?: string | null;
+  currentLocation?: string | null;
+  whatsappNumber?: string | null;
+  membershipType?: MembershipType | null;
+  facebookProfile?: string | null;
+  authProvider?: string | null;
+  emailVerified?: boolean | null;
+  phoneVerified?: string | boolean | null;
+  adminVerified?: string | boolean | null;
+  googleId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
   joinedAt?: string;
+}
+
+export interface UsersQueryParams {
+  page?: number;
+  limit?: number;
+  role?: Role;
+  status?: UserStatus;
+  membershipType?: MembershipType;
+  bloodGroup?: BloodGroup;
+  emailVerified?: boolean;
+  search?: string;
+  sortBy?: UserSortField;
+  sortOrder?: SortOrder;
+}
+
+export interface UsersPaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface UsersListResponse {
+  users: ManagedUser[];
+  meta: UsersPaginationMeta;
+  isMockFallback?: boolean;
+}
+
+export interface UpdateManagedUserPayload {
+  fullName?: string;
+  fatherName?: string | null;
+  motherName?: string | null;
+  profileImage?: string | null;
+  phoneNumber?: string | null;
+  bloodGroup?: BloodGroup;
+  bio?: string | null;
+  summary?: string | null;
+  profession?: string | null;
+  village?: string | null;
+  currentLocation?: string | null;
+  whatsappNumber?: string | null;
+  membershipType?: MembershipType;
+  facebookProfile?: string | null;
+  role?: Role;
+  status?: UserStatus;
+  emailVerified?: boolean;
+  adminVerified?: boolean;
 }
 
