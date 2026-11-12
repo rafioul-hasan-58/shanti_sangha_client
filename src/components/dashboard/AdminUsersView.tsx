@@ -457,7 +457,6 @@ export default function AdminUsersView({
             busyUserId={busyUserId}
             isPendingView={isPendingView}
             onApprove={handleApproveUser}
-            onRoleChange={handleRoleChange}
             onToggleBlock={handleToggleBlock}
             onView={(u) => setViewingUser(u)}
             onEdit={(u) => setEditingUser(u)}
