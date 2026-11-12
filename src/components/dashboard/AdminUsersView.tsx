@@ -305,8 +305,8 @@ export default function AdminUsersView({
             : `${FULL_BRAND_NAME_EN} member directory, pending registration approvals, roles & access control.`
         }
         rightContent={
-          <div className="flex items-center gap-2.5">
-            <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-left sm:text-right">
+          <div className="flex items-stretch gap-2.5">
+            <div className="px-4 py-2 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-left sm:text-right flex flex-col justify-center">
               <p className="text-[10px] font-bold text-[#f2b705] uppercase tracking-wider">
                 {isPendingView
                   ? isBn ? "অপেক্ষমাণ" : "PENDING"
@@ -326,11 +326,26 @@ export default function AdminUsersView({
               type="button"
               onClick={() => void loadUsers()}
               disabled={loading}
-              className="h-11 px-4 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs font-extrabold transition-colors disabled:opacity-50 cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/25 text-white text-xs sm:text-sm font-extrabold inline-flex items-center justify-center gap-2 transition-colors disabled:opacity-50 cursor-pointer"
             >
-              {loading
-                ? isBn ? "লোড হচ্ছে..." : "Loading..."
-                : isBn ? "রিফ্রেশ" : "Refresh"}
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className={`w-4 h-4 shrink-0 ${loading ? "animate-spin" : ""}`}
+                aria-hidden="true"
+              >
+                <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+                <polyline points="21 3 21 9 15 9" />
+              </svg>
+              <span>
+                {loading
+                  ? isBn ? "লোড হচ্ছে..." : "Loading..."
+                  : isBn ? "রিফ্রেশ" : "Refresh"}
+              </span>
             </button>
           </div>
         }

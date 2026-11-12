@@ -151,7 +151,7 @@ export default function UserFilterBar({
           ariaLabel={isBn ? "রোল ফিল্টার" : "Filter by role"}
           value={filters.role}
           isFiltered={filters.role !== "ALL"}
-          className="w-full sm:w-auto h-10 sm:h-9"
+          className="w-full sm:w-auto"
           icon={
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
@@ -168,7 +168,7 @@ export default function UserFilterBar({
           ariaLabel={isBn ? "মেম্বারশিপ ফিল্টার" : "Filter by membership"}
           value={filters.membershipType}
           isFiltered={filters.membershipType !== "ALL"}
-          className="w-full sm:w-auto h-10 sm:h-9"
+          className="w-full sm:w-auto"
           icon={
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
@@ -191,7 +191,7 @@ export default function UserFilterBar({
           ariaLabel={isBn ? "রক্তের গ্রুপ ফিল্টার" : "Filter by blood group"}
           value={filters.bloodGroup}
           isFiltered={filters.bloodGroup !== "ALL"}
-          className="w-full sm:w-auto h-10 sm:h-9"
+          className="w-full sm:w-auto"
           icon={
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 3.25C12 3.25 6 10 6 14.25a6 6 0 1012 0C18 10 12 3.25 12 3.25z" />
@@ -214,7 +214,7 @@ export default function UserFilterBar({
           ariaLabel={isBn ? "ইমেইল ভেরিফিকেশন" : "Email verification filter"}
           value={filters.emailVerified}
           isFiltered={filters.emailVerified !== "ALL"}
-          className="w-full sm:w-auto h-10 sm:h-9"
+          className="w-full sm:w-auto"
           icon={
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -235,7 +235,7 @@ export default function UserFilterBar({
           ariaLabel={isBn ? "সর্ট ফিল্ড" : "Sort by field"}
           value={filters.sortBy}
           align="right"
-          className="w-full sm:w-auto sm:ml-auto h-10 sm:h-9"
+          className="w-full min-w-0 sm:w-auto sm:ml-auto"
           icon={
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
@@ -258,7 +258,7 @@ export default function UserFilterBar({
               ? isBn ? "নতুন/বড় থেকে ছোট" : "Descending"
               : isBn ? "পুরনো/ছোট থেকে বড়" : "Ascending"
           }
-          className="w-full sm:w-auto h-10 sm:h-9 px-3 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/70 hover:bg-white hover:border-[#006a4e]/45 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
+          className="w-full min-w-0 sm:w-auto h-9 px-3 rounded-xl border border-[#006a4e]/20 bg-[#f7f4ea]/70 hover:bg-white hover:border-[#006a4e]/45 text-xs font-extrabold text-[#006a4e] inline-flex items-center justify-center sm:justify-start gap-2 transition-colors cursor-pointer"
         >
           <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
@@ -270,7 +270,7 @@ export default function UserFilterBar({
           <button
             type="button"
             onClick={onReset}
-            className="col-span-2 sm:col-span-1 w-full sm:w-auto h-10 sm:h-9 px-3 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+            className="col-span-2 sm:col-span-1 w-full sm:w-auto h-9 px-3 rounded-xl bg-[#f42a41]/10 hover:bg-[#f42a41] text-[var(--accent)] hover:text-white text-xs font-bold inline-flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
             <svg className={ICON_CLS} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
