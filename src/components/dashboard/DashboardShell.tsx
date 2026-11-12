@@ -10,6 +10,7 @@ import { useRole } from "@/context/RoleContext";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import DashboardSidebar from "./DashboardSidebar";
 import AdminOverviewView from "./AdminOverviewView";
+import AdminUsersView from "./AdminUsersView";
 import type { BloodGroup } from "@/types";
 import { BLOOD_GROUP_OPTIONS, formatBloodGroupDisplay } from "@/lib/bloodGroup";
 import {
@@ -32,6 +33,7 @@ type TabType =
   | "sports"
   | "members"
   | "notices"
+  | "admin_users"
   | "admin_members"
   | "admin_live"
   | "admin_finance";
@@ -100,6 +102,7 @@ export default function DashboardShell({
           "overview",
           "profile",
           "sports",
+          "admin_users",
           "admin_members",
           "admin_live",
           "admin_finance",
@@ -1103,6 +1106,13 @@ export default function DashboardShell({
                 </div>
               </div>
             </div>
+          )}
+
+          {/* ===================================================== */}
+          {/* TAB 4A: ADMIN: USER MANAGEMENT (Admin Only)          */}
+          {/* ===================================================== */}
+          {activeTab === "admin_users" && isAdmin && (
+            <AdminUsersView locale={locale} />
           )}
 
           {/* ===================================================== */}

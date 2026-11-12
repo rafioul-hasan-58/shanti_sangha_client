@@ -3,6 +3,8 @@
  * Used by UI components and the data layer (lib/api/dashboard.ts)
  */
 
+import type { Role, UserStatus } from "@/types";
+
 export type ExpenseCategory =
   | "GPL"
   | "SPL"
@@ -52,5 +54,18 @@ export interface MonthlyExpenseParams extends ExpenseFilterParams {
 export interface YearlyExpenseParams extends ExpenseFilterParams {
   endYear: number;
   years: number;
+}
+
+export interface ManagedUser {
+  id: string;
+  name: string;
+  email: string;
+  picture?: string;
+  role: Role;
+  status: UserStatus;
+  phone?: string | null;
+  bloodGroup?: string | null;
+  village?: string | null;
+  joinedAt?: string;
 }
 

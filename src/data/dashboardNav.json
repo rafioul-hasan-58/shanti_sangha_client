@@ -55,6 +55,13 @@
       "badge": "ADAPTIVE",
       "items": [
         {
+          "id": "admin_users",
+          "labelBn": "ইউজার ম্যানেজমেন্ট",
+          "labelEn": "User Management",
+          "icon": "users_cog",
+          "type": "tab"
+        },
+        {
           "id": "admin_members",
           "labelBn": "সদস্য রেজিস্ট্রেশন অনুমোদন",
           "labelEn": "Member Approvals",
