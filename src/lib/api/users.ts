@@ -117,7 +117,7 @@ function isNetworkFailure(err: unknown): boolean {
   return err instanceof TypeError;
 }
 
-function queryMockUsers(params: UsersQueryParams = {}): UsersListResponse {
+export function queryMockUsers(params: UsersQueryParams = {}): UsersListResponse {
   const page = Math.max(1, params.page ?? 1);
   const limit = Math.max(1, params.limit ?? 10);
   const q = params.search?.trim().toLowerCase() ?? "";
@@ -229,6 +229,21 @@ export async function fetchUsers(
       return queryMockUsers(params);
     }
     throw err;
+  }
+}
+
+/**
+ * Public-safe member directory fetch: attempts `GET /users` (using current token if signed in,
+ * or public access if allowed) and gracefully falls back to local sample data if offline or
+ * authentication-restricted for guest visitors.
+ */
+export async function fetchPublicMembers(
+  params: UsersQueryParams = {}
+): Promise<UsersListResponse> {
+  try {
+    return await fetchUsers(params);
+  } catch {
+    return queryMockUsers(params);
   }
 }
 

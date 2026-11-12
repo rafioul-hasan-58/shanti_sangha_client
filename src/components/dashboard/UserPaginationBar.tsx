@@ -9,6 +9,7 @@ interface UserPaginationBarProps {
   loading?: boolean;
   isBn: boolean;
   isPendingView?: boolean;
+  entityLabel?: string;
   onPageChange: (page: number) => void;
   onLimitChange: (limit: number) => void;
 }
@@ -54,6 +55,7 @@ export default function UserPaginationBar({
   loading = false,
   isBn,
   isPendingView = false,
+  entityLabel: customEntityLabel,
   onPageChange,
   onLimitChange,
 }: UserPaginationBarProps) {
@@ -62,9 +64,11 @@ export default function UserPaginationBar({
   const startIndex = (meta.page - 1) * meta.limit + 1;
   const endIndex = Math.min(meta.page * meta.limit, meta.total);
   const pageItems = getPageItems(meta.page, meta.totalPages);
-  const entityLabel = isPendingView
-    ? isBn ? "অপেক্ষমাণ" : "Pending"
-    : isBn ? "ব্যবহারকারী" : "Users";
+  const entityLabel =
+    customEntityLabel ??
+    (isPendingView
+      ? isBn ? "অপেক্ষমাণ" : "Pending"
+      : isBn ? "ব্যবহারকারী" : "Users");
 
   return (
     <div className="rounded-2xl border border-emerald-200/80 bg-emerald-50/45 px-3.5 sm:px-4 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
