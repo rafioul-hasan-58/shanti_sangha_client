@@ -270,7 +270,9 @@ export default function DashboardShell({
                   type="button"
                   onClick={() => setActiveTab("admin_users")}
                   className={`px-4 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer ${
-                    activeTab === "admin_users"
+                    activeTab === "admin_users" ||
+                    activeTab === "admin_users_all" ||
+                    activeTab === "admin_users_pending"
                       ? "bg-[#006a4e] text-white shadow-xs"
                       : "text-[#12231d] hover:text-[#006a4e]"
                   }`}
@@ -288,7 +290,7 @@ export default function DashboardShell({
               <AdminOverviewView
                 adminName={user?.name || "Admin"}
                 locale={locale}
-                onReviewPending={() => setActiveTab("admin_members")}
+                onReviewPending={() => setActiveTab("admin_users_pending")}
               />
             ) : (
               <div className="space-y-6">
@@ -1155,7 +1157,16 @@ export default function DashboardShell({
             activeTab === "admin_users_all" ||
             activeTab === "admin_users_pending") &&
             isAdmin && (
-              <AdminUsersView locale={locale} currentUserId={user?.id} />
+              <AdminUsersView
+                locale={locale}
+                currentUserId={user?.id}
+                subTab={activeTab === "admin_users_pending" ? "pending" : "all"}
+                onSubTabChange={(next) =>
+                  setActiveTab(
+                    next === "pending" ? "admin_users_pending" : "admin_users"
+                  )
+                }
+              />
             )}
 
           {/* ===================================================== */}

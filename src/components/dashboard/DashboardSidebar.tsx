@@ -302,7 +302,15 @@ export default function DashboardSidebar({
                     const isSubItemActive = visibleSubItems.some(
                       (sub) => sub.id === activeTab
                     );
-                    const isActive = activeTab === item.id || isSubItemActive;
+                    const isUserManagementTab =
+                      item.id === "admin_users" &&
+                      (activeTab === "admin_users" ||
+                        activeTab === "admin_users_all" ||
+                        activeTab === "admin_users_pending");
+                    const isActive =
+                      activeTab === item.id ||
+                      isSubItemActive ||
+                      isUserManagementTab;
                     const isExpanded =
                       Boolean(expandedGroups[item.id]) || isSubItemActive;
                     const soonBadgeText = isBn
