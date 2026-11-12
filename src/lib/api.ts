@@ -10,9 +10,11 @@ import {
   toViewRole,
 } from "@/lib/authRole";
 
-export const API_BASE_URL =
+export const API_BASE_URL = (
+  process.env.API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://api.shantishangha.space/api/v1";
+  ""
+).replace(/\/+$/, "");
 
 export const AUTH_STORAGE_KEY = "shanti_auth_user";
 export const ACCESS_TOKEN_KEY = "shanti_token";

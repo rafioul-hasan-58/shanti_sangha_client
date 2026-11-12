@@ -3,11 +3,19 @@ const googleClientId =
   process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
   "";
 
+const apiBaseUrl = (
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  ""
+).replace(/\/+$/, "");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   env: {
     OAUTH_CLIENT_ID: googleClientId,
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: googleClientId,
+    API_BASE_URL: apiBaseUrl,
+    NEXT_PUBLIC_API_BASE_URL: apiBaseUrl,
   },
   images: {
     remotePatterns: [
