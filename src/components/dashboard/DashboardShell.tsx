@@ -573,6 +573,17 @@ export default function DashboardShell({
                   <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-4 sm:gap-6 w-full min-w-0">
                     {/* Avatar Container with Direct Clickable Upload Trigger */}
                     <div className="relative shrink-0 mx-auto sm:mx-0 group">
+                      {/* Hidden file input for Profile Photo */}
+                      <input
+                        ref={profilePhotoInputRef}
+                        id="dashboard-profile-photo-input"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        className="sr-only"
+                        onChange={handleProfilePhotoSelected}
+                        disabled={isPhotoProcessing}
+                      />
+
                       <button
                         type="button"
                         onClick={() => profilePhotoInputRef.current?.click()}
@@ -590,22 +601,38 @@ export default function DashboardShell({
                             className="object-cover group-hover:scale-105 transition-transform duration-200"
                           />
                         ) : (
-                          <div className="h-full w-full flex items-center justify-center text-white font-black text-3xl sm:text-4xl group-hover:scale-105 transition-transform duration-200">
-                            {displayName.charAt(0).toUpperCase()}
+                          <div className="h-full w-full flex flex-col items-center justify-center text-white select-none">
+                            <div className="relative flex items-center justify-center">
+                              <span className="font-black text-3xl sm:text-4xl leading-none">
+                                {displayName.charAt(0).toUpperCase()}
+                              </span>
+                              {/* Prominent Gold Camera Icon Badge pinned directly to the letter 'R' */}
+                              <span
+                                className="absolute -bottom-1 -right-3 h-6 w-6 rounded-full bg-[#f2b705] text-[#12231d] ring-2 ring-[#006a4e] flex items-center justify-center shadow-md animate-pulse"
+                                title={isBn ? "ছবি দিন" : "Add photo"}
+                              >
+                                <Camera className="w-3.5 h-3.5 stroke-[2.5]" />
+                              </span>
+                            </div>
+                            <span className="mt-2 text-[10px] font-extrabold text-[#f7f4ea]/90 tracking-wide uppercase">
+                              {isBn ? "ছবি দিন" : "Add Photo"}
+                            </span>
                           </div>
                         )}
 
-                        {/* Desktop Hover Overlay with Camera Icon */}
-                        <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white z-10">
-                          <Camera className="w-6 h-6 mb-1 text-white stroke-[2.2]" />
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#f7f4ea]">
-                            {isBn ? "আপলোড" : "Upload"}
+                        {/* Desktop Hover / Active Touch Overlay with Camera Icon */}
+                        <div className="absolute inset-0 bg-black/55 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white z-10 backdrop-blur-[1px]">
+                          <div className="p-2 rounded-full bg-[#f2b705] text-[#12231d] mb-1 shadow-md">
+                            <Camera className="w-5 h-5 stroke-[2.4]" />
+                          </div>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#f7f4ea]">
+                            {isBn ? "ছবি পরিবর্তন" : "Change Photo"}
                           </span>
                         </div>
 
                         {/* Processing overlay with spinner */}
                         {isPhotoProcessing && (
-                          <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-[1px] flex flex-col items-center justify-center text-white z-20">
+                          <div className="absolute inset-0 bg-neutral-900/85 backdrop-blur-[1px] flex flex-col items-center justify-center text-white z-20">
                             <div className="w-8 h-8 rounded-full border-2 border-[#f2b705] border-t-transparent animate-spin mb-1" />
                             <span className="text-[10px] font-bold text-[#f2b705]">
                               {isBn ? "আপলোড হচ্ছে..." : "Uploading..."}
@@ -614,7 +641,7 @@ export default function DashboardShell({
                         )}
                       </button>
 
-                      {/* Prominent Round Camera Button (Bottom-Right Badge) */}
+                      {/* Prominent Gold Camera Action Button (Bottom-Right Badge) */}
                       <button
                         type="button"
                         onClick={(e) => {
@@ -622,16 +649,16 @@ export default function DashboardShell({
                           profilePhotoInputRef.current?.click();
                         }}
                         disabled={isPhotoProcessing}
-                        aria-label={isBn ? "প্রোফাইল ছবি পরিবর্তন করুন" : "Change profile photo"}
-                        title={isBn ? "প্রোফাইল ছবি পরিবর্তন করুন" : "Change profile photo"}
-                        className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#006a4e] hover:bg-[#004d38] active:scale-90 text-white ring-3 ring-white shadow-xl transition-all duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705] cursor-pointer z-20"
+                        aria-label={isBn ? "ছবি আপলোড বা পরিবর্তন করুন" : "Upload or change photo"}
+                        title={isBn ? "ছবি আপলোড বা পরিবর্তন করতে ক্লিক করুন" : "Click to upload or change photo"}
+                        className="absolute -bottom-1 -right-1 sm:bottom-0 sm:right-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#f2b705] hover:bg-[#d9a404] active:scale-90 text-[#12231d] ring-3 ring-white shadow-xl transition-all duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#006a4e] cursor-pointer z-20 group/cam"
                       >
-                        <Camera className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
+                        <Camera className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.4] group-hover/cam:scale-110 transition-transform" />
                       </button>
 
                       {/* Online/Active status indicator dot (Top-Right) */}
                       <span
-                        className={`absolute top-0 right-0 h-4 w-4 rounded-full ring-2 ring-white z-10 ${
+                        className={`absolute top-0 right-1 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full ring-2 ring-white z-10 ${
                           user?.status === "SUSPENDED" ? "bg-rose-500" : "bg-emerald-500"
                         }`}
                         title={user?.status === "SUSPENDED" ? "Suspended" : "Active Member"}
@@ -858,15 +885,24 @@ export default function DashboardShell({
                       {/* Profile Photo Field */}
                       <div className="sm:col-span-2 p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3.5 w-full sm:w-auto">
-                          <div className="relative h-14 w-14 rounded-full overflow-hidden ring-2 ring-[#006a4e]/20 bg-[#006a4e] shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => profilePhotoInputRef.current?.click()}
+                            disabled={isPhotoProcessing}
+                            className="relative h-14 w-14 rounded-full overflow-hidden ring-2 ring-[#006a4e]/20 hover:ring-[#006a4e] bg-[#006a4e] shrink-0 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705]"
+                            title={isBn ? "ছবি পরিবর্তন করুন" : "Upload photo"}
+                          >
                             {currentPhoto ? (
-                              <Image src={currentPhoto} alt={displayName} fill unoptimized className="object-cover" />
+                              <Image src={currentPhoto} alt={displayName} fill unoptimized className="object-cover group-hover:scale-105 transition-transform" />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center text-white font-bold text-lg">
                                 {displayName.charAt(0).toUpperCase()}
                               </div>
                             )}
-                          </div>
+                            <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-[#f2b705]">
+                              <Camera className="w-5 h-5 stroke-[2.2]" />
+                            </div>
+                          </button>
                           <div>
                             <p className="text-xs sm:text-sm font-bold text-slate-800">
                               {isBn ? "প্রোফাইল ছবি" : "Profile Photo"}
@@ -1244,16 +1280,6 @@ export default function DashboardShell({
                   </div>
                 )}
               </form>
-
-              {/* Hidden file input for Profile Photo */}
-              <input
-                ref={profilePhotoInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={handleProfilePhotoSelected}
-                disabled={isPhotoProcessing}
-              />
 
               {/* Profile Photo Crop & Adjust Modal */}
               <ImageCropModal
