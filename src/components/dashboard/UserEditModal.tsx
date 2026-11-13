@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import ThemedSelect from "@/components/common/ThemedSelect";
+import MemberImageUploader from "@/components/members/MemberImageUploader";
 import { BLOOD_GROUP_OPTIONS, toPrismaBloodGroup } from "@/lib/bloodGroup";
 import { updateUserById } from "@/lib/api/users";
 import type {
@@ -35,6 +36,7 @@ interface EditFormState {
   village: string;
   currentLocation: string;
   profileImage: string;
+  imagePublicId: string;
   facebookProfile: string;
   summary: string;
   bio: string;
@@ -57,6 +59,7 @@ function buildInitialState(u: ManagedUser): EditFormState {
     village: u.village || "",
     currentLocation: u.currentLocation || "",
     profileImage: u.profileImage || u.picture || "",
+    imagePublicId: u.imagePublicId || "",
     facebookProfile: u.facebookProfile || "",
     summary: u.summary || "",
     bio: u.bio || "",
@@ -84,6 +87,7 @@ export default function UserEditModal({
 }: UserEditModalProps) {
   const [form, setForm] = useState<EditFormState | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -131,6 +135,7 @@ export default function UserEditModal({
         village: form.village,
         currentLocation: form.currentLocation,
         profileImage: form.profileImage,
+        imagePublicId: form.imagePublicId || null,
         facebookProfile: form.facebookProfile,
         summary: form.summary,
         bio: form.bio,
@@ -390,13 +395,28 @@ export default function UserEditModal({
           </div>
         </div>
 
-        <div>
-          <label className={LABEL_CLASS}>{isBn ? "প্রোফাইল ছবির লিংক" : "Profile Image URL"}</label>
-          <input
-            type="text"
-            value={form.profileImage}
-            onChange={(e) => setField("profileImage", e.target.value)}
-            className={INPUT_CLASS}
+        <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <label className={LABEL_CLASS}>{isBn ? "প্রোফাইল ছবি (ক্লাউডিনারি)" : "Profile Photo (Cloudinary)"}</label>
+          <MemberImageUploader
+            currentImageUrl={form.profileImage}
+            currentPublicId={form.imagePublicId}
+            onUploaded={({ url, publicId }) => {
+              setForm((prev) =>
+                prev
+                  ? { ...prev, profileImage: url, imagePublicId: publicId }
+                  : prev
+              );
+            }}
+            onRemoved={() => {
+              setForm((prev) =>
+                prev
+                  ? { ...prev, profileImage: "", imagePublicId: "" }
+                  : prev
+              );
+            }}
+            isBn={isBn}
+            disabled={submitting}
+            onUploadingStateChange={setIsUploadingPhoto}
           />
         </div>
 
@@ -424,17 +444,20 @@ export default function UserEditModal({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer"
+            disabled={submitting || isUploadingPhoto}
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer disabled:opacity-50"
           >
             {isBn ? "বাতিল" : "Cancel"}
           </button>
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || isUploadingPhoto}
             className="px-5 py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors disabled:opacity-60 cursor-pointer"
           >
             {submitting
               ? isBn ? "সংরক্ষণ হচ্ছে..." : "Saving..."
+              : isUploadingPhoto
+              ? isBn ? "ছবি আপলোড হচ্ছে..." : "Uploading Photo..."
               : isBn ? "পরিবর্তন সংরক্ষণ করুন" : "Save Changes"}
           </button>
         </div>

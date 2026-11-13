@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import AdminPlaceholderPage from "@/components/admin/AdminPlaceholderPage";
 import { isLocale } from "@/i18n/config";
+import AdminMembersView from "@/components/admin/AdminMembersView";
 
 export default async function AdminMembersPage({
   params,
@@ -9,6 +9,6 @@ export default async function AdminMembersPage({
 }) {
   const { locale } = await params;
   if (!isLocale(locale)) notFound();
-  return <AdminPlaceholderPage routeHref="/admin/members" locale={locale} />;
-}
 
+  return <AdminMembersView locale={locale} />;
+}

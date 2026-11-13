@@ -75,6 +75,7 @@ export interface ManagedUser {
   motherName?: string | null;
   email: string;
   profileImage?: string | null;
+  imagePublicId?: string | null;
   picture?: string;
   phoneNumber?: string | null;
   phone?: string | null;
@@ -132,6 +133,7 @@ export interface UpdateManagedUserPayload {
   fatherName?: string | null;
   motherName?: string | null;
   profileImage?: string | null;
+  imagePublicId?: string | null;
   phoneNumber?: string | null;
   bloodGroup?: BloodGroup;
   bio?: string | null;

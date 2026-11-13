@@ -1,9 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Camera, Sparkles, CheckCircle2, AlertCircle, Trash2 } from "lucide-react";
+import type { Area } from "react-easy-crop";
+import { ImageCropModal } from "@/components/common/ImageCropModal";
+import { getCroppedFile } from "@/lib/image/cropImage";
+import {
+  validateImageFile,
+  compressAndOptimizeImage,
+} from "@/lib/image/compress";
+import {
+  uploadProfilePhoto,
+  deleteProfilePhoto,
+  UploadError,
+} from "@/lib/api/upload";
 import type { Dictionary } from "@/i18n/getDictionary";
 import { useAuth } from "@/context/AuthContext";
 import { useRole } from "@/context/RoleContext";
@@ -264,10 +277,156 @@ export default function DashboardShell({
     }
   };
 
+  // Profile Photo Uploader state
+  const profilePhotoInputRef = useRef<HTMLInputElement>(null);
+  const rawPhotoObjectUrlRef = useRef<string | null>(null);
+  const [cropModalOpen, setCropModalOpen] = useState(false);
+  const [rawPhotoSrc, setRawPhotoSrc] = useState<string | null>(null);
+  const [selectedPhotoFile, setSelectedPhotoFile] = useState<File | null>(null);
+  const [isPhotoProcessing, setIsPhotoProcessing] = useState(false);
+  const [photoOptimizationNote, setPhotoOptimizationNote] = useState<string | null>(null);
+  const [photoStatusMessage, setPhotoStatusMessage] = useState<{ bn: string; en: string } | null>(null);
+  const [photoError, setPhotoError] = useState<{ bn: string; en: string } | null>(null);
+  const [localProfilePicture, setLocalProfilePicture] = useState<string | null>(null);
+  const [currentPhotoPublicId, setCurrentPhotoPublicId] = useState<string | null>(null);
+
+  const cleanupPhotoObjectUrl = useCallback(() => {
+    if (rawPhotoObjectUrlRef.current) {
+      URL.revokeObjectURL(rawPhotoObjectUrlRef.current);
+      rawPhotoObjectUrlRef.current = null;
+    }
+  }, []);
+
+  const handleProfilePhotoSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    setPhotoError(null);
+    setPhotoStatusMessage(null);
+    setPhotoOptimizationNote(null);
+
+    const validation = validateImageFile(file);
+    if (!validation.valid && validation.errorEn && validation.errorBn) {
+      setPhotoError({ bn: validation.errorBn, en: validation.errorEn });
+      return;
+    }
+
+    cleanupPhotoObjectUrl();
+    const objectUrl = URL.createObjectURL(file);
+    rawPhotoObjectUrlRef.current = objectUrl;
+
+    setSelectedPhotoFile(file);
+    setRawPhotoSrc(objectUrl);
+    setCropModalOpen(true);
+  };
+
+  const handleCloseCropModal = () => {
+    setCropModalOpen(false);
+    setRawPhotoSrc(null);
+    setSelectedPhotoFile(null);
+    cleanupPhotoObjectUrl();
+  };
+
+  const handleCropConfirm = async (pixelCrop: Area) => {
+    if (!rawPhotoSrc) return;
+    setIsPhotoProcessing(true);
+    setPhotoError(null);
+
+    try {
+      // 1. Crop canvas to WebP file
+      const croppedFile = await getCroppedFile(
+        rawPhotoSrc,
+        pixelCrop,
+        "profile-photo.webp"
+      );
+
+      // 2. Compress image using browser-image-compression targeting < 300KB
+      const originalBytes = selectedPhotoFile?.size;
+      const compressionResult = await compressAndOptimizeImage(croppedFile);
+
+      // 3. Convert to data URL for immediate high-res preview
+      const reader = new FileReader();
+      const previewDataUrl = await new Promise<string>((resolve, reject) => {
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(compressionResult.file);
+      });
+
+      // 4. Upload to Cloudinary backend: POST /api/v1/upload/profile
+      try {
+        const uploadResult = await uploadProfilePhoto({
+          file: compressionResult.file,
+          oldPublicId: currentPhotoPublicId,
+        });
+
+        setCurrentPhotoPublicId(uploadResult.publicId);
+        setLocalProfilePicture(uploadResult.url);
+        await updateProfile({
+          picture: uploadResult.url,
+        });
+      } catch (uploadErr) {
+        // Fallback to local preview if backend is offline or network error
+        console.warn("Backend upload notification (using local preview):", uploadErr);
+        setLocalProfilePicture(previewDataUrl);
+        await updateProfile({
+          picture: previewDataUrl,
+        });
+      }
+
+      // 5. Size optimization summary badge
+      const displayOriginal = originalBytes
+        ? `${(originalBytes / (1024 * 1024)).toFixed(1)} MB`
+        : compressionResult.formattedOriginalSize;
+      setPhotoOptimizationNote(
+        `Optimized: ${displayOriginal} → ${compressionResult.formattedCompressedSize}`
+      );
+      setPhotoStatusMessage({
+        bn: "প্রোফাইল ছবি সফলভাবে আপডেট হয়েছে!",
+        en: "Profile photo updated successfully!",
+      });
+
+      handleCloseCropModal();
+      setTimeout(() => setPhotoStatusMessage(null), 5000);
+    } catch (err) {
+      console.error("Profile photo processing error:", err);
+      setPhotoError({
+        bn: "ছবি প্রসেস করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+        en: "Failed to process photo. Please try again.",
+      });
+      handleCloseCropModal();
+    } finally {
+      setIsPhotoProcessing(false);
+    }
+  };
+
+  const handleRemoveProfilePhoto = async () => {
+    if (currentPhotoPublicId) {
+      try {
+        await deleteProfilePhoto(currentPhotoPublicId);
+      } catch (err) {
+        console.warn("Failed to delete photo from Cloudinary:", err);
+      }
+    }
+    setCurrentPhotoPublicId(null);
+    setLocalProfilePicture(null);
+    setPhotoOptimizationNote(null);
+    setPhotoError(null);
+    await updateProfile({
+      picture: "",
+    });
+    setPhotoStatusMessage({
+      bn: "প্রোফাইল ছবি সরানো হয়েছে।",
+      en: "Profile photo removed.",
+    });
+    setTimeout(() => setPhotoStatusMessage(null), 4000);
+  };
+
   
 
   const displayName = profileForm.name || user?.name || (isBn ? "রাফিউল হাসান" : "Rafioul Hasan");
   const displayEmail = user?.email || "rafioulhasan2@gmail.com";
+  const currentPhoto = localProfilePicture || user?.picture || null;
 
   const isGoogleConnected =
     user?.provider === "google" ||
@@ -411,19 +570,68 @@ export default function DashboardShell({
                     profileSaveSuccess ? "pb-6 border-b border-slate-100" : ""
                   }`}
                 >
-                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-4 sm:gap-5 w-full min-w-0">
-                    <div className="relative shrink-0 mx-auto sm:mx-0">
-                      {user?.picture ? (
-                        <div className="relative h-20 w-20 sm:h-20 sm:w-20 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20 shadow-md">
-                          <Image src={user.picture} alt={displayName} fill unoptimized className="object-cover" />
+                  <div className="flex flex-col items-center text-center sm:flex-row sm:items-center sm:text-left gap-4 sm:gap-6 w-full min-w-0">
+                    {/* Avatar Container with Direct Clickable Upload Trigger */}
+                    <div className="relative shrink-0 mx-auto sm:mx-0 group">
+                      <button
+                        type="button"
+                        onClick={() => profilePhotoInputRef.current?.click()}
+                        disabled={isPhotoProcessing}
+                        aria-label={isBn ? "প্রোফাইল ছবি আপলোড বা পরিবর্তন করুন" : "Upload or change profile photo"}
+                        title={isBn ? "ছবি আপলোড করতে ক্লিক করুন" : "Click to upload photo"}
+                        className="relative block h-24 w-24 sm:h-28 sm:w-28 rounded-full overflow-hidden ring-4 ring-[#006a4e]/20 hover:ring-[#006a4e] shadow-lg bg-[#006a4e] transition-all duration-200 cursor-pointer focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f2b705]"
+                      >
+                        {currentPhoto ? (
+                          <Image
+                            src={currentPhoto}
+                            alt={displayName}
+                            fill
+                            unoptimized
+                            className="object-cover group-hover:scale-105 transition-transform duration-200"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center text-white font-black text-3xl sm:text-4xl group-hover:scale-105 transition-transform duration-200">
+                            {displayName.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+
+                        {/* Desktop Hover Overlay with Camera Icon */}
+                        <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center text-white z-10">
+                          <Camera className="w-6 h-6 mb-1 text-white stroke-[2.2]" />
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#f7f4ea]">
+                            {isBn ? "আপলোড" : "Upload"}
+                          </span>
                         </div>
-                      ) : (
-                        <div className="h-20 w-20 sm:h-20 sm:w-20 rounded-full bg-[#006a4e] text-white font-black text-2xl sm:text-3xl flex items-center justify-center shadow-md">
-                          {displayName.charAt(0).toUpperCase()}
-                        </div>
-                      )}
+
+                        {/* Processing overlay with spinner */}
+                        {isPhotoProcessing && (
+                          <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-[1px] flex flex-col items-center justify-center text-white z-20">
+                            <div className="w-8 h-8 rounded-full border-2 border-[#f2b705] border-t-transparent animate-spin mb-1" />
+                            <span className="text-[10px] font-bold text-[#f2b705]">
+                              {isBn ? "আপলোড হচ্ছে..." : "Uploading..."}
+                            </span>
+                          </div>
+                        )}
+                      </button>
+
+                      {/* Prominent Round Camera Button (Bottom-Right Badge) */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          profilePhotoInputRef.current?.click();
+                        }}
+                        disabled={isPhotoProcessing}
+                        aria-label={isBn ? "প্রোফাইল ছবি পরিবর্তন করুন" : "Change profile photo"}
+                        title={isBn ? "প্রোফাইল ছবি পরিবর্তন করুন" : "Change profile photo"}
+                        className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#006a4e] hover:bg-[#004d38] active:scale-90 text-white ring-3 ring-white shadow-xl transition-all duration-150 flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705] cursor-pointer z-20"
+                      >
+                        <Camera className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
+                      </button>
+
+                      {/* Online/Active status indicator dot (Top-Right) */}
                       <span
-                        className={`absolute bottom-0 right-0 h-5 w-5 rounded-full ring-2 ring-white ${
+                        className={`absolute top-0 right-0 h-4 w-4 rounded-full ring-2 ring-white z-10 ${
                           user?.status === "SUSPENDED" ? "bg-rose-500" : "bg-emerald-500"
                         }`}
                         title={user?.status === "SUSPENDED" ? "Suspended" : "Active Member"}
@@ -431,6 +639,65 @@ export default function DashboardShell({
                     </div>
 
                     <div className="min-w-0 flex flex-col items-center sm:items-start w-full">
+                      {/* Mobile quick actions for photo */}
+                      <div className="flex sm:hidden items-center gap-2 mb-2">
+                        <button
+                          type="button"
+                          onClick={() => profilePhotoInputRef.current?.click()}
+                          disabled={isPhotoProcessing}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#006a4e] border border-[#006a4e]/20 text-xs font-bold transition-colors cursor-pointer"
+                        >
+                          <Camera className="w-3.5 h-3.5" />
+                          <span>{isBn ? "ছবি পরিবর্তন করুন" : "Change Photo"}</span>
+                        </button>
+                        {currentPhoto && (
+                          <button
+                            type="button"
+                            onClick={handleRemoveProfilePhoto}
+                            disabled={isPhotoProcessing}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-red-50 hover:bg-red-100 text-[#f42a41] border border-red-200 text-xs font-semibold transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>{isBn ? "মুছুন" : "Remove"}</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Optimization Badge */}
+                      {photoOptimizationNote && (
+                        <div className="mb-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-semibold animate-fadeIn">
+                          <Sparkles className="w-3.5 h-3.5 text-[#006a4e]" />
+                          <span>{photoOptimizationNote}</span>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#00a67e]" />
+                        </div>
+                      )}
+
+                      {/* Photo Status Message */}
+                      {photoStatusMessage && (
+                        <div className="mb-2 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold animate-fadeIn">
+                          <CheckCircle2 className="w-4 h-4 text-[#006a4e]" />
+                          <span>{isBn ? photoStatusMessage.bn : photoStatusMessage.en}</span>
+                        </div>
+                      )}
+
+                      {/* Photo Error Banner */}
+                      {photoError && (
+                        <div className="mb-2 w-full max-w-sm rounded-xl bg-red-50 border border-[#f42a41]/40 p-2.5 text-[#f42a41] text-xs font-medium flex items-start gap-2 animate-fadeIn">
+                          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-[#f42a41]" />
+                          <div className="flex-1">
+                            <p className="font-bold leading-relaxed">{photoError.bn}</p>
+                            <p className="text-[11px] text-red-600/90">{photoError.en}</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPhotoError(null)}
+                            className="text-red-400 hover:text-red-700 font-bold px-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+
                       <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
                         <h3 className="text-xl sm:text-2xl font-black text-slate-900 truncate">{displayName}</h3>
                         {isAdminVerified(user?.adminVerified ?? user?.adminApproved) && (
@@ -588,6 +855,52 @@ export default function DashboardShell({
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
+                      {/* Profile Photo Field */}
+                      <div className="sm:col-span-2 p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3.5 w-full sm:w-auto">
+                          <div className="relative h-14 w-14 rounded-full overflow-hidden ring-2 ring-[#006a4e]/20 bg-[#006a4e] shrink-0">
+                            {currentPhoto ? (
+                              <Image src={currentPhoto} alt={displayName} fill unoptimized className="object-cover" />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-white font-bold text-lg">
+                                {displayName.charAt(0).toUpperCase()}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs sm:text-sm font-bold text-slate-800">
+                              {isBn ? "প্রোফাইল ছবি" : "Profile Photo"}
+                            </p>
+                            <p className="text-[11px] text-slate-400">
+                              JPG, PNG, WebP (Max 10MB, auto-compressed)
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                          <button
+                            type="button"
+                            onClick={() => profilePhotoInputRef.current?.click()}
+                            disabled={isPhotoProcessing}
+                            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                          >
+                            <Camera className="w-3.5 h-3.5" />
+                            <span>{isBn ? "ছবি পরিবর্তন করুন" : "Upload New Photo"}</span>
+                          </button>
+                          {currentPhoto && (
+                            <button
+                              type="button"
+                              onClick={handleRemoveProfilePhoto}
+                              disabled={isPhotoProcessing}
+                              className="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-[#f42a41] border border-red-200 text-xs font-semibold transition-colors cursor-pointer"
+                              title={isBn ? "ছবি মুছুন" : "Remove photo"}
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
                       {/* Full Name */}
                       <div>
                         <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
@@ -931,6 +1244,26 @@ export default function DashboardShell({
                   </div>
                 )}
               </form>
+
+              {/* Hidden file input for Profile Photo */}
+              <input
+                ref={profilePhotoInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleProfilePhotoSelected}
+                disabled={isPhotoProcessing}
+              />
+
+              {/* Profile Photo Crop & Adjust Modal */}
+              <ImageCropModal
+                isOpen={cropModalOpen}
+                imageSrc={rawPhotoSrc}
+                aspectRatio={4 / 5}
+                onClose={handleCloseCropModal}
+                onConfirm={handleCropConfirm}
+                isProcessing={isPhotoProcessing}
+              />
             </div>
           )}
 

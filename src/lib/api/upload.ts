@@ -1,21 +1,33 @@
 /**
  * Profile Photo Upload & Delete API Services
  *
- * Endpoint: POST {NEXT_PUBLIC_API_URL}/upload/profile
- * Delete:   DELETE {NEXT_PUBLIC_API_URL}/upload/profile
+ * Endpoints:
+ * - POST   /api/v1/upload/profile (multipart/form-data: file, oldPublicId)
+ * - DELETE /api/v1/upload/profile (application/json: { publicId })
  */
 
 import { getStoredAccessToken } from "@/lib/api";
 
 export const UPLOAD_PROFILE_ENDPOINT = "/upload/profile";
+export const MAX_MEMBER_IMAGE_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB strict limit
+export const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+] as const;
 
-export function getUploadApiBaseUrl(): string {
-  const envUrl =
+export function resolveUploadApiUrl(): string {
+  const base = (
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.NEXT_PUBLIC_API_BASE_URL ||
     process.env.API_BASE_URL ||
-    "";
-  return envUrl.replace(/\/+$/, "");
+    ""
+  ).replace(/\/+$/, "");
+
+  if (base.endsWith("/api/v1")) {
+    return `${base}/upload/profile`;
+  }
+  return `${base}/api/v1/upload/profile`;
 }
 
 export interface UploadProfilePhotoResponse {
@@ -33,6 +45,12 @@ export interface UploadProfilePhotoParams {
   onProgress?: (progressPercent: number) => void;
 }
 
+export interface DeleteProfilePhotoResponse {
+  success: boolean;
+  message?: string;
+  deleted?: boolean;
+}
+
 export class UploadError extends Error {
   statusCode?: number;
   messageBn: string;
@@ -47,59 +65,133 @@ export class UploadError extends Error {
   }
 }
 
-function resolveErrorMessage(
+export function resolveErrorMessage(
   status: number,
   serverMessage?: string
 ): { en: string; bn: string } {
-  if (status === 401 || status === 403) {
+  if (status === 400) {
     return {
-      en: "Session expired or unauthorized. Please log in again.",
-      bn: "লগইন সেশনের মেয়াদ শেষ হয়েছে। অনুগ্রহ করে আবার লগইন করুন।",
+      en:
+        serverMessage ||
+        "Bad Request: Invalid upload request or unsupported file format.",
+      bn:
+        serverMessage ||
+        "অনুরোধটি সঠিক নয় অথবা অগ্রহণযোগ্য ফাইল ফরম্যাট। শুধুমাত্র JPEG, PNG এবং WebP ছবি গ্রহণযোগ্য।",
+    };
+  }
+
+  if (status === 401) {
+    return {
+      en: "Unauthorized: Please sign in with an admin account.",
+      bn: "অননুমোদিত। অনুগ্রহ করে অ্যাডমিন অ্যাকাউন্ট দিয়ে পুনরায় লগইন করুন।",
+    };
+  }
+
+  if (status === 403) {
+    return {
+      en: "Forbidden: Admin access is required to manage profile images.",
+      bn: "অ্যাডমিন অনুমতি প্রয়োজন। আপনার ছবি আপলোড বা মুছে ফেলার অনুমতি নেই।",
     };
   }
 
   if (status === 413) {
     return {
-      en: "The uploaded file is too large for the server.",
-      bn: "ছবির আকার সার্ভার সীমা অতিক্রম করেছে।",
+      en: "Payload Too Large: Image size exceeds the 2 MB limit.",
+      bn: "ছবির আকার অনেক বড়। সর্বোচ্চ ২ মেগাবাইট গ্রহণযোগ্য।",
     };
   }
 
   if (status === 415) {
     return {
-      en: "Unsupported image format. Please upload JPG, PNG, or WebP.",
-      bn: "অননুমোদিত ফরম্যাট। শুধুমাত্র JPG, PNG অথবা WebP ছবি গ্রহণযোগ্য।",
+      en: "Unsupported Media Type: Only JPEG, PNG, and WebP images are allowed.",
+      bn: "অননুমোদিত ফরম্যাট। শুধুমাত্র JPEG, PNG অথবা WebP ছবি গ্রহণযোগ্য।",
+    };
+  }
+
+  if (status === 429) {
+    return {
+      en: "Too Many Requests: Please slow down and wait a moment before trying again.",
+      bn: "অতিরিক্ত অনুরোধ করা হয়েছে। কিছুক্ষণ অপেক্ষা করে আবার চেষ্টা করুন।",
+    };
+  }
+
+  if (status === 502) {
+    return {
+      en: "Bad Gateway: The upload server is temporarily unavailable.",
+      bn: "সার্ভার গেটওয়ে ত্রুটি। সার্ভার বা ক্লাউডিনারি গেটওয়ে সাময়িকভাবে অনুপলব্ধ।",
     };
   }
 
   if (status >= 500) {
     return {
-      en: "Server error occurred while uploading. Please try again later.",
+      en: "Server error occurred while processing image. Please try again later.",
       bn: "সার্ভারে ত্রুটি দেখা দিয়েছে। অনুগ্রহ করে কিছুক্ষণ পর আবার চেষ্টা করুন।",
     };
   }
 
   return {
-    en:
-      serverMessage ||
-      "Failed to upload profile photo. Please try again.",
+    en: serverMessage || "Failed to process profile image. Please try again.",
     bn:
       serverMessage ||
-      "ছবি আপলোড করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+      "ছবি প্রসেস করতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
   };
 }
 
 /**
- * Upload profile photo to NestJS backend as multipart/form-data.
- * Tracks upload percentage via XMLHttpRequest and attaches JWT bearer token.
+ * Validates file size (<= 2MB) and MIME type client-side before sending.
+ */
+export function validateMemberImageFile(file: File): {
+  valid: boolean;
+  errorEn?: string;
+  errorBn?: string;
+  statusCode?: number;
+} {
+  const isTypeAllowed = (ALLOWED_IMAGE_TYPES as readonly string[]).includes(
+    file.type
+  );
+
+  if (!isTypeAllowed) {
+    return {
+      valid: false,
+      statusCode: 415,
+      errorEn: "Invalid file format. Only JPEG, PNG, and WebP images are allowed.",
+      errorBn: "অননুমোদিত ফাইলের ধরন। শুধুমাত্র JPEG, PNG এবং WebP ছবি গ্রহণযোগ্য।",
+    };
+  }
+
+  if (file.size > MAX_MEMBER_IMAGE_SIZE_BYTES) {
+    return {
+      valid: false,
+      statusCode: 413,
+      errorEn: "File size exceeds the 2 MB limit. Please select a smaller photo.",
+      errorBn: "ফাইলের আকার ২ মেগাবাইটের বেশি। অনুগ্রহ করে ২ MB এর কম আকারের ছবি নির্বাচন করুন।",
+    };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * Upload profile photo to Cloudinary via backend POST /api/v1/upload/profile.
+ * Sends FormData with 'file' and optional 'oldPublicId' for safe replacement.
+ * Attaches Authorization: Bearer <token>.
  */
 export async function uploadProfilePhoto({
   file,
   oldPublicId,
   onProgress,
 }: UploadProfilePhotoParams): Promise<UploadProfilePhotoResponse> {
-  const baseUrl = getUploadApiBaseUrl();
-  const endpoint = `${baseUrl}${UPLOAD_PROFILE_ENDPOINT}`;
+  // Pre-validate before opening connection
+  const validation = validateMemberImageFile(file);
+  if (!validation.valid && validation.errorEn && validation.errorBn) {
+    throw new UploadError(
+      validation.errorEn,
+      validation.errorBn,
+      validation.statusCode || 400
+    );
+  }
+
+  const endpoint = resolveUploadApiUrl();
   const token = getStoredAccessToken();
 
   const formData = new FormData();
@@ -138,7 +230,7 @@ export async function uploadProfilePhoto({
       }
 
       if (status >= 200 && status < 300) {
-        // Handle direct or wrapped response: { data: { url, publicId } } or { url, publicId }
+        // Handle { success: true, data: { url, publicId, width, height, bytes, format } }
         const payload =
           (responseBody.data as Record<string, unknown> | undefined) || responseBody;
 
@@ -202,15 +294,21 @@ export async function uploadProfilePhoto({
 }
 
 /**
- * Optional helper to delete a photo by its Cloudinary publicId.
+ * Delete profile photo from Cloudinary via DELETE /api/v1/upload/profile.
+ * Sends JSON body with { publicId }.
  */
-export async function deleteProfilePhoto(publicId: string): Promise<boolean> {
-  if (!publicId || publicId.trim().length === 0) return true;
+export async function deleteProfilePhoto(
+  publicId: string
+): Promise<DeleteProfilePhotoResponse> {
+  if (!publicId || publicId.trim().length === 0) {
+    return { success: true, deleted: true };
+  }
+
+  const endpoint = resolveUploadApiUrl();
+  const token = getStoredAccessToken();
 
   try {
-    const baseUrl = getUploadApiBaseUrl();
-    const token = getStoredAccessToken();
-    const response = await fetch(`${baseUrl}${UPLOAD_PROFILE_ENDPOINT}`, {
+    const response = await fetch(endpoint, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -219,9 +317,30 @@ export async function deleteProfilePhoto(publicId: string): Promise<boolean> {
       body: JSON.stringify({ publicId: publicId.trim() }),
     });
 
-    return response.ok;
-  } catch {
-    return false;
+    let data: Record<string, unknown> = {};
+    try {
+      data = (await response.json()) as Record<string, unknown>;
+    } catch {}
+
+    if (response.ok) {
+      return {
+        success: true,
+        message: typeof data.message === "string" ? data.message : "Profile image deleted successfully",
+        deleted: true,
+      };
+    }
+
+    const serverMsg = typeof data.message === "string" ? data.message : undefined;
+    const errMsgs = resolveErrorMessage(response.status, serverMsg);
+    throw new UploadError(errMsgs.en, errMsgs.bn, response.status);
+  } catch (err) {
+    if (err instanceof UploadError) {
+      throw err;
+    }
+    throw new UploadError(
+      "Network error occurred while deleting image.",
+      "ছবি মোছার সময় নেটওয়ার্ক ত্রুটি দেখা দিয়েছে।",
+      0
+    );
   }
 }
-

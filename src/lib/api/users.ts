@@ -65,6 +65,8 @@ export function mapApiUser(raw: Record<string, unknown>, idx = 0): ManagedUser {
     motherName: asNullableString(raw.motherName),
     email: typeof raw.email === "string" ? raw.email : "",
     profileImage,
+    imagePublicId:
+      asNullableString(raw.imagePublicId) || asNullableString(raw.publicId),
     picture: profileImage ?? undefined,
     phoneNumber,
     phone: phoneNumber,
