@@ -323,38 +323,70 @@ export async function fetchUserById(id: string): Promise<ManagedUser> {
 function sanitizeUpdatePayload(
   payload: UpdateManagedUserPayload
 ): Record<string, unknown> {
-  const nullableStringFields: Array<keyof UpdateManagedUserPayload> = [
-    "fatherName",
-    "motherName",
-    "profileImage",
-    "phoneNumber",
-    "bio",
-    "summary",
-    "profession",
-    "village",
-    "currentLocation",
-    "whatsappNumber",
-    "facebookProfile",
-  ];
-
   const clean: Record<string, unknown> = {};
 
-  if (payload.fullName !== undefined) {
-    clean.fullName = payload.fullName.trim();
+  // Name: supply both 'name' and 'fullName' if non-empty
+  const rawName = (
+    payload.fullName ||
+    (payload as any).name ||
+    ""
+  ).trim();
+  if (rawName.length > 0) {
+    clean.fullName = rawName;
+    clean.name = rawName;
   }
-  for (const field of nullableStringFields) {
-    const value = payload[field];
-    if (value !== undefined) {
-      clean[field] =
-        typeof value === "string" ? (value.trim() ? value.trim() : null) : null;
+
+  // String fields: ONLY include if non-empty string.
+  // NEVER send null or blank strings, as backend NestJS/class-transformer `.trim()` will crash with:
+  // "Cannot read properties of null (reading 'trim')"
+  const addStringIfValid = (keys: string[], val: unknown) => {
+    if (typeof val === "string") {
+      const trimmed = val.trim();
+      if (trimmed.length > 0) {
+        for (const k of keys) {
+          clean[k] = trimmed;
+        }
+      }
     }
+  };
+
+  addStringIfValid(["fatherName"], payload.fatherName);
+  addStringIfValid(["motherName"], payload.motherName);
+  addStringIfValid(["phoneNumber", "phone"], payload.phoneNumber);
+  addStringIfValid(["whatsappNumber"], payload.whatsappNumber);
+  addStringIfValid(["profession"], payload.profession);
+  addStringIfValid(["village"], payload.village);
+  addStringIfValid(["currentLocation"], payload.currentLocation);
+  addStringIfValid(["facebookProfile"], payload.facebookProfile);
+  addStringIfValid(["summary"], payload.summary);
+  addStringIfValid(["bio"], payload.bio);
+  addStringIfValid(["profileImage", "image", "picture"], payload.profileImage);
+  addStringIfValid(["imagePublicId", "publicId"], payload.imagePublicId);
+
+  // Blood group: Prisma enum doesn't support "UNKNOWN", only send if valid group
+  if (
+    payload.bloodGroup &&
+    payload.bloodGroup !== "UNKNOWN" &&
+    typeof payload.bloodGroup === "string" &&
+    payload.bloodGroup.trim().length > 0
+  ) {
+    clean.bloodGroup = payload.bloodGroup.trim();
   }
-  if (payload.bloodGroup !== undefined) clean.bloodGroup = payload.bloodGroup;
-  if (payload.membershipType !== undefined) {
+
+  // Membership type
+  if (payload.membershipType) {
     clean.membershipType = payload.membershipType;
   }
-  if (payload.role !== undefined) clean.role = payload.role;
-  if (payload.status !== undefined) clean.status = payload.status;
+
+  // Role & Status
+  if (payload.role) {
+    clean.role = payload.role;
+  }
+  if (payload.status) {
+    clean.status = payload.status;
+  }
+
+  // Verification booleans
   if (typeof payload.emailVerified === "boolean") {
     clean.emailVerified = payload.emailVerified;
   }
@@ -379,12 +411,15 @@ export async function updateUserById(
     body: JSON.stringify(body),
   });
 
-  if (!res.data || typeof res.data !== "object") {
-    throw new Error("Invalid update response from server");
-  }
+  const rawUserData =
+    res.data && typeof res.data === "object"
+      ? (res.data as any).user && typeof (res.data as any).user === "object"
+        ? (res.data as any).user
+        : res.data
+      : body;
 
   return {
-    user: mapApiUser(res.data),
+    user: mapApiUser(rawUserData),
     message: res.message || "User updated successfully",
   };
 }

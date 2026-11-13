@@ -135,7 +135,7 @@ export default function UserEditModal({
         village: form.village,
         currentLocation: form.currentLocation,
         profileImage: form.profileImage,
-        imagePublicId: form.imagePublicId || null,
+        imagePublicId: form.imagePublicId?.trim() || undefined,
         facebookProfile: form.facebookProfile,
         summary: form.summary,
         bio: form.bio,

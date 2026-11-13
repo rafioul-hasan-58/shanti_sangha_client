@@ -74,7 +74,7 @@
           "children": [
             {
               "id": "leadership_pioneers",
-              "labelBn": "অগ্রপথিক",
+              "labelBn": "অগ্রদূত",
               "labelEn": "Pioneers",
               "icon": "award",
               "type": "tab",
@@ -108,7 +108,7 @@
         },
         {
           "id": "admin_finance",
-          "labelBn": "তহবিল ও হিসাব",
+          "labelBn": "ফাইন্যান্স ও হিসাব",
           "labelEn": "Club Finance",
           "icon": "finance",
           "type": "tab",
