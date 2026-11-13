@@ -252,7 +252,9 @@ export async function fetchWithAuth(
   }
 
   let didRefreshBeforeRequest = false;
-  if (!skipAuth && !headers.has("Authorization")) {
+  if (skipAuth) {
+    headers.delete("Authorization");
+  } else if (!headers.has("Authorization")) {
     let token = getStoredAccessToken();
     const hasRefresh = Boolean(getStoredRefreshToken());
 

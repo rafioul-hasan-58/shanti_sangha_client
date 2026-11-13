@@ -208,17 +208,17 @@ export async function fetchUsers(
   let res: ApiResponse<any> | null = null;
   let lastError: Error | null = null;
 
-  // 1. Try /users endpoint first (primary users API)
+  // 1. Try /users endpoint first (now public endpoint: skipAuth: true, no accessToken passed)
   try {
-    res = await apiRequest<any>(`/users${query}`);
+    res = await apiRequest<any>(`/users${query}`, { skipAuth: true });
   } catch (err) {
     lastError = err instanceof Error ? err : new Error(String(err));
   }
 
-  // 2. If /users was blocked (e.g. 403 Forbidden for non-admin) or not found, try /members
+  // 2. If /users was blocked or not found, try /members (also public: skipAuth: true)
   if (!res || !res.data) {
     try {
-      res = await apiRequest<any>(`/members${query}`);
+      res = await apiRequest<any>(`/members${query}`, { skipAuth: true });
     } catch {
       if (lastError) throw lastError;
     }
@@ -293,11 +293,15 @@ export async function fetchUserById(id: string): Promise<ManagedUser> {
   let lastError: Error | null = null;
 
   try {
-    res = await apiRequest<Record<string, unknown>>(`/users/${id}`);
+    res = await apiRequest<Record<string, unknown>>(`/users/${id}`, {
+      skipAuth: true,
+    });
   } catch (err) {
     lastError = err instanceof Error ? err : new Error(String(err));
     try {
-      res = await apiRequest<Record<string, unknown>>(`/members/${id}`);
+      res = await apiRequest<Record<string, unknown>>(`/members/${id}`, {
+        skipAuth: true,
+      });
     } catch {
       throw lastError;
     }
