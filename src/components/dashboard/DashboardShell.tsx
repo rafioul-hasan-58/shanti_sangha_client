@@ -601,22 +601,8 @@ export default function DashboardShell({
                             className="object-cover group-hover:scale-105 transition-transform duration-200"
                           />
                         ) : (
-                          <div className="h-full w-full flex flex-col items-center justify-center text-white select-none">
-                            <div className="relative flex items-center justify-center">
-                              <span className="font-black text-3xl sm:text-4xl leading-none">
-                                {displayName.charAt(0).toUpperCase()}
-                              </span>
-                              {/* Prominent Gold Camera Icon Badge pinned directly to the letter 'R' */}
-                              <span
-                                className="absolute -bottom-1 -right-3 h-6 w-6 rounded-full bg-[#f2b705] text-[#12231d] ring-2 ring-[#006a4e] flex items-center justify-center shadow-md animate-pulse"
-                                title={isBn ? "ছবি দিন" : "Add photo"}
-                              >
-                                <Camera className="w-3.5 h-3.5 stroke-[2.5]" />
-                              </span>
-                            </div>
-                            <span className="mt-2 text-[10px] font-extrabold text-[#f7f4ea]/90 tracking-wide uppercase">
-                              {isBn ? "ছবি দিন" : "Add Photo"}
-                            </span>
+                          <div className="h-full w-full flex items-center justify-center text-white font-black text-3xl sm:text-4xl group-hover:scale-105 transition-transform duration-200">
+                            {displayName.charAt(0).toUpperCase()}
                           </div>
                         )}
 
