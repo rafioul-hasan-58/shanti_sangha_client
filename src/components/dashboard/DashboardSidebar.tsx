@@ -22,6 +22,7 @@ export interface NavSubItemConfig {
   href?: string;
   status?: "ready" | "cooking";
   adminOnly?: boolean;
+  userOnly?: boolean;
   showPendingBadge?: boolean;
 }
 
@@ -35,6 +36,7 @@ export interface NavItemConfig {
   status?: "ready" | "cooking";
   hasChevron?: boolean;
   adminOnly?: boolean;
+  userOnly?: boolean;
   showPendingBadge?: boolean;
   subItems?: NavSubItemConfig[];
   children?: NavSubItemConfig[];
@@ -292,13 +294,18 @@ export default function DashboardSidebar({
                 <nav className="space-y-1.5">
                   {category.items.map((item) => {
                     if (item.adminOnly && !resolvedIsAdmin) return null;
+                    if (item.userOnly && resolvedIsAdmin) return null;
 
                     const label = isBn ? item.labelBn : item.labelEn;
                     const visibleSubItems = (
                       item.children ??
                       item.subItems ??
                       []
-                    ).filter((sub) => !(sub.adminOnly && !resolvedIsAdmin));
+                    ).filter(
+                      (sub) =>
+                        !(sub.adminOnly && !resolvedIsAdmin) &&
+                        !(sub.userOnly && resolvedIsAdmin)
+                    );
                     const hasSubItems = visibleSubItems.length > 0;
                     const isSubItemActive = visibleSubItems.some(
                       (sub) => sub.id === activeTab

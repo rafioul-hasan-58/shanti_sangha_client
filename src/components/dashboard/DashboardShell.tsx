@@ -123,6 +123,12 @@ export default function DashboardShell({
           "admin_expenses",
         ].includes(tab)
       ) {
+        if (tab === "overview" && !isAdmin) {
+          return "members";
+        }
+        if (tab === "members" && isAdmin) {
+          return "admin_users";
+        }
         return tab;
       }
       try {
@@ -137,7 +143,7 @@ export default function DashboardShell({
         // fallback
       }
     }
-    return "members";
+    return isAdmin ? "overview" : "members";
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -205,6 +211,8 @@ export default function DashboardShell({
       ) {
         if (tab === "overview" && !isAdmin) {
           setActiveTab("members");
+        } else if (tab === "members" && isAdmin) {
+          setActiveTab("admin_users");
         } else {
           setActiveTab(tab as TabType);
         }
@@ -212,10 +220,13 @@ export default function DashboardShell({
     }
   }, [isAdmin]);
 
-  // Guard: Ensure non-admin users never stay on "overview" tab
+  // Guard: Ensure non-admin users never stay on "overview" tab,
+  // and admins never stay on "members" tab (admins have "admin_users" in User Management)
   useEffect(() => {
     if (!isAdmin && activeTab === "overview") {
       setActiveTab("members");
+    } else if (isAdmin && activeTab === "members") {
+      setActiveTab("admin_users");
     }
   }, [isAdmin, activeTab]);
 
@@ -379,9 +390,9 @@ export default function DashboardShell({
           )}
 
           {/* ===================================================== */}
-          {/* TAB: MEMBERS DIRECTORY (Read-only for all members)    */}
+          {/* TAB: MEMBERS DIRECTORY (Read-only for regular members)*/}
           {/* ===================================================== */}
-          {activeTab === "members" && (
+          {activeTab === "members" && !isAdmin && (
             <MembersDirectory locale={locale as any} inDashboard />
           )}
 

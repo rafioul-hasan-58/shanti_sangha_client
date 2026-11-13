@@ -20,7 +20,8 @@
           "labelEn": "Members",
           "icon": "members",
           "type": "tab",
-          "status": "ready"
+          "status": "ready",
+          "userOnly": true
         },
         {
           "id": "sports",
