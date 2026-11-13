@@ -1,8 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  MoreVertical,
+  Edit3,
+  Ban,
+  Trash2,
+  CheckCircle2,
+  ShieldAlert,
+  Check,
+} from "lucide-react";
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import VerifiedTick from "@/components/common/VerifiedTick";
@@ -58,6 +67,29 @@ export default function UserDetailsPageView({
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(e.target as Node)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -268,6 +300,89 @@ export default function UserDetailsPageView({
             <section className="relative overflow-hidden rounded-3xl bg-white border border-emerald-100 shadow-sm">
               <div className="h-24 sm:h-28 bg-gradient-to-r from-[#004d38] via-[#006a4e] to-[#00a67e]" />
 
+              {/* Mobile 3-Dot Action Button (Top-Right) */}
+              <div className="absolute top-3 right-3 sm:hidden z-20" ref={mobileMenuRef}>
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen((prev) => !prev)}
+                  aria-label={isBn ? "ইউজার অ্যাকশন মেনু" : "User actions menu"}
+                  aria-expanded={mobileMenuOpen}
+                  className="h-9 w-9 rounded-full bg-white/95 backdrop-blur-md text-slate-700 hover:text-[#006a4e] shadow-md border border-white/60 flex items-center justify-center transition-transform active:scale-90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705]"
+                >
+                  <MoreVertical className="w-5 h-5 stroke-[2.2]" />
+                </button>
+
+                {mobileMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-2xl bg-white border border-slate-200/90 shadow-2xl p-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
+                    {!isAdminVerified(freshUser.adminVerified) && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          void handleApprove();
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[#006a4e] hover:bg-emerald-50 transition-colors cursor-pointer disabled:opacity-40"
+                      >
+                        <Check className="w-4 h-4 text-[#006a4e] stroke-[2.4]" />
+                        <span>{isBn ? "অনুমোদন করুন" : "Approve User"}</span>
+                      </button>
+                    )}
+
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setShowEditModal(true);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-[#006a4e] transition-colors cursor-pointer disabled:opacity-40"
+                    >
+                      <Edit3 className="w-4 h-4 text-[#006a4e] stroke-[2.2]" />
+                      <span>{isBn ? "এডিট করুন" : "Edit Profile"}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={isSelf || busy}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        void handleToggleSuspend();
+                      }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-40 ${
+                        isBlocked
+                          ? "text-emerald-700 hover:bg-emerald-50"
+                          : "text-amber-800 hover:bg-amber-50"
+                      }`}
+                    >
+                      {isBlocked ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 stroke-[2.2]" />
+                      ) : (
+                        <Ban className="w-4 h-4 text-amber-600 stroke-[2.2]" />
+                      )}
+                      <span>
+                        {isBlocked
+                          ? isBn ? "সক্রিয় করুন" : "Unsuspend"
+                          : isBn ? "স্থগিত করুন" : "Suspend"}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      disabled={isSelf || busy}
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setShowDeleteModal(true);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-[#f42a41] hover:bg-red-50 transition-colors cursor-pointer disabled:opacity-40 border-t border-slate-100 mt-1 pt-1.5"
+                    >
+                      <Trash2 className="w-4 h-4 text-[#f42a41] stroke-[2.2]" />
+                      <span>{isBn ? "ডিলিট করুন" : "Delete User"}</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
               <div className="px-5 sm:px-8 pb-6 sm:pb-8">
                 <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-10 sm:-mt-12">
                   <div className="flex flex-col sm:flex-row sm:items-end gap-4 min-w-0">
@@ -300,11 +415,30 @@ export default function UserDetailsPageView({
                         )}
                       </div>
 
-                      <div className="mt-1 flex items-center gap-2 flex-wrap text-xs sm:text-sm text-slate-600 font-medium">
+                      <div className="mt-1.5 flex items-center gap-2 flex-wrap text-xs sm:text-sm text-slate-600 font-medium">
                         <span className="truncate">{freshUser.email || "—"}</span>
                         <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-[#006a4e] border border-emerald-200/80">
-                          {isGoogleLogin ? "Google" : "Email (@)"}
+                          {isGoogleLogin ? "Google" : "Email"}
                         </span>
+
+                        {/* Appealing Email Verified Status Badge */}
+                        {freshUser.emailVerified ? (
+                          <span
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/90 text-[11px] font-bold shadow-2xs"
+                            title={isBn ? "ইমেইল ভেরিফায়েড" : "Email Verified"}
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 stroke-[2.3]" />
+                            <span>{isBn ? "ভেরিফায়েড ইমেইল" : "Verified Email"}</span>
+                          </span>
+                        ) : (
+                          <span
+                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200/90 text-[11px] font-bold shadow-2xs"
+                            title={isBn ? "ইমেইল এখনো ভেরিফাই করা হয়নি" : "Email is not verified"}
+                          >
+                            <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0 stroke-[2.3]" />
+                            <span>{isBn ? "ভেরিফিকেশন বাকি" : "Unverified"}</span>
+                          </span>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-1.5 flex-wrap mt-2.5">
@@ -325,15 +459,16 @@ export default function UserDetailsPageView({
                     </div>
                   </div>
 
-                  {/* Action Toolbar */}
-                  <div className="flex flex-wrap items-center gap-2 pt-2 sm:pt-0">
+                  {/* Desktop Action Toolbar (hidden on mobile, shown on desktop) */}
+                  <div className="hidden sm:flex flex-wrap items-center gap-2 pt-2 sm:pt-0">
                     {!isAdminVerified(freshUser.adminVerified) && (
                       <button
                         type="button"
                         disabled={busy}
                         onClick={() => void handleApprove()}
-                        className="h-9 px-3.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 cursor-pointer"
+                        className="h-9 px-3.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 cursor-pointer shadow-2xs"
                       >
+                        <Check className="w-4 h-4 text-white stroke-[2.4]" />
                         <span>{isBn ? "✓ অনুমোদন" : "✓ Approve"}</span>
                       </button>
                     )}
@@ -342,9 +477,9 @@ export default function UserDetailsPageView({
                       type="button"
                       disabled={busy}
                       onClick={() => setShowEditModal(true)}
-                      className="h-9 px-3.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 cursor-pointer"
+                      className="h-9 px-3.5 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 cursor-pointer shadow-2xs"
                     >
-                      <EditActionIcon />
+                      <Edit3 className="w-4 h-4 stroke-[2.2]" />
                       <span>{isBn ? "এডিট" : "Edit"}</span>
                     </button>
 
@@ -358,7 +493,11 @@ export default function UserDetailsPageView({
                           : "bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200"
                       }`}
                     >
-                      <SuspendActionIcon suspended={isBlocked} />
+                      {isBlocked ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 stroke-[2.2]" />
+                      ) : (
+                        <Ban className="w-4 h-4 text-amber-600 stroke-[2.2]" />
+                      )}
                       <span>
                         {isBlocked
                           ? isBn ? "সক্রিয় করুন" : "Unsuspend"
@@ -372,55 +511,26 @@ export default function UserDetailsPageView({
                       onClick={() => setShowDeleteModal(true)}
                       className="h-9 px-3.5 rounded-xl border border-[#f42a41]/30 bg-[#f42a41]/10 hover:bg-[#f42a41] hover:text-white text-[var(--accent)] text-xs font-bold inline-flex items-center gap-1.5 transition-colors disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
-                      <DeleteActionIcon />
+                      <Trash2 className="w-4 h-4 stroke-[2.2]" />
                       <span>{isBn ? "ডিলিট" : "Delete"}</span>
                     </button>
                   </div>
                 </div>
 
-                {/* Verification & Social Links */}
-                <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
-                  <span className="text-[11px] font-mono text-slate-400 mr-1">
-                    ID: {freshUser.id}
-                  </span>
-
-                  <span
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border ${
-                      freshUser.emailVerified
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-slate-50 text-slate-500 border-slate-200"
-                    }`}
-                  >
-                    {freshUser.emailVerified
-                      ? isBn ? "✓ ইমেইল ভেরিফায়েড" : "✓ Email Verified"
-                      : isBn ? "✕ ইমেইল ভেরিফায়েড নয়" : "✕ Email Unverified"}
-                  </span>
-
-                  <span
-                    className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border ${
-                      freshUser.adminVerified
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-amber-50 text-amber-800 border-amber-200"
-                    }`}
-                  >
-                    {freshUser.adminVerified
-                      ? isBn
-                        ? `✓ অ্যাডমিন অনুমোদিত (${formatIsoDate(freshUser.adminVerified)})`
-                        : `✓ Admin Verified (${formatIsoDate(freshUser.adminVerified)})`
-                      : isBn ? "⏳ অ্যাডমিন অনুমোদন বাকি" : "⏳ Pending Admin Verification"}
-                  </span>
-
-                  {freshUser.facebookProfile && (
+                {/* Social Links (only if present) */}
+                {freshUser.facebookProfile && (
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-2">
                     <a
                       href={freshUser.facebookProfile}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:underline"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition-colors"
                     >
-                      Facebook ↗
+                      <span>Facebook</span>
+                      <span className="text-[10px]">↗</span>
                     </a>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </section>
 

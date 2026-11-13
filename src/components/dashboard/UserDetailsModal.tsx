@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CheckCircle2, ShieldAlert } from "lucide-react";
 import UserAvatar from "@/components/layout/UserAvatar";
 import RoleBadge from "@/components/layout/RoleBadge";
 import VerifiedTick from "@/components/common/VerifiedTick";
@@ -129,9 +130,6 @@ export default function UserDetailsModal({
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500 font-mono truncate mt-0.5">
-                ID: {freshUser.id}
-              </p>
               <div className="flex items-center gap-1.5 flex-wrap mt-2">
                 <RoleBadge role={freshUser.role} isBn={isBn} />
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${statusMeta.className}`}>
@@ -168,32 +166,26 @@ export default function UserDetailsModal({
           </div>
         )}
 
-        {/* Verification Badges */}
-        <div className="flex flex-wrap gap-2">
-          <span
-            className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border ${
-              freshUser.emailVerified
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : "bg-slate-50 text-slate-500 border-slate-200"
-            }`}
-          >
-            {freshUser.emailVerified
-              ? isBn ? "✓ ইমেইল ভেরিফায়েড" : "✓ Email Verified"
-              : isBn ? "✕ ইমেইল ভেরিফায়েড নয়" : "✕ Email Unverified"}
-          </span>
-          <span
-            className={`px-2.5 py-1 rounded-xl text-[11px] font-bold border ${
-              freshUser.adminVerified
-                ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                : "bg-amber-50 text-amber-800 border-amber-200"
-            }`}
-          >
-            {freshUser.adminVerified
-              ? isBn
-                ? `✓ অ্যাডমিন অনুমোদিত (${formatIsoDate(freshUser.adminVerified)})`
-                : `✓ Admin Verified (${formatIsoDate(freshUser.adminVerified)})`
-              : isBn ? "⏳ অ্যাডমিন অনুমোদন বাকি" : "⏳ Pending Admin Verification"}
-          </span>
+        {/* Verification & Social Links */}
+        <div className="flex flex-wrap items-center gap-2">
+          {freshUser.emailVerified ? (
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs"
+              title={isBn ? "ইমেইল ভেরিফায়েড" : "Email Verified"}
+            >
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 stroke-[2.3]" />
+              <span>{isBn ? "ইমেইল ভেরিফায়েড" : "Email Verified"}</span>
+            </span>
+          ) : (
+            <span
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs"
+              title={isBn ? "ইমেইল ভেরিফাই করা হয়নি" : "Email Unverified"}
+            >
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0 stroke-[2.3]" />
+              <span>{isBn ? "ইমেইল ভেরিফিকেশন বাকি" : "Email Unverified"}</span>
+            </span>
+          )}
+
           {freshUser.facebookProfile && (
             <a
               href={freshUser.facebookProfile}
