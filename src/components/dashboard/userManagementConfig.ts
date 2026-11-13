@@ -19,7 +19,7 @@ export const SORT_FIELD_OPTIONS: Array<{
   labelEn: string;
   labelBn: string;
 }> = [
-  { value: "createdAt", labelEn: "Joined Date", labelBn: "যোগদানের তারিখ" },
+  { value: "createdAt", labelEn: "Joined Date", labelBn: "জয়েনিং ডেট" },
   { value: "updatedAt", labelEn: "Last Updated", labelBn: "সর্বশেষ আপডেট" },
   { value: "fullName", labelEn: "Full Name", labelBn: "পুরো নাম" },
   { value: "email", labelEn: "Email", labelBn: "ইমেইল" },
@@ -33,12 +33,12 @@ export const STATUS_BADGE_MAP: Record<
 > = {
   ACTIVE: {
     labelEn: "Active",
-    labelBn: "সক্রিয়",
+    labelBn: "অ্যাক্টিভ",
     className: "bg-[#006a4e]/10 text-[var(--primary)] border-[#006a4e]/25",
   },
   SUSPENDED: {
     labelEn: "Suspended",
-    labelBn: "স্থগিত / ব্লকড",
+    labelBn: "ব্লকড",
     className: "bg-[#f42a41]/10 text-[var(--accent)] border-[#f42a41]/30",
   },
 };

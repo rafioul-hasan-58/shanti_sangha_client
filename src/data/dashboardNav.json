@@ -42,7 +42,7 @@
         },
         {
           "id": "notices",
-          "labelBn": "নোটিশ ও কল্যাণ",
+          "labelBn": "নোটিশ ও ওয়েলফেয়ার",
           "labelEn": "Notices & Welfare",
           "icon": "welfare",
           "type": "tab",
@@ -52,7 +52,7 @@
     },
     {
       "id": "admin_controls",
-      "titleBn": "অ্যাডমিন নিয়ন্ত্রণ",
+      "titleBn": "অ্যাডমিন ম্যানেজমেন্ট",
       "titleEn": "ADMIN CONTROLS",
       "adminOnly": true,
       "badge": "ADAPTIVE",

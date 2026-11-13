@@ -178,7 +178,7 @@ export default function UserEditModal({
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
             <h4 className="text-lg font-black text-[var(--text)]">
-              {isBn ? "ব্যবহারকারীর তথ্য এডিট করুন" : "Edit User Profile & Controls"}
+              {isBn ? "ইউজারের তথ্য এডিট করুন" : "Edit User Profile & Controls"}
             </h4>
             <p className="text-xs text-slate-500">{user.email}</p>
           </div>
@@ -278,7 +278,7 @@ export default function UserEditModal({
                 onChange={(e) => setField("adminVerified", e.target.checked)}
                 className="h-4 w-4 accent-[#006a4e] rounded"
               />
-              <span>{isBn ? "অ্যাডমিন অনুমোদিত" : "Admin Verified"}</span>
+              <span>{isBn ? "অ্যাডমিন ভেরিফাইড" : "Admin Verified"}</span>
             </label>
           </div>
         </div>

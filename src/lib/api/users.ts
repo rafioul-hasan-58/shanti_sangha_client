@@ -325,7 +325,7 @@ function sanitizeUpdatePayload(
 ): Record<string, unknown> {
   const clean: Record<string, unknown> = {};
 
-  // Name: supply both 'name' and 'fullName' if non-empty
+  // 1. fullName (Must be trimmed non-empty string. Backend User model strictly uses 'fullName', NOT 'name')
   const rawName = (
     payload.fullName ||
     (payload as any).name ||
@@ -333,62 +333,63 @@ function sanitizeUpdatePayload(
   ).trim();
   if (rawName.length > 0) {
     clean.fullName = rawName;
-    clean.name = rawName;
   }
 
-  // String fields: ONLY include if non-empty string.
-  // NEVER send null or blank strings, as backend NestJS/class-transformer `.trim()` will crash with:
-  // "Cannot read properties of null (reading 'trim')"
-  const addStringIfValid = (keys: string[], val: unknown) => {
+  // 2. Strict optional string fields matching `model User` Prisma schema exactly:
+  // fatherName, motherName, profileImage, phoneNumber, bio, summary, profession, village, currentLocation, whatsappNumber, facebookProfile
+  // NOTE: Do NOT send 'name', 'phone', 'image', 'picture', or 'imagePublicId' as NestJS ValidationPipe with
+  // `forbidNonWhitelisted: true` rejects unknown properties with 400 Bad Request.
+  const addStringIfValid = (field: string, val: unknown) => {
     if (typeof val === "string") {
       const trimmed = val.trim();
       if (trimmed.length > 0) {
-        for (const k of keys) {
-          clean[k] = trimmed;
-        }
+        clean[field] = trimmed;
       }
     }
   };
 
-  addStringIfValid(["fatherName"], payload.fatherName);
-  addStringIfValid(["motherName"], payload.motherName);
-  addStringIfValid(["phoneNumber", "phone"], payload.phoneNumber);
-  addStringIfValid(["whatsappNumber"], payload.whatsappNumber);
-  addStringIfValid(["profession"], payload.profession);
-  addStringIfValid(["village"], payload.village);
-  addStringIfValid(["currentLocation"], payload.currentLocation);
-  addStringIfValid(["facebookProfile"], payload.facebookProfile);
-  addStringIfValid(["summary"], payload.summary);
-  addStringIfValid(["bio"], payload.bio);
-  addStringIfValid(["profileImage", "image", "picture"], payload.profileImage);
-  addStringIfValid(["imagePublicId", "publicId"], payload.imagePublicId);
+  addStringIfValid("fatherName", payload.fatherName);
+  addStringIfValid("motherName", payload.motherName);
+  addStringIfValid("profileImage", payload.profileImage);
+  addStringIfValid("phoneNumber", payload.phoneNumber);
+  addStringIfValid("bio", payload.bio);
+  addStringIfValid("summary", payload.summary);
+  addStringIfValid("profession", payload.profession);
+  addStringIfValid("village", payload.village);
+  addStringIfValid("currentLocation", payload.currentLocation);
+  addStringIfValid("whatsappNumber", payload.whatsappNumber);
+  addStringIfValid("facebookProfile", payload.facebookProfile);
 
-  // Blood group: Prisma enum doesn't support "UNKNOWN", only send if valid group
+  // 3. bloodGroup (Enum BloodGroup: A_POSITIVE, A_NEGATIVE, B_POSITIVE, B_NEGATIVE, AB_POSITIVE, AB_NEGATIVE, O_POSITIVE, O_NEGATIVE, UNKNOWN)
   if (
     payload.bloodGroup &&
-    payload.bloodGroup !== "UNKNOWN" &&
     typeof payload.bloodGroup === "string" &&
     payload.bloodGroup.trim().length > 0
   ) {
     clean.bloodGroup = payload.bloodGroup.trim();
   }
 
-  // Membership type
+  // 4. membershipType (Enum MembershipType: PERMANENT, PLAYER_QUOTA)
   if (payload.membershipType) {
     clean.membershipType = payload.membershipType;
   }
 
-  // Role & Status
+  // 5. role (Enum Role: USER, MODERATOR, ADMIN, SUPER_ADMIN)
   if (payload.role) {
     clean.role = payload.role;
   }
+
+  // 6. status (Enum UserStatus: ACTIVE, SUSPENDED)
   if (payload.status) {
     clean.status = payload.status;
   }
 
-  // Verification booleans
+  // 7. Booleans
   if (typeof payload.emailVerified === "boolean") {
     clean.emailVerified = payload.emailVerified;
+  }
+  if (typeof (payload as any).phoneVerified === "boolean") {
+    clean.phoneVerified = (payload as any).phoneVerified;
   }
   if (typeof payload.adminVerified === "boolean") {
     clean.adminVerified = payload.adminVerified;
