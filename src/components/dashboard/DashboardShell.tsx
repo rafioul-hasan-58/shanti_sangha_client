@@ -641,14 +641,6 @@ export default function DashboardShell({
                       >
                         <Camera className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.4] group-hover/cam:scale-110 transition-transform" />
                       </button>
-
-                      {/* Online/Active status indicator dot (Top-Right) */}
-                      <span
-                        className={`absolute top-0 right-1 h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full ring-2 ring-white z-10 ${
-                          user?.status === "SUSPENDED" ? "bg-rose-500" : "bg-emerald-500"
-                        }`}
-                        title={user?.status === "SUSPENDED" ? "Suspended" : "Active Member"}
-                      />
                     </div>
 
                     <div className="min-w-0 flex flex-col items-center sm:items-start w-full">
