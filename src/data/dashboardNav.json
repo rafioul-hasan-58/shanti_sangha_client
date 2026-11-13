@@ -24,6 +24,15 @@
           "userOnly": true
         },
         {
+          "id": "committee",
+          "labelBn": "কমিটি",
+          "labelEn": "Committees",
+          "icon": "users",
+          "type": "tab",
+          "status": "cooking",
+          "userOnly": true
+        },
+        {
           "id": "sports",
           "labelBn": "স্পোর্টস ও এসপিএল",
           "labelEn": "Sports & SPL",

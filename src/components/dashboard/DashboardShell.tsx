@@ -37,6 +37,7 @@ type TabType =
   | "profile"
   | "sports"
   | "members"
+  | "committee"
   | "notices"
   | "leadership_pioneers"
   | "leadership_committee"
@@ -110,6 +111,7 @@ export default function DashboardShell({
           "profile",
           "sports",
           "members",
+          "committee",
           "notices",
           "leadership_pioneers",
           "leadership_committee",
@@ -196,6 +198,7 @@ export default function DashboardShell({
           "profile",
           "sports",
           "members",
+          "committee",
           "notices",
           "leadership_pioneers",
           "leadership_committee",
@@ -1063,6 +1066,15 @@ export default function DashboardShell({
           {activeTab === "leadership_committee" && (
             <FeatureCooking
               featureNameEn="Committee"
+              featureNameBn="কমিটি"
+              locale={locale}
+              onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
+            />
+          )}
+
+          {activeTab === "committee" && (
+            <FeatureCooking
+              featureNameEn="Committees"
               featureNameBn="কমিটি"
               locale={locale}
               onDashboardClick={() => setActiveTab(isAdmin ? "overview" : "members")}
