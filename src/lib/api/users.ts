@@ -295,15 +295,11 @@ export async function fetchUserById(id: string): Promise<ManagedUser> {
   let lastError: Error | null = null;
 
   try {
-    res = await apiRequest<Record<string, unknown>>(`/users/${id}`, {
-      skipAuth: true,
-    });
+    res = await apiRequest<Record<string, unknown>>(`/users/${id}`);
   } catch (err) {
     lastError = err instanceof Error ? err : new Error(String(err));
     try {
-      res = await apiRequest<Record<string, unknown>>(`/members/${id}`, {
-        skipAuth: true,
-      });
+      res = await apiRequest<Record<string, unknown>>(`/members/${id}`);
     } catch {
       throw lastError;
     }
