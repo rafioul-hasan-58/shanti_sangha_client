@@ -1,11 +1,25 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import WelcomeCard from "@/components/dashboard/WelcomeCard";
 import StatCard from "@/components/dashboard/StatCard";
-import ExpenseChart from "@/components/dashboard/ExpenseChart";
 import UserAvatar from "@/components/layout/UserAvatar";
 import VerifiedTick from "@/components/common/VerifiedTick";
+
+// Dynamically import ExpenseChart with SSR disabled so Recharts is never evaluated during SSR
+const ExpenseChart = dynamic(
+  () => import("@/components/dashboard/ExpenseChart"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="bg-white rounded-2xl p-5 sm:p-7 border border-slate-200/80 shadow-xs animate-pulse">
+        <div className="h-6 w-48 bg-slate-200 rounded-full mb-6" />
+        <div className="h-72 w-full bg-slate-100 rounded-xl" />
+      </div>
+    ),
+  }
+);
 import { isAdminVerified } from "@/lib/authRole";
 import { getDashboardStats } from "@/lib/api/dashboard";
 import { fetchUsers } from "@/lib/api/users";

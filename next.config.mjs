@@ -11,6 +11,7 @@ const apiBaseUrl = (
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['recharts'],
   env: {
     OAUTH_CLIENT_ID: googleClientId,
     NEXT_PUBLIC_GOOGLE_CLIENT_ID: googleClientId,
