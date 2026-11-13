@@ -9,7 +9,7 @@ import imageCompression from "browser-image-compression";
 // ==========================================
 // Named Constants (Configure Ratio, Width, Quality)
 // ==========================================
-export const DEFAULT_ASPECT_RATIO = 4 / 5; // Fixed 4:5 portrait ratio
+export const DEFAULT_ASPECT_RATIO = 1 / 1; // Fixed 1:1 square ratio
 export const MAX_IMAGE_WIDTH_PX = 800; // Maximum image width in pixels (never upscaled)
 export const TARGET_MAX_SIZE_KB = 300; // Target file size upper limit in KB
 export const INITIAL_WEBP_QUALITY = 0.82; // Initial WebP compression quality (~82%)

@@ -408,7 +408,7 @@ export function ImageUploader({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`group relative w-48 sm:w-56 aspect-[4/5] rounded-2xl overflow-hidden cursor-pointer select-none transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705] ${
+        className={`group relative w-48 sm:w-56 ${aspectRatio === 1 ? "aspect-square" : "aspect-[4/5]"} rounded-2xl overflow-hidden cursor-pointer select-none transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705] ${
           isDragging
             ? "border-2 border-[#006a4e] bg-[#006a4e]/10 ring-4 ring-[#006a4e]/20 scale-[1.02]"
             : imageUrl

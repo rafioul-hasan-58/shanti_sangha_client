@@ -860,61 +860,6 @@ export default function DashboardShell({
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                      {/* Profile Photo Field */}
-                      <div className="sm:col-span-2 p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-3.5 w-full sm:w-auto">
-                          <button
-                            type="button"
-                            onClick={() => profilePhotoInputRef.current?.click()}
-                            disabled={isPhotoProcessing}
-                            className="relative h-14 w-14 rounded-full overflow-hidden ring-2 ring-[#006a4e]/20 hover:ring-[#006a4e] bg-[#006a4e] shrink-0 cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f2b705]"
-                            title={isBn ? "ছবি পরিবর্তন করুন" : "Upload photo"}
-                          >
-                            {currentPhoto ? (
-                              <Image src={currentPhoto} alt={displayName} fill unoptimized className="object-cover group-hover:scale-105 transition-transform" />
-                            ) : (
-                              <div className="h-full w-full flex items-center justify-center text-white font-bold text-lg">
-                                {displayName.charAt(0).toUpperCase()}
-                              </div>
-                            )}
-                            <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-[#f2b705]">
-                              <Camera className="w-5 h-5 stroke-[2.2]" />
-                            </div>
-                          </button>
-                          <div>
-                            <p className="text-xs sm:text-sm font-bold text-slate-800">
-                              {isBn ? "প্রোফাইল ছবি" : "Profile Photo"}
-                            </p>
-                            <p className="text-[11px] text-slate-400">
-                              JPG, PNG, WebP (Max 10MB, auto-compressed)
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                          <button
-                            type="button"
-                            onClick={() => profilePhotoInputRef.current?.click()}
-                            disabled={isPhotoProcessing}
-                            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#006a4e] hover:bg-[#004d38] text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
-                          >
-                            <Camera className="w-3.5 h-3.5" />
-                            <span>{isBn ? "ছবি পরিবর্তন করুন" : "Upload New Photo"}</span>
-                          </button>
-                          {currentPhoto && (
-                            <button
-                              type="button"
-                              onClick={handleRemoveProfilePhoto}
-                              disabled={isPhotoProcessing}
-                              className="px-3 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-[#f42a41] border border-red-200 text-xs font-semibold transition-colors cursor-pointer"
-                              title={isBn ? "ছবি মুছুন" : "Remove photo"}
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
                       {/* Full Name */}
                       <div>
                         <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
@@ -1263,7 +1208,7 @@ export default function DashboardShell({
               <ImageCropModal
                 isOpen={cropModalOpen}
                 imageSrc={rawPhotoSrc}
-                aspectRatio={4 / 5}
+                aspectRatio={1 / 1}
                 onClose={handleCloseCropModal}
                 onConfirm={handleCropConfirm}
                 isProcessing={isPhotoProcessing}
